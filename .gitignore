@@ -1,0 +1,32 @@
+#
+# Proyecto
+#
+
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+#
+# Carpetas personales
+#
+/tmp
+/app/src/main/java/com/integrame/app/tmp
+
+#
+# Backend local
+#
+/[Ss]erver
+/[Bb]ackend
+
