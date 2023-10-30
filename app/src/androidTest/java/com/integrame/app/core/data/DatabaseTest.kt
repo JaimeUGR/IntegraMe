@@ -38,7 +38,7 @@ class DatabaseTest {
     @Test
     fun addNewUser() = runTest {
         userDao.insert(User(25, UserType.Teacher))
-        val teacher = Teacher(25)
+        val teacher = Teacher(25, "")
         userDao.insertTeacher(teacher)
 
         assertEquals(teacher, userDao.getTeacher(25).first())
@@ -47,6 +47,6 @@ class DatabaseTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test(expected = android.database.sqlite.SQLiteConstraintException::class)
     fun addNewTeacher() = runTest {
-        userDao.insertTeacher(Teacher(9293923))
+        userDao.insertTeacher(Teacher(9293923, ""))
     }
 }

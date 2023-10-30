@@ -33,7 +33,10 @@ fun IntegraMeNavHost(
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(text = "Soy la splash screen")
                 Button(onClick = { navController.navigate(route = LoginNavGraph.TeacherLogin.route) }) {
-                    Text(text = "Navegar siguiente")
+                    Text(text = "Pantalla X")
+                }
+                Button(onClick = { navController.navigate(route = LoginNavGraph.StudentLogin.route) }) {
+                    Text(text = "Pantalla Y")
                 }
             }
         }
