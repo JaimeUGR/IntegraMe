@@ -1,4 +1,4 @@
-package com.integrame.app.core.ui.navigation
+package com.integrame.app.ui.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.navigation.loginGraph
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.integrame.app.login.ui.screens.TestLogin
 
 @Composable
 fun IntegraMeNavHost(
@@ -38,10 +38,13 @@ fun IntegraMeNavHost(
                 Button(onClick = { navController.navigate(route = LoginNavGraph.StudentLogin.route) }) {
                     Text(text = "Pantalla Y")
                 }
+                Button(onClick = { navController.navigate(route = "test_screen")}) {
+                    Text(text = "TestLogin")
+                }
             }
         }
         composable("test_screen") {
-            Text(text = "Soy la test_screen")
+            TestLogin()
         }
 
         loginGraph(navController)

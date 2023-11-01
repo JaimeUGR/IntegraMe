@@ -1,7 +1,7 @@
 package com.integrame.app.login.ui.navigation
 
-import com.integrame.app.core.ui.navigation.IntegraMeGraph
-import com.integrame.app.core.ui.navigation.IntegraMeScreen
+import com.integrame.app.ui.navigation.IntegraMeGraph
+import com.integrame.app.ui.navigation.IntegraMeScreen
 
 object LoginNavGraph : IntegraMeGraph {
     override val route: String = "auth"

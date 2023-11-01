@@ -1,4 +1,4 @@
-package com.integrame.app.core.ui.theme
+package com.integrame.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

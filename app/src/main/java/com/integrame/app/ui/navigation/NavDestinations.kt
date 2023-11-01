@@ -1,4 +1,4 @@
-package com.integrame.app.core.ui.navigation
+package com.integrame.app.ui.navigation
 
 interface IntegraMeGraph {
     val route: String

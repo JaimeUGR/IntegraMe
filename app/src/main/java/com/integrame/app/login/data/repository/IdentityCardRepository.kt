@@ -2,7 +2,6 @@ package com.integrame.app.login.data.repository
 
 import com.integrame.app.core.data.network.IntegraMeApi
 import com.integrame.app.login.data.model.IdentityCard
-import com.integrame.app.login.data.network.asIdentityCard
 import javax.inject.Inject
 
 interface IIdentityCardRepository {
@@ -13,7 +12,7 @@ class IdentityCardRepository @Inject constructor(
     private val api: IntegraMeApi
 ) : IIdentityCardRepository {
     override suspend fun getStudentsIdentityCards(): List<IdentityCard> {
-        return api.getStudentsIdentityCards().map { it.asIdentityCard() }
+        return api.getStudentsIdentityCards()
 
         // TODO
         // Petición API
