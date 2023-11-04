@@ -18,7 +18,7 @@ data class TextContent(
 }
 
 data class ImageContent(
-    val imgUrl: String,
+    val imageUrl: String,
     val altDescription: String,
     val id: Int
 ) : DynamicContent {

@@ -1,9 +1,6 @@
 package com.integrame.app.ui.navigation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,18 +27,16 @@ fun IntegraMeNavHost(
         startDestination = SplashScreen.route
     ) {
         composable(SplashScreen.route) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text(text = "Soy la splash screen")
-                Button(onClick = { navController.navigate(route = LoginNavGraph.TeacherLogin.route) }) {
-                    Text(text = "Pantalla X")
+            com.integrame.app.ui.screens.SplashScreen(
+                modifier = Modifier.fillMaxSize(),
+                onLoadReady = {
+                    navController.navigate(LoginNavGraph.StudentLogin.route) {
+                        popUpTo(id = navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 }
-                Button(onClick = { navController.navigate(route = LoginNavGraph.StudentLogin.route) }) {
-                    Text(text = "Pantalla Y")
-                }
-                Button(onClick = { navController.navigate(route = "test_screen")}) {
-                    Text(text = "TestLogin")
-                }
-            }
+            )
         }
         composable("test_screen") {
             TestLogin()

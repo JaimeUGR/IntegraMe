@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.integrame.app"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.integrame.app"
@@ -127,6 +127,11 @@ dependencies {
     // DataStore
     //
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //
+    // Coil
+    //
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
 
 // Dagger-Hilt

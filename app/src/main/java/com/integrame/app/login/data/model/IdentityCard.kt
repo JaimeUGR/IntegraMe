@@ -1,12 +1,12 @@
 package com.integrame.app.login.data.model
 
+import com.integrame.app.core.data.model.content.ImageContent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
+// TODO: Soporte de @Serializable
 data class IdentityCard(
     val userID: Int,
-    val name: String,
-    val surnamesInitials: String,
-    val avatarUrl: String
+    val nickname: String,
+    val avatar: ImageContent
 )

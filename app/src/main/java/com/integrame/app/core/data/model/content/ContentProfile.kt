@@ -3,17 +3,19 @@ package com.integrame.app.core.data.model.content
 import com.integrame.app.core.data.local.entities.Student
 
 enum class EContentInteractionMethods {
-    Default,
+    Default,    // No es necesaria ninguna adaptación a la interacción
     Sequential,
     TabbedNavigation,
-    Narrated
+    Narrated,
+    Simplified  // Discapacidad cognitiva
 }
 
 data class ContentInteractionMethods(
     val hasDefaultInteraction: Boolean,
     val hasSequentialInteraction: Boolean,
     val hasTabbedNavigationInteraction: Boolean,
-    val hasNarratedInteraction: Boolean
+    val hasNarratedInteraction: Boolean,
+    val hasSimplifiedInteraction: Boolean
 )
 
 enum class EContentAdaptationFormats {
