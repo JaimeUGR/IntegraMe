@@ -4,14 +4,16 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class StudentPassword {
-}
+sealed interface StudentPassword
 
 @Serializable
 @SerialName("TextPassword")
-class TextPassword(private val password: String) : StudentPassword() {
-}
+data class TextPassword(
+    val password: String
+) : StudentPassword
 
 @Serializable
 @SerialName("ImagePassword")
-class ImagePassword(private val password: List<Int>) : StudentPassword()
+data class ImagePassword(
+    val password: List<Int>
+) : StudentPassword

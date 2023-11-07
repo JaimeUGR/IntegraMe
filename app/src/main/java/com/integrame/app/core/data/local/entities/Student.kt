@@ -9,16 +9,16 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = User::class,
-            parentColumns = arrayOf("userID"),
-            childColumns = arrayOf("userID")
+            parentColumns = arrayOf("userId"),
+            childColumns = arrayOf("userId")
         )
     ]
 )
 data class Student(
-    @PrimaryKey val userID: Int,
+    @PrimaryKey val userId: Int,
     val name: String,
     val surnames: String,
     val avatarUrl: String
     //val contentAdaptation: List<EContentAdaptationFormats>,
-    //val interactionMethods: List<EContentInteractionMethods>
+    //val interactionMethods: List<EInteractionMethods>
 )

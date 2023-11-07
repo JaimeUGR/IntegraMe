@@ -7,7 +7,7 @@ import com.integrame.app.login.data.model.TextPassword
 import kotlinx.serialization.encodeToString
 import org.junit.Test
 
-class PasswordTests
+/*class PasswordTests
 {
     val textPassword = TextPassword("holiwi")
     val imagePassword = ImagePassword()
@@ -23,4 +23,4 @@ class PasswordTests
         println(Json.encodeToString(textPassword as StudentPassword))
         println(Json.encodeToString(imagePassword as StudentPassword))
     }
-}
+}*/

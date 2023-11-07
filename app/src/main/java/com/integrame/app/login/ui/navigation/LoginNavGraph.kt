@@ -38,7 +38,12 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
                     navController.navigate(route = LoginNavGraph.StudentLogin.route)
                 }
             else
-                StudentAuthScreen(userId = userId)
+                StudentAuthScreen(
+                    userId = userId,
+                    onErrorScreenButtonClick = {
+                        navController.navigate(route = LoginNavGraph.StudentLogin.route)
+                    }
+                )
         }
         composable(route = LoginNavGraph.TeacherLogin.route) {
             TeacherLoginScreen()

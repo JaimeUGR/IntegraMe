@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = User::class,
-            parentColumns = arrayOf("userID"),
-            childColumns = arrayOf("userID")
+            parentColumns = arrayOf("userId"),
+            childColumns = arrayOf("userId")
         )
     ]
 )
 data class Teacher(
-    @PrimaryKey val userID: Int,
+    @PrimaryKey val userId: Int,
     val name: String
 )

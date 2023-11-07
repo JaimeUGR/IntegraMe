@@ -10,6 +10,6 @@ enum class UserType {
 
 @Entity(tableName = "Users")
 data class User(
-    @PrimaryKey val userID: Int,
+    @PrimaryKey val userId: Int,
     val userType: UserType
 )

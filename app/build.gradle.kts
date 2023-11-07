@@ -69,6 +69,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    // TODO: Añadir a Proguard que elimine los iconos no utilizados
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.test:core-ktx:1.5.0")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     debugImplementation("androidx.compose.ui:ui-tooling")

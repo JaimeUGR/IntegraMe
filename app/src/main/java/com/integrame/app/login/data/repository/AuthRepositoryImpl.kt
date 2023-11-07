@@ -13,12 +13,12 @@ class AuthRepositoryImpl(
     // TODO: Si hay success en cualquier de estos dos métodos, hará una llamada al sessionRepository
     // para guardar el token de autenticación
 
-    override suspend fun loginTeacher(user: String, password: String) : LoginState {
+    override suspend fun signInTeacher(user: String, password: String) : LoginState {
         return LoginState.Sucess
     }
 
     // TODO: Para el encode, lanzar hebra cpu
-    override suspend fun loginStudent(user: Int, password: StudentPassword) : LoginState {
+    override suspend fun signInStudent(user: Int, password: StudentPassword) : LoginState {
         // construir la contraseña a partir del contenido dinámico que ha seleccionado el usuario
         val jsonPassword = Json.encodeToString(password)
 

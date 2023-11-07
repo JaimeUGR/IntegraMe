@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.navigation.loginGraph
-import com.integrame.app.login.ui.screens.TestLogin
 
 @Composable
 fun IntegraMeNavHost(
@@ -37,9 +36,6 @@ fun IntegraMeNavHost(
                     }
                 }
             )
-        }
-        composable("test_screen") {
-            TestLogin()
         }
 
         loginGraph(navController)

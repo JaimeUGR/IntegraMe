@@ -2,9 +2,12 @@ package com.integrame.app.core.di
 
 import android.content.Context
 import com.integrame.app.core.data.local.IntegraMeDatabase
+import com.integrame.app.core.data.network.FakeIntegraMeApi
 import com.integrame.app.core.data.network.IntegraMeApi
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
+import com.integrame.app.core.data.repository.StudentRespositoryImpl
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
+import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -29,6 +32,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideIntegraMeApi() : IntegraMeApi {
+        // TODO: Esto es temporal
+        return FakeIntegraMeApi
+        
         return Retrofit.Builder()
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .baseUrl("localhost/api/v1")
@@ -38,13 +44,28 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSessionRepository(@ApplicationContext appContext: Context) : SessionRepositoryImpl {
+    fun provideStudentRepositoryImpl(
+        @ApplicationContext appContext: Context,
+        api: IntegraMeApi
+    ) : StudentRespositoryImpl {
+        return StudentRespositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionRepositoryImpl(@ApplicationContext appContext: Context) : SessionRepositoryImpl {
         return SessionRepositoryImpl(appContext)
     }
 
     @Provides
     @Singleton
-    fun provideAuthRepostiory(sessionRepository: SessionRepositoryImpl) : AuthRepositoryImpl {
+    fun provideIdentityCardRepositoryImpl(api: IntegraMeApi) : IdentityCardRepositoryImpl {
+        return IdentityCardRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepostioryImpl(sessionRepository: SessionRepositoryImpl) : AuthRepositoryImpl {
         return AuthRepositoryImpl(sessionRepository)
     }
 }

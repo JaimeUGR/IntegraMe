@@ -25,6 +25,8 @@ fun SplashScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LaunchedEffect(key1 = Unit) {
+            // TODO: Comprobar si hay una sesión guardada para redirigir a la pantalla correspondiente.
+            // Pensar si hacerlo aquí o en la pantalla de autenticación
             delay(1000)
             onLoadReady()
         }
