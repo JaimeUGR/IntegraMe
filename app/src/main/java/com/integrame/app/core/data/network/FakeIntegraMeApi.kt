@@ -2,11 +2,21 @@ package com.integrame.app.core.data.network
 
 import com.integrame.app.core.data.model.content.EContentAdaptationFormats
 import com.integrame.app.core.data.model.content.EInteractionMethods
+import com.integrame.app.core.data.model.session.Session
+import com.integrame.app.login.data.model.ImagePassword
+import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.NetworkAuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.NetworkImageAuthMethod
 import com.integrame.app.login.data.network.NetworkTextAuthMethod
+import com.integrame.app.login.data.network.SignInStudentRequest
+import com.integrame.app.login.data.network.SignInTeacherRequest
 import kotlinx.coroutines.delay
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
+import retrofit2.HttpException
+import retrofit2.Response
 
 private object FakeResources {
     val networkImages: List<NetworkImageContent> = listOf(
@@ -25,10 +35,10 @@ private object FakeResources {
 
     val identityCardList = List(15) { i -> NetworkIdentityCard(
         userId = i,
-        nickname = "Ismale Cpy Número $i",
+        nickname = "Nick Alumno Número $i",
         avatar = NetworkImageContent(
             id = i,
-            altDescription = "Avatar"
+            altDescription = "Avatar Gallina"
         )
     )}
 
@@ -58,5 +68,29 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getStudentAuthMethod(userId: Int): NetworkAuthMethod {
         delay(1000)
         return FakeResources.authMethodList[userId]
+    }
+
+    override suspend fun signInStudent(signInRequest: SignInStudentRequest): Session {
+        delay(1500)
+
+        if ( when (val password = signInRequest.password) {
+            is TextPassword -> {
+                password.password == "integrame"
+            }
+            is ImagePassword -> {
+                password.password[0] == 0
+            }
+        })
+            return Session(signInRequest.userId, "TOKEN")
+        else
+            throw HttpException(Response.error<Session>(401,   ResponseBody.create(
+                "application/json".toMediaTypeOrNull(),
+                "{\"error\":[\"Error de autenticación\"]}"
+            )))
+    }
+
+    override suspend fun signInTeacher(signInRequest: SignInTeacherRequest): Session {
+        delay(1000)
+        TODO("Not yet implemented")
     }
 }

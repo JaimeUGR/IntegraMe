@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <!-- TODO: Quitar el cleartexttraffic -->
     <application
+        android:usesCleartextTraffic="true"
         android:name=".IntegraMeApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

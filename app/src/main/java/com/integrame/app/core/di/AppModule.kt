@@ -32,12 +32,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideIntegraMeApi() : IntegraMeApi {
-        // TODO: Esto es temporal
+        // TODO: Integrar API
         return FakeIntegraMeApi
         
         return Retrofit.Builder()
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl("localhost/api/v1")
+            .baseUrl("http://34.175.9.11:30000/api/v1/")
             .build()
             .create(IntegraMeApi::class.java)
     }
@@ -65,7 +65,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepostioryImpl(sessionRepository: SessionRepositoryImpl) : AuthRepositoryImpl {
-        return AuthRepositoryImpl(sessionRepository)
+    fun provideAuthRepostioryImpl(
+        sessionRepository: SessionRepositoryImpl,
+        api: IntegraMeApi
+    ) : AuthRepositoryImpl {
+        return AuthRepositoryImpl(sessionRepository, api)
     }
 }

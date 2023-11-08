@@ -6,6 +6,7 @@ import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.data.network.toIdentityCard
 import javax.inject.Inject
 
+// TODO: Refactor
 interface IdentityCardRepository {
     suspend fun getStudentsIdentityCards() : MyResult<List<IdentityCard>, Exception>
     suspend fun getIdentityCard(userId: Int) : MyResult<IdentityCard, Exception>

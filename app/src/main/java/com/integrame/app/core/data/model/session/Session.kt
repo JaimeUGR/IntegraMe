@@ -1,8 +1,9 @@
 package com.integrame.app.core.data.model.session
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Session(
-    val userID: Int,
-    val token: String,
-    val lastUsedAt: Long,
-    val expiresAt: Long
+    val userId: Int,
+    val token: String
 )

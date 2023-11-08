@@ -1,9 +1,9 @@
 package com.integrame.app.login.domain.repository
 
+import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.login.data.model.StudentPassword
-import com.integrame.app.login.data.repository.LoginState
 
 interface AuthRepository {
-    suspend fun signInTeacher(user: String, password: String) : LoginState
-    suspend fun signInStudent(user: Int, password: StudentPassword) : LoginState
+    suspend fun signInTeacher(nickname: String, password: String) : AuthRequestResult<Unit>
+    suspend fun signInStudent(userId: Int, password: StudentPassword) : AuthRequestResult<Unit>
 }

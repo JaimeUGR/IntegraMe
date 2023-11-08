@@ -22,6 +22,9 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
                     navController.navigate(
                         route = LoginNavGraph.StudentAuth.buildRouteWithArgs(userId = userId)
                     )
+                },
+                onTeacherLoginSelected = {
+                    navController.navigate(route = LoginNavGraph.TeacherLogin.route)
                 }
             )
         }
@@ -40,6 +43,9 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
             else
                 StudentAuthScreen(
                     userId = userId,
+                    onAuthorized = {
+                        // TODO: Navegar al menú de la app
+                    },
                     onErrorScreenButtonClick = {
                         navController.navigate(route = LoginNavGraph.StudentLogin.route)
                     }

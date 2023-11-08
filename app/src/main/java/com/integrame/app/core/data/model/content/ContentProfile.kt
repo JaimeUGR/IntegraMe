@@ -2,20 +2,67 @@ package com.integrame.app.core.data.model.content
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Representa los posibles métodos de interacción de los usuarios.
+ *
+ * Los métodos de interacción modifican la interfaz, integrando adaptaciones
+ * específicas para el usuario correspondiente.
+ */
 @Serializable
 enum class EInteractionMethods {
-    Default,    // No es necesaria ninguna adaptación a la interacción
+    /**
+     * Indica que no es necesaria ninguna adaptación adicional.
+     */
+    Default,
+
+    /**
+     * Indica que el usuario necesita / realizará recorridos automáticos
+     * secuenciales.
+     */
     Sequential,
+
+    /**
+     * Indica la necesidad de soportar navegación a través de tabulaciones
+     * (por ejemplo teclado).
+     */
     TabbedNavigation,
+
+    /**
+     * Indica adaptaciones considerando que el usuario utiliza lectores de pantalla.
+     */
     Narrated,
-    Simplified  // Discapacidad cognitiva
+
+    /**
+     * Indica adaptaciones considerando que el usuario utiliza control por voz.
+     */
+    VoiceControl,
+
+    /**
+     * Indica adaptaciones para simplificar el diseño de la interfaz.
+     */
+    Simplified
 }
 
 @Serializable
 enum class EContentAdaptationFormats {
+    /**
+     * Contenido en formato textual.
+     */
     Text,
+
+    /**
+     * Contenido en formato visual.
+     */
     Image,
+
+    /**
+     * Contenido en formato audiovisual.
+     */
     Video,
+
+    /**
+     * Contenido en formato auditivo.
+     */
     Audio
 }
 
@@ -24,6 +71,7 @@ data class InteractionMethods(
     val hasSequentialInteraction: Boolean,
     val hasTabbedNavigationInteraction: Boolean,
     val hasNarratedInteraction: Boolean,
+    val hasVoiceControlInteraction: Boolean,
     val hasSimplifiedInteraction: Boolean
 ) {
     companion object {
@@ -32,6 +80,7 @@ data class InteractionMethods(
             var hasSequentialInteraction: Boolean = false
             var hasTabbedNavigationInteraction: Boolean = false
             var hasNarratedInteraction: Boolean = false
+            var hasVoiceControlInteraction: Boolean = false
             var hasSimplifiedInteraction: Boolean = false
 
             for (interactionMethod in eInteractionMethodsList) {
@@ -40,12 +89,13 @@ data class InteractionMethods(
                     EInteractionMethods.Sequential -> hasSequentialInteraction = true
                     EInteractionMethods.TabbedNavigation -> hasTabbedNavigationInteraction = true
                     EInteractionMethods.Narrated -> hasNarratedInteraction = true
+                    EInteractionMethods.VoiceControl -> hasVoiceControlInteraction = true
                     EInteractionMethods.Simplified -> hasSimplifiedInteraction = true
                 }
             }
 
             return InteractionMethods(
-                hasDefaultInteraction, hasSequentialInteraction, hasTabbedNavigationInteraction, hasNarratedInteraction, hasSimplifiedInteraction
+                hasDefaultInteraction, hasSequentialInteraction, hasTabbedNavigationInteraction, hasNarratedInteraction, hasVoiceControlInteraction, hasSimplifiedInteraction
             )
         }
     }

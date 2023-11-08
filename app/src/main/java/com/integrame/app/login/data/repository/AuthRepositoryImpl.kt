@@ -1,40 +1,58 @@
 package com.integrame.app.login.data.repository
 
-import com.integrame.app.core.data.repository.SessionRepositoryImpl
+import com.integrame.app.core.data.network.IntegraMeApi
+import com.integrame.app.core.domain.repository.SessionRepository
+import com.integrame.app.core.util.AuthRequestResult
+import com.integrame.app.core.util.Option
 import com.integrame.app.login.data.model.StudentPassword
+import com.integrame.app.login.data.network.SignInStudentRequest
+import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.login.domain.repository.AuthRepository
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import retrofit2.HttpException
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
-    private val sessionRepository: SessionRepositoryImpl
+class AuthRepositoryImpl (
+    private val sessionRepository: SessionRepository,
+    private val api: IntegraMeApi
 ) : AuthRepository {
+    override suspend fun signInTeacher(nickname: String, password: String) : AuthRequestResult<Unit> {
+        val request = SignInTeacherRequest(nickname, password)
 
-    // TODO: Si hay success en cualquier de estos dos métodos, hará una llamada al sessionRepository
-    // para guardar el token de autenticación
+        return try {
+            val session = api.signInTeacher(request)
+            sessionRepository.startSession(session)
 
-    override suspend fun signInTeacher(user: String, password: String) : LoginState {
-        return LoginState.Sucess
+            AuthRequestResult.Authorized(Unit)
+        } catch (e: HttpException) {
+            val statusCode = e.code()
+
+            return if (statusCode == 401)
+                AuthRequestResult.Unauthorized()
+            else
+                AuthRequestResult.Error("Error code: $statusCode")
+        } catch (e: Exception) {
+            AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
+        }
     }
 
     // TODO: Para el encode, lanzar hebra cpu
-    override suspend fun signInStudent(user: Int, password: StudentPassword) : LoginState {
-        // construir la contraseña a partir del contenido dinámico que ha seleccionado el usuario
-        val jsonPassword = Json.encodeToString(password)
+    override suspend fun signInStudent(userId: Int, password: StudentPassword) : AuthRequestResult<Unit> {
+        val request = SignInStudentRequest(userId, password)
 
-        /*
-            Idea de construcción: JSON
-            [{ valor: X, tipoContenido: texto }, {...}].
+        return try {
+            val session = api.signInStudent(request)
+            sessionRepository.startSession(session)
 
-            Luego en el backend, se lee el tipo de contenido y si es una imagen el valor se interpreta como un int
-            y se entiende que es la id interna
-         */
-        return LoginState.Failed("Error autenticación")
+            AuthRequestResult.Authorized(Unit)
+        } catch (e: HttpException) {
+            val statusCode = e.code()
+
+            return if (statusCode == 401)
+                AuthRequestResult.Unauthorized()
+            else
+                AuthRequestResult.Error("Error code: $statusCode")
+        } catch (e: Exception) {
+            AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
+        }
     }
 }
-
-sealed interface LoginState {
-    object Sucess : LoginState
-    data class Failed(val error: String) : LoginState
-}
-

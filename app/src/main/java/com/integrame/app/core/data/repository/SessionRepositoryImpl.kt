@@ -28,7 +28,7 @@ class SessionRepositoryImpl(
             val user = preferences[USER_KEY]
             val token = preferences[TOKEN_KEY]
             if (user != null && !token.isNullOrBlank()) {
-                Option.Some(Session(userID = user, token = token, 0, 0))
+                Option.Some(Session(userId = user, token = token))
             } else {
                 Option.None
             }
@@ -41,10 +41,10 @@ class SessionRepositoryImpl(
         val USER_KEY = intPreferencesKey("auth_user")
     }
 
-    override suspend fun startSession(userID: Int, token: String) {
+    override suspend fun startSession(session: Session) {
         context.sessionDataStore.edit { preferences ->
-            preferences[USER_KEY] = userID
-            preferences[TOKEN_KEY] = token
+            preferences[USER_KEY] = session.userId
+            preferences[TOKEN_KEY] = session.token
         }
     }
 

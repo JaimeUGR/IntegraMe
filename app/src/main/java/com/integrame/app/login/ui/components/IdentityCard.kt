@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,8 @@ import com.integrame.app.ui.theme.IntegraMeTheme
 fun IdentityCard(
     identityCard: IdentityCard,
     onCardClick: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .height(192.dp)
@@ -39,7 +41,8 @@ fun IdentityCard(
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(all = 12.dp)
-            .background(MaterialTheme.colorScheme.primaryContainer),
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .semantics(mergeDescendants = true) {},
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AsyncImage(
@@ -47,6 +50,7 @@ fun IdentityCard(
             contentDescription = identityCard.avatar.altDescription,
             modifier = Modifier.padding(top = 12.dp).weight(1f).clip(CircleShape)
         )
+
         Text(
             text = identityCard.nickname,
             style = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),

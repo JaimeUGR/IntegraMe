@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.core.util.MyResult
+import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.StudentAuthProfile
 import com.integrame.app.login.data.model.StudentPassword
+import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.domain.repository.AuthRepository
 import com.integrame.app.login.domain.usecase.GetStudentAuthProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +23,15 @@ class StudentAuthViewModel @Inject constructor(
     private val getStudentAuthProfileUseCase: GetStudentAuthProfileUseCase
 ) : ViewModel() {
     var studentAuthUIState: StudentAuthUIState by mutableStateOf(StudentAuthUIState.Loading)
+        private set
+
+    var authProcessUIState: AuthProcessUIState by mutableStateOf(AuthProcessUIState.Pending)
+        private set
+
+    var textPassword by mutableStateOf("")
+        private set
+
+    var imagePassword by mutableStateOf(emptyList<Int>())
         private set
 
     fun loadStudentData(userId: Int) {
@@ -35,16 +47,54 @@ class StudentAuthViewModel @Inject constructor(
         }
     }
 
-    fun textAuthSignIn() {
-
+    fun onTextPasswordChange(newTextPassword: String) {
+        textPassword = newTextPassword
     }
 
-    fun imageAuthSignIn() {
-
+    fun onAddImage(newImage: Int) {
+        imagePassword = imagePassword.toMutableList().apply {
+            add(newImage)
+        }
     }
 
-    private fun signIn(userId: Int, password: StudentPassword) {
+    fun onRemoveImage() {
+        imagePassword = imagePassword.dropLast(1)
+    }
 
+    fun resetAuthProcess() {
+        if (authProcessUIState !is AuthProcessUIState.Pending)
+        {
+            authProcessUIState = AuthProcessUIState.Pending
+
+            // Limpiar la contraseña de imágenes
+            imagePassword = emptyList()
+        }
+    }
+
+    fun textAuthSignIn(userId: Int) {
+        viewModelScope.launch {
+            signIn(userId, TextPassword(textPassword))
+        }
+    }
+
+    fun imageAuthSignIn(userId: Int) {
+        viewModelScope.launch {
+            signIn(userId, ImagePassword(imagePassword))
+        }
+    }
+
+    private suspend fun signIn(userId: Int, password: StudentPassword) {
+        if (authProcessUIState == AuthProcessUIState.Requesting)
+            return
+
+        // Poner el estado a autenticando
+        authProcessUIState = AuthProcessUIState.Requesting
+
+        authProcessUIState = when (val requestResult = authRepository.signInStudent(userId, password)) {
+            is AuthRequestResult.Authorized -> AuthProcessUIState.Authorized
+            is AuthRequestResult.Unauthorized -> AuthProcessUIState.Unauthorized
+            is AuthRequestResult.Error -> AuthProcessUIState.Error(requestResult.error)
+        }
     }
 }
 
