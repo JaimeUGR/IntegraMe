@@ -134,6 +134,11 @@ dependencies {
     // Coil
     //
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    //
+    // Crypto
+    //
+    implementation("androidx.security:security-crypto:1.0.0")
 }
 
 // Dagger-Hilt

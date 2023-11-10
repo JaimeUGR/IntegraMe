@@ -3,6 +3,7 @@ package com.integrame.app.core.data.network
 import com.integrame.app.core.data.model.content.EContentAdaptationFormats
 import com.integrame.app.core.data.model.content.EInteractionMethods
 import com.integrame.app.core.data.model.session.Session
+import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.NetworkAuthMethod
@@ -70,7 +71,7 @@ object FakeIntegraMeApi : IntegraMeApi {
         return FakeResources.authMethodList[userId]
     }
 
-    override suspend fun signInStudent(signInRequest: SignInStudentRequest): Session {
+    override suspend fun signInStudent(signInRequest: SignInStudentRequest): NetworkSession {
         delay(1500)
 
         if ( when (val password = signInRequest.password) {
@@ -81,7 +82,7 @@ object FakeIntegraMeApi : IntegraMeApi {
                 password.password[0] == 0
             }
         })
-            return Session(signInRequest.userId, "TOKEN")
+            return NetworkSession(signInRequest.userId, "TOKEN")
         else
             throw HttpException(Response.error<Session>(401,   ResponseBody.create(
                 "application/json".toMediaTypeOrNull(),
@@ -89,8 +90,20 @@ object FakeIntegraMeApi : IntegraMeApi {
             )))
     }
 
-    override suspend fun signInTeacher(signInRequest: SignInTeacherRequest): Session {
+    override suspend fun signInTeacher(signInRequest: SignInTeacherRequest): NetworkSession {
+        delay(1500)
+
+        if (signInRequest.nickname == "francx11" && signInRequest.password == "integrame")
+            return NetworkSession(99, "TOKEN")
+        else
+            throw HttpException(Response.error<Session>(401,   ResponseBody.create(
+                "application/json".toMediaTypeOrNull(),
+                "{\"error\":[\"Error de autenticación\"]}"
+            )))
+    }
+
+    override suspend fun getStudentProfile(userId: Int): StudentProfile {
         delay(1000)
-        TODO("Not yet implemented")
+        return StudentProfile(userId, contentProfile = FakeResources.contentProfiles[0].toContentProfile())
     }
 }

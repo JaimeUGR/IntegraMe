@@ -11,31 +11,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.R
-import kotlinx.coroutines.delay
+import com.integrame.app.ui.viewmodel.SplashScreenViewModel
 
 @Composable
 fun SplashScreen(
-    onLoadReady: () -> Unit,
-    modifier: Modifier = Modifier
+    onLoadReady: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    splashScreenViewModel: SplashScreenViewModel = hiltViewModel()
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(key1 = Unit) {
-            // TODO: Comprobar si hay una sesión guardada para redirigir a la pantalla correspondiente.
-            // Pensar si hacerlo aquí o en la pantalla de autenticación
-            delay(1000)
-            onLoadReady()
+        LaunchedEffect(Unit) {
+            onLoadReady(splashScreenViewModel.hasAuthorizedSession())
         }
 
         Box(
             modifier = modifier
         ) {
             Image(
-                modifier = Modifier.align(Alignment.Center).background(color = Color.Black),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(color = Color.Black),
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Logo aplicación"
             )

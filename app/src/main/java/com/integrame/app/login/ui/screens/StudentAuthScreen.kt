@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import com.integrame.app.R
 import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.model.content.ImageContent
+import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.login.data.model.ImageAuthMethod
 import com.integrame.app.login.data.model.TextAuthMethod
@@ -97,7 +98,9 @@ fun StudentAuthScreen(
                 ) {
                     if (authProcessUIState is AuthProcessUIState.Requesting)
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center).size(80.dp)
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(80.dp)
                         )
                     else if (authProcessUIState is AuthProcessUIState.Authorized)
                         LaunchedEffect(Unit) {
@@ -110,7 +113,9 @@ fun StudentAuthScreen(
                         }
 
                         Canvas(
-                            modifier = Modifier.fillMaxSize().zIndex(1f)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .zIndex(1f)
                                 .semantics {
                                     contentDescription = "Contraseña incorrecta"
                                 }
@@ -221,6 +226,7 @@ private fun TextAuth(
     modifier: Modifier = Modifier,
     studentAuthViewModel: StudentAuthViewModel = hiltViewModel()
 ) {
+    val textPassword = studentAuthViewModel.textPassword
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -228,7 +234,7 @@ private fun TextAuth(
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = studentAuthViewModel.textPassword,
+            value = textPassword,
             onValueChange = { onTextPasswordChange(it) },
             label = { Text(text = "Contraseña")},
             placeholder = { Text(text = "Contraseña")},
@@ -247,7 +253,7 @@ private fun TextAuth(
         )
         Button(
             modifier = Modifier.fillMaxWidth(),
-            enabled = studentAuthViewModel.textPassword.isNotEmpty(),
+            enabled = textPassword.isNotEmpty(),
             onClick = onSignIn
         ) {
             Text(text = "Iniciar sesión")
@@ -260,12 +266,14 @@ private fun ImageAuth(
     steps: Int,
     images: List<ImageContent>,
     contentProfile: ContentProfile,
-    onAddImage: (Int) -> Unit,
+    onAddImage: (Int) -> Int,
     onRemoveImage: () -> Unit,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
     studentAuthViewModel: StudentAuthViewModel = hiltViewModel()
 ) {
+    val imagePassword = studentAuthViewModel.imagePassword
+
     Column(
         modifier = modifier,
     ) {
@@ -274,7 +282,7 @@ private fun ImageAuth(
                 .fillMaxWidth()
                 .semantics {
                     contentDescription =
-                        "Te quedan por seleccionar ${steps - studentAuthViewModel.imagePassword.size} imágenes"
+                        "Te quedan por seleccionar ${steps - imagePassword.size} imágenes"
                 },
             horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.CenterHorizontally)
         ) {
@@ -283,8 +291,8 @@ private fun ImageAuth(
                     .size(32.dp)
                     .background(
                         color =
-                        if (i == studentAuthViewModel.imagePassword.size) Color.Yellow
-                        else if (i > studentAuthViewModel.imagePassword.size) Color.Gray
+                        if (i == imagePassword.size) Color.Yellow
+                        else if (i > imagePassword.size) Color.Gray
                         else Color.Green, shape = CircleShape
                     )
                 )
@@ -297,34 +305,31 @@ private fun ImageAuth(
             columns = GridCells.Fixed(2)
         ) {
             items(images) { imageContent ->
-                AsyncImage(
+                DynamicImage(
+                    image = imageContent,
                     modifier = Modifier
                         .border(4.dp, Color.Black)
                         .clickable(
                             onClickLabel = "Añadir imagen a contraseña",
                             role = Role.Image,
-                            enabled = studentAuthViewModel.imagePassword.size < steps
+                            enabled = imagePassword.size < steps
                         ) {
-                            onAddImage(imageContent.id)
-
-                            if (studentAuthViewModel.imagePassword.size >= steps)
+                            if (onAddImage(imageContent.id) >= steps)
                                 onSignIn()
-                        },
-                    model = imageContent.imageUrl,
-                    contentDescription = imageContent.altDescription
+                        }
                 )
             }
         }
         IconButton(
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
             onClick = onRemoveImage,
-            enabled = studentAuthViewModel.imagePassword.isNotEmpty()
+            enabled = imagePassword.isNotEmpty()
         ) {
             Icon(
                 modifier = Modifier.size(32.dp),
                 imageVector = Icons.Filled.Backspace,
                 contentDescription = "Borrar una imagen",
-                tint = if (studentAuthViewModel.imagePassword.isNotEmpty()) Color.Red else Color.Gray
+                tint = if (imagePassword.isNotEmpty()) Color.Red else Color.Gray
             )
         }
     }

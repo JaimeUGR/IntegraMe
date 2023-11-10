@@ -6,6 +6,7 @@ import com.integrame.app.core.data.network.FakeIntegraMeApi
 import com.integrame.app.core.data.network.IntegraMeApi
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.data.repository.StudentRespositoryImpl
+import com.integrame.app.core.data.repository.TeacherRepositoryImpl
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -25,13 +26,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext: Context) : IntegraMeDatabase {
+    fun provideDatabase(@ApplicationContext appContext: Context): IntegraMeDatabase {
         return IntegraMeDatabase.getDatabase(appContext)
     }
 
     @Provides
     @Singleton
-    fun provideIntegraMeApi() : IntegraMeApi {
+    fun provideIntegraMeApi(): IntegraMeApi {
         // TODO: Integrar API
         return FakeIntegraMeApi
         
@@ -47,19 +48,25 @@ object AppModule {
     fun provideStudentRepositoryImpl(
         @ApplicationContext appContext: Context,
         api: IntegraMeApi
-    ) : StudentRespositoryImpl {
+    ): StudentRespositoryImpl {
         return StudentRespositoryImpl(api)
     }
 
     @Provides
     @Singleton
-    fun provideSessionRepositoryImpl(@ApplicationContext appContext: Context) : SessionRepositoryImpl {
+    fun provideTeacherRepositoryImpl(): TeacherRepositoryImpl {
+        return TeacherRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionRepositoryImpl(@ApplicationContext appContext: Context): SessionRepositoryImpl {
         return SessionRepositoryImpl(appContext)
     }
 
     @Provides
     @Singleton
-    fun provideIdentityCardRepositoryImpl(api: IntegraMeApi) : IdentityCardRepositoryImpl {
+    fun provideIdentityCardRepositoryImpl(api: IntegraMeApi): IdentityCardRepositoryImpl {
         return IdentityCardRepositoryImpl(api)
     }
 
@@ -68,7 +75,7 @@ object AppModule {
     fun provideAuthRepostioryImpl(
         sessionRepository: SessionRepositoryImpl,
         api: IntegraMeApi
-    ) : AuthRepositoryImpl {
+    ): AuthRepositoryImpl {
         return AuthRepositoryImpl(sessionRepository, api)
     }
 }

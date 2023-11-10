@@ -2,10 +2,12 @@ package com.integrame.app.login.domain.usecase
 
 import com.integrame.app.core.domain.repository.StudentRepository
 import com.integrame.app.core.util.MyResult
+import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.StudentAuthProfile
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import javax.inject.Inject
 
+// TODO: Añadir caso de uso básico de procesamiento de peticiones (similar al autenticado)
 class GetStudentAuthProfileUseCase @Inject constructor(
     private val studentRepository: StudentRepository,
     private val identityCardRepository: IdentityCardRepositoryImpl
@@ -18,8 +20,8 @@ class GetStudentAuthProfileUseCase @Inject constructor(
         return MyResult.Success(
             StudentAuthProfile(
                 identityCard = identityCard.unwrap(),
-                contentProfile = contentProfile.unwrap(),
-                authMethod = authMethod.unwrap()
+                contentProfile = if (contentProfile is RequestResult.Success) contentProfile.data else throw Exception(),
+                authMethod = if (authMethod is RequestResult.Success) authMethod.data else throw Exception()
             )
         )
     }

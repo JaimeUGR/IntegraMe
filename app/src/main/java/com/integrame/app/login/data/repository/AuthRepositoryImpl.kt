@@ -1,6 +1,8 @@
 package com.integrame.app.login.data.repository
 
+import com.integrame.app.core.data.local.entities.UserType
 import com.integrame.app.core.data.network.IntegraMeApi
+import com.integrame.app.core.data.network.toSession
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.core.util.Option
@@ -19,7 +21,7 @@ class AuthRepositoryImpl (
         val request = SignInTeacherRequest(nickname, password)
 
         return try {
-            val session = api.signInTeacher(request)
+            val session = api.signInTeacher(request).toSession(UserType.Teacher)
             sessionRepository.startSession(session)
 
             AuthRequestResult.Authorized(Unit)
@@ -40,7 +42,7 @@ class AuthRepositoryImpl (
         val request = SignInStudentRequest(userId, password)
 
         return try {
-            val session = api.signInStudent(request)
+            val session = api.signInStudent(request).toSession(UserType.Student)
             sessionRepository.startSession(session)
 
             AuthRequestResult.Authorized(Unit)

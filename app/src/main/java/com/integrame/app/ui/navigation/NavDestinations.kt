@@ -1,6 +1,6 @@
 package com.integrame.app.ui.navigation
 
-interface IntegraMeGraph {
+interface IntegraMeNavGraph {
     val route: String
 
     fun getSubRoute(subRoute: String) : String {
@@ -12,7 +12,6 @@ interface IntegraMeScreen {
     val route: String
 }
 
-// TODO: Mover a su feature_folder correspondiente
-object SplashScreen : IntegraMeScreen {
+object SplashScreenNav : IntegraMeScreen {
     override val route: String = "splash_screen"
 }

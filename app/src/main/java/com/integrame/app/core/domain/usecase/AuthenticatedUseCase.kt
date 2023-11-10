@@ -2,34 +2,36 @@ package com.integrame.app.core.domain.usecase
 
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.domain.repository.SessionRepository
+import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.core.util.Option
+import retrofit2.HttpException
 
-// TODO: Refactor -> Mover a un archivo propio
-class NonAuthorizedException(override val message: String) : Exception() {}
-
+/**
+ * Clase wrapper para las peticiones de autenticación. Permite no tener que implementar
+ * los catch de las excepciones por acceso a datos en cada repositorio.
+ */
 abstract class AuthenticatedUseCase<T> (
     private val sessionRepository: SessionRepository
 ) {
-    suspend operator fun invoke() : Result<T> {
+    suspend operator fun invoke() : AuthRequestResult<T> {
         val sessionOpt = sessionRepository.getSession()
 
         return try {
-            val result = onInvoke(when (sessionOpt) {
-                is Option.Some -> sessionOpt.value
-                is Option.None -> throw NonAuthorizedException("La sesión no está definida")
-            })
+            when (sessionOpt) {
+                is Option.Some -> onInvoke(sessionOpt.value)
+                is Option.None -> AuthRequestResult.Unauthorized()
+            }
+        } catch (e: HttpException) {
+            val statusCode = e.code()
 
-            if (result.isFailure)
-                result.getOrThrow()
-
-            result
-        } catch (e: NonAuthorizedException) {
-            sessionRepository.invalidateSession()
-            Result.failure(e)
+            return if (statusCode == 401)
+                AuthRequestResult.Unauthorized()
+            else
+                AuthRequestResult.Error("Error code: $statusCode")
         } catch (e: Exception) {
-            Result.failure(e)
+            AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
         }
     }
 
-    abstract suspend fun onInvoke(session: Session) : Result<T>
+    abstract suspend fun onInvoke(session: Session) : AuthRequestResult<T>
 }

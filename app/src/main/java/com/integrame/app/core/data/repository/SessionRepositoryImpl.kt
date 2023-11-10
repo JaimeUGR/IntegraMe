@@ -1,69 +1,72 @@
 package com.integrame.app.core.data.repository
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import android.os.Build
+import androidx.core.content.edit
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import com.integrame.app.core.data.local.entities.UserType
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.util.Option
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-
-val Context.sessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
 class SessionRepositoryImpl(
     private val context: Context
 ) : SessionRepository {
 
-    val sessionFlow: Flow<Option<Session>> = context.sessionDataStore.data
-        .map { preferences ->
-            val user = preferences[USER_KEY]
-            val token = preferences[TOKEN_KEY]
-            if (user != null && !token.isNullOrBlank()) {
-                Option.Some(Session(userId = user, token = token))
-            } else {
-                Option.None
-            }
-        }
-        .flowOn(Dispatchers.IO)
-        .onStart { emit(Option.None) }
+    private val sessionPreferences = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        EncryptedSharedPreferences.create(
+            "sessionPreferences",
+            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    } else {
+        context.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
+    }
 
     companion object {
-        val TOKEN_KEY = stringPreferencesKey("auth_token")
-        val USER_KEY = intPreferencesKey("auth_user")
+        val USER_ID_KEY = "user_id"
+        val USER_TYPE_KEY = "user_type"
+        val TOKEN_KEY = "token"
     }
 
     override suspend fun startSession(session: Session) {
-        context.sessionDataStore.edit { preferences ->
-            preferences[USER_KEY] = session.userId
-            preferences[TOKEN_KEY] = session.token
+        sessionPreferences.edit {
+            putInt(USER_ID_KEY, session.userId)
+            putString(USER_TYPE_KEY, session.userType.toString())
+            putString(TOKEN_KEY, session.token)
         }
     }
 
-    override suspend fun getSession() : Option<Session> {
-        return sessionFlow.firstOrNull() ?: Option.None
-    }
+    override suspend fun getSession(): Option<Session> {
+        val userId = sessionPreferences.getInt(USER_ID_KEY, -1)
+        val userTypeString = sessionPreferences.getString(USER_TYPE_KEY, null)
+        val token = sessionPreferences.getString(TOKEN_KEY, null)
 
-    // NOTE:
-    // Debería haber un flujo que, si la sesión se invalida por cualquier razón, se emita un bool
-    // que en la UI lo mande a la pantalla desde la que se hace el logout
-    override fun invalidateSession() {
-
-    }
-
-    // Cuando se llama, se limpia la sesión en cache
-    override suspend fun logout() {
-        context.sessionDataStore.edit { preferences ->
-            preferences.remove(USER_KEY)
-            preferences.remove(TOKEN_KEY)
+        return if (userId != -1 && !token.isNullOrBlank() && !userTypeString.isNullOrBlank()) {
+            Option.Some(Session(
+                    userId = userId,
+                    token = token,
+                    userType = UserType.valueOf(userTypeString)
+                )
+            )
+        } else {
+            Option.None
         }
+    }
+
+    override suspend fun signOut() {
+        sessionPreferences.edit {
+            remove(USER_ID_KEY)
+            remove(USER_TYPE_KEY)
+            remove(TOKEN_KEY)
+        }
+    }
+
+    // TODO: Mantiene la sesión activa pero la marca como inválida
+    override suspend fun invalidateSession() {
+
     }
 }

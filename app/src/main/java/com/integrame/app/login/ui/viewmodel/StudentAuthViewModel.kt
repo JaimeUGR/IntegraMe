@@ -51,10 +51,12 @@ class StudentAuthViewModel @Inject constructor(
         textPassword = newTextPassword
     }
 
-    fun onAddImage(newImage: Int) {
+    fun onAddImage(newImage: Int): Int {
         imagePassword = imagePassword.toMutableList().apply {
             add(newImage)
         }
+
+        return imagePassword.size
     }
 
     fun onRemoveImage() {

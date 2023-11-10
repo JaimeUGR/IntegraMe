@@ -12,8 +12,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.integrame.app.dashboard.ui.navigation.DashboardNavNavGraph
+import com.integrame.app.dashboard.ui.screens.DashboardScreen
 import com.integrame.app.login.ui.navigation.LoginNavGraph
-import com.integrame.app.login.ui.navigation.loginGraph
+import com.integrame.app.login.ui.screens.LoginScreen
+import com.integrame.app.ui.screens.SplashScreen
 
 @Composable
 fun IntegraMeNavHost(
@@ -23,22 +26,49 @@ fun IntegraMeNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = SplashScreen.route
+        startDestination = SplashScreenNav.route
     ) {
-        composable(SplashScreen.route) {
-            com.integrame.app.ui.screens.SplashScreen(
-                modifier = Modifier.fillMaxSize(),
-                onLoadReady = {
-                    navController.navigate(LoginNavGraph.StudentLogin.route) {
+        composable(SplashScreenNav.route) {
+            SplashScreen(
+                onLoadReady = { hasAuthorizedSession ->
+                    navController.navigate(
+                        if (hasAuthorizedSession) DashboardNavNavGraph.route
+                        else LoginNavGraph.route
+                    ) {
                         popUpTo(id = navController.graph.id) {
                             inclusive = true
                         }
                     }
-                }
+                },
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
-        loginGraph(navController)
+        composable(LoginNavGraph.route) {
+            LoginScreen(
+                onAuthorized = {
+                    navController.navigate(DashboardNavNavGraph.route) {
+                        popUpTo(id = navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        composable(DashboardNavNavGraph.route) {
+            DashboardScreen(
+                onSignOut = {
+                    navController.navigate(LoginNavGraph.route) {
+                        popUpTo(id = navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
