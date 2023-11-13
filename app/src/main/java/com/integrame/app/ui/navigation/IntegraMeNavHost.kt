@@ -66,6 +66,13 @@ fun IntegraMeNavHost(
                         }
                     }
                 },
+                onAuthorizationError = {
+                    navController.navigate(LoginNavGraph.route) {
+                        popUpTo(id = navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxSize()
             )
         }

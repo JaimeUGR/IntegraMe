@@ -3,62 +3,50 @@ package com.integrame.app.core.data.model.content
 import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class ContentType {
-    TEXT,
-    IMAGE,
-    VIDEO,
-    AUDIO
-}
+/**
+ * Engloba cualquier tipo de contenido dinámico que puede existir en la aplicación
+ * y que puede ser mostrado a los usuarios
+ */
+interface DynamicContent
 
-interface DynamicContent {
-    val type: ContentType
-}
+/**
+ * Representa contenido textual
+ */
+data class TextContent(val text: String): DynamicContent
 
-data class TextContent(
-    val text: String,
-) : DynamicContent {
-    override val type = ContentType.TEXT
-}
+/**
+ * Representa contenido de imágenes con un id asociado
+ */
+sealed class ImageContent: DynamicContent { abstract val id: Int }
 
-/*data class ImageContent(
-    val imageUrl: String,
-    val altDescription: String,
-    val id: Int
-) : DynamicContent {
-    override val type = ContentType.IMAGE
-}*/
+/**
+ * Representa imágenes locales (res)
+ */
+data class LocalImage(@DrawableRes override val id: Int, @StringRes val altDescription: Int): ImageContent()
 
-sealed class ImageContent : DynamicContent {
-    override val type = ContentType.IMAGE
-    abstract val id: Int
-}
+/**
+ * Representa imágenes en formato BitMap
+ */
+data class BitMapImage(val bitmap: Bitmap, override val id: Int, val altDescription: String): ImageContent()
 
-data class LocalImage(
-    @DrawableRes override val id: Int,
-    @StringRes val altDescription: Int
-) : ImageContent()
-data class BitMapImage(
-    val bitmap: Bitmap,
-    override val id: Int,
-    val altDescription: String
-) : ImageContent()
-data class RemoteImage(
-    val imageUrl: String,
-    override val id: Int,
-    val altDescription: String
-) : ImageContent()
+/**
+ * Representa imágenes vectoriales
+ */
+data class VectorImage(val vectorImage: ImageVector, override val id: Int, val altDescription: String): ImageContent()
 
-data class VideoContent(
-    val videoUrl: String,
-    val id: Int
-) : DynamicContent {
-    override val type = ContentType.VIDEO
-}
+/**
+ * Representa imágenes cargadas desde red (url)
+ */
+data class RemoteImage(val imageUrl: String, override val id: Int, val altDescription: String): ImageContent()
 
-data class AudioContent(
-    val audioUrl: String,
-    val id: Int
-) : DynamicContent {
-    override val type = ContentType.AUDIO
-}
+/**
+ * Representa vídeos cargados desde red (url)
+ */
+data class VideoContent(val videoUrl: String, val id: Int): DynamicContent
+
+/**
+ * Representa audios cargados desde red (url)
+ */
+data class AudioContent(val audioUrl: String, val id: Int): DynamicContent

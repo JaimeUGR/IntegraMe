@@ -1,34 +1,36 @@
 package com.integrame.app.login.data.repository
 
-import com.integrame.app.core.data.network.IntegraMeApi
-import com.integrame.app.core.util.MyResult
+import com.integrame.app.core.data.network.api.IntegraMeApi
+import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.data.network.toIdentityCard
-import javax.inject.Inject
+import com.integrame.app.login.domain.repository.IdentityCardRepository
+import retrofit2.HttpException
 
-// TODO: Refactor
-interface IdentityCardRepository {
-    suspend fun getStudentsIdentityCards() : MyResult<List<IdentityCard>, Exception>
-    suspend fun getIdentityCard(userId: Int) : MyResult<IdentityCard, Exception>
-}
-
-class IdentityCardRepositoryImpl @Inject constructor(
+class IdentityCardRepositoryImpl(
     private val api: IntegraMeApi
-) : IdentityCardRepository {
-    override suspend fun getStudentsIdentityCards(): MyResult<List<IdentityCard>, Exception> {
-        return MyResult.Success(api.getStudentsIdentityCards().map { networkIdentityCard ->
-            networkIdentityCard.toIdentityCard()
-        })
-
-        // TODO
-        // Petición API
-            // Actualizar local
-
-        // Si falla
-            // Utilizar local
+): IdentityCardRepository {
+    override suspend fun getStudentsIdentityCards(): RequestResult<List<IdentityCard>> {
+        return try {
+            RequestResult.Success(api.getStudentsIdentityCards().map { networkIdentityCard ->
+                networkIdentityCard.toIdentityCard()
+            })
+        } catch (e: HttpException) {
+            val statusCode = e.code()
+            RequestResult.Error("Error code: $statusCode")
+        } catch (e: Exception) {
+            RequestResult.Error("Error: ${e.message ?: " desconocido"}")
+        }
     }
 
-    override suspend fun getIdentityCard(userId: Int) : MyResult<IdentityCard, Exception> {
-        return MyResult.Success(api.getStudentIdentityCard(userId).toIdentityCard())
+    override suspend fun getIdentityCard(userId: Int) : RequestResult<IdentityCard> {
+        return try {
+            RequestResult.Success(api.getStudentIdentityCard(userId).toIdentityCard())
+        } catch (e: HttpException) {
+            val statusCode = e.code()
+            RequestResult.Error("Error code: $statusCode")
+        } catch (e: Exception) {
+            RequestResult.Error("Error: ${e.message ?: " desconocido"}")
+        }
     }
 }

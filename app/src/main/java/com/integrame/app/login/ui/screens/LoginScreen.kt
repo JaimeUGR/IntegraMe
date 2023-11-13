@@ -48,18 +48,18 @@ fun LoginScreen(
             else
                 StudentAuthScreen(
                     userId = userId,
-                    onAuthorized = onAuthorized,
-                    onErrorScreenButtonClick = {
-                        navController.navigate(route = LoginNavGraph.StudentLogin.route)
-                    }
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onAuthorized = onAuthorized
                 )
         }
         composable(route = LoginNavGraph.TeacherLogin.route) {
             TeacherLoginScreen(
-                onAuthorized = onAuthorized,
-                onErrorScreenButtonClick = {
-                    navController.navigate(route = LoginNavGraph.StudentLogin.route)
-                }
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onAuthorized = onAuthorized
             )
         }
     }

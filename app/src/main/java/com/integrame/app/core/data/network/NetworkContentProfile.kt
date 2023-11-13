@@ -2,20 +2,20 @@ package com.integrame.app.core.data.network
 
 import com.integrame.app.core.data.model.content.ContentAdaptationFormats
 import com.integrame.app.core.data.model.content.ContentProfile
-import com.integrame.app.core.data.model.content.EContentAdaptationFormats
-import com.integrame.app.core.data.model.content.EInteractionMethods
 import com.integrame.app.core.data.model.content.InteractionMethods
+import com.integrame.app.core.data.model.content.UserContentAdaptationFormats
+import com.integrame.app.core.data.model.content.UserInteractionMethods
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class NetworkContentProfile(
-    val contentAdaptationFormats: List<EContentAdaptationFormats>,
-    val interactionMethods: List<EInteractionMethods>
+    val contentAdaptationFormats: List<ContentAdaptationFormats>,
+    val interactionMethods: List<InteractionMethods>
 )
 
 fun NetworkContentProfile.toContentProfile() : ContentProfile {
     return ContentProfile(
-        interactionMethods = InteractionMethods.fromEnumList(interactionMethods),
-        contentAdaptationFormats = ContentAdaptationFormats.fromEnumList(contentAdaptationFormats)
+        interactionMethods = UserInteractionMethods.fromEnumList(interactionMethods),
+        contentAdaptationFormats = UserContentAdaptationFormats.fromEnumList(contentAdaptationFormats)
     )
 }

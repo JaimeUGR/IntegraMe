@@ -13,7 +13,7 @@ import retrofit2.HttpException
 abstract class AuthenticatedUseCase<T> (
     private val sessionRepository: SessionRepository
 ) {
-    suspend operator fun invoke() : AuthRequestResult<T> {
+    suspend operator fun invoke(): AuthRequestResult<T> {
         val sessionOpt = sessionRepository.getSession()
 
         return try {
@@ -33,5 +33,5 @@ abstract class AuthenticatedUseCase<T> (
         }
     }
 
-    abstract suspend fun onInvoke(session: Session) : AuthRequestResult<T>
+    abstract suspend fun onInvoke(session: Session): AuthRequestResult<T>
 }

@@ -27,6 +27,7 @@ fun SplashScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LaunchedEffect(Unit) {
+            splashScreenViewModel.initialize()
             onLoadReady(splashScreenViewModel.hasAuthorizedSession())
         }
 

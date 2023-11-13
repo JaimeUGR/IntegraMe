@@ -22,13 +22,7 @@ class DashboardViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch {
-            when (val authRequestResult = getProfileUseCase()) {
-                is AuthRequestResult.Authorized -> dashboardUIState = DashboardUIState.ProfileReady(authRequestResult.data)
-                is AuthRequestResult.Unauthorized -> TODO("Mostrar botón error y redirección a login")
-                is AuthRequestResult.Error -> TODO("Mostrar botón error y reintentar")
-            }
-        }
+        loadProfile()
     }
 
     fun signOut() {
@@ -40,11 +34,29 @@ class DashboardViewModel @Inject constructor(
             dashboardUIState = DashboardUIState.SignedOut
         }
     }
+
+    fun retryLoadProfile() {
+        if (dashboardUIState is DashboardUIState.Error) {
+            dashboardUIState = DashboardUIState.Loading
+            loadProfile()
+        }
+    }
+
+    private fun loadProfile() {
+        viewModelScope.launch {
+            dashboardUIState = when (val authRequestResult = getProfileUseCase()) {
+                is AuthRequestResult.Authorized -> DashboardUIState.ProfileReady(authRequestResult.data)
+                is AuthRequestResult.Unauthorized -> DashboardUIState.UnauthorizedError
+                is AuthRequestResult.Error -> DashboardUIState.Error(authRequestResult.error)
+            }
+        }
+    }
 }
 
-// TODO: Se podría añadir un estado para cuadno se está cerrando sesión
 sealed interface DashboardUIState {
     object Loading: DashboardUIState
     data class ProfileReady(val profile: Profile): DashboardUIState
     object SignedOut: DashboardUIState
+    object UnauthorizedError: DashboardUIState
+    data class Error(val error: String): DashboardUIState
 }

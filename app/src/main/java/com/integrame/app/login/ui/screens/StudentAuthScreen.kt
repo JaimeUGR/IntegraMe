@@ -22,17 +22,26 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +56,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -57,6 +67,7 @@ import coil.compose.AsyncImage
 import com.integrame.app.R
 import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.model.content.ImageContent
+import com.integrame.app.core.data.model.content.VectorImage
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.login.data.model.ImageAuthMethod
@@ -67,11 +78,12 @@ import com.integrame.app.login.ui.viewmodel.StudentAuthUIState
 import com.integrame.app.login.ui.viewmodel.StudentAuthViewModel
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentAuthScreen(
     userId: Int,
+    onNavigateBack: () -> Unit,
     onAuthorized: () -> Unit,
-    onErrorScreenButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     studentAuthViewModel: StudentAuthViewModel = hiltViewModel()
 ) {
@@ -131,6 +143,14 @@ fun StudentAuthScreen(
                     else if (authProcessUIState is AuthProcessUIState.Error) {
                         ErrorCard(
                             errorDescription = authProcessUIState.error,
+                            errorButtonText = "Cerrar",
+                            errorButtonImage = {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = "Cerrar",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            },
                             onPressContinue = { studentAuthViewModel.resetAuthProcess() },
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -141,46 +161,73 @@ fun StudentAuthScreen(
             // Pantalla principal
             val authProfile = authUIState.studentAuthProfile
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                IdentityCard(
-                    identityCard = authProfile.identityCard,
-                    onCardClick = {},
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                Divider(
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    color = Color.Gray,
-                    thickness = 2.dp
-                )
-
-                when (authProfile.authMethod) {
-                    is TextAuthMethod -> {
-                        TextAuth(
-                            contentProfile = authProfile.contentProfile,
-                            onTextPasswordChange = { studentAuthViewModel.onTextPasswordChange(it) },
-                            onSignIn = { studentAuthViewModel.textAuthSignIn(userId) },
-                            studentAuthViewModel = studentAuthViewModel
+            Scaffold(
+                modifier = modifier,
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                text = authProfile.identityCard.nickname,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = onNavigateBack) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Retroceder",
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.primary,
                         )
-                    }
-                    is ImageAuthMethod -> {
-                        ImageAuth(
-                            steps = authProfile.authMethod.steps,
-                            images = authProfile.authMethod.imageList,
-                            contentProfile = authProfile.contentProfile,
-                            onAddImage = { studentAuthViewModel.onAddImage(it) },
-                            onRemoveImage = { studentAuthViewModel.onRemoveImage() },
-                            onSignIn = { studentAuthViewModel.imageAuthSignIn(userId) },
-                            studentAuthViewModel = studentAuthViewModel
-                        )
+                    )
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier.padding(innerPadding).fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    IdentityCard(
+                        identityCard = authProfile.identityCard,
+                        onCardClick = {},
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                    Divider(
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        color = Color.Gray,
+                        thickness = 2.dp
+                    )
+
+                    when (authProfile.authMethod) {
+                        is TextAuthMethod -> {
+                            TextAuth(
+                                contentProfile = authProfile.contentProfile,
+                                onTextPasswordChange = { studentAuthViewModel.onTextPasswordChange(it) },
+                                onSignIn = { studentAuthViewModel.textAuthSignIn(userId) },
+                                studentAuthViewModel = studentAuthViewModel
+                            )
+                        }
+                        is ImageAuthMethod -> {
+                            ImageAuth(
+                                steps = authProfile.authMethod.steps,
+                                images = authProfile.authMethod.imageList,
+                                contentProfile = authProfile.contentProfile,
+                                onAddImage = { studentAuthViewModel.onAddImage(it) },
+                                onRemoveImage = { studentAuthViewModel.onRemoveImage() },
+                                onSignIn = { studentAuthViewModel.imageAuthSignIn(userId) },
+                                studentAuthViewModel = studentAuthViewModel
+                            )
+                        }
                     }
                 }
             }
+
         }
         is StudentAuthUIState.Loading -> {
             Box(modifier = modifier.fillMaxSize()) {
@@ -190,28 +237,20 @@ fun StudentAuthScreen(
             }
         }
         is StudentAuthUIState.Error -> {
-            Column(
-                modifier = modifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    // TODO: Poner una imagen de X roja
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = "X de color rojo que indica un error"
+            Box(modifier = Modifier.fillMaxSize()) {
+                ErrorCard(
+                    errorDescription = authUIState.error,
+                    errorButtonText = "Cerrar",
+                    errorButtonImage = {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Cerrar",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    },
+                    onPressContinue = { studentAuthViewModel.resetAuthProcess() },
+                    modifier = Modifier.align(Alignment.Center)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = authUIState.error
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Button(onClick = onErrorScreenButtonClick) {
-                    Image(
-                        // TODO: Poner una imagen de puerta para salir
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = "Volver atrás"
-                    )
-                }
             }
         }
     }
@@ -231,8 +270,9 @@ private fun TextAuth(
 
     Column(
         modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = textPassword,
             onValueChange = { onTextPasswordChange(it) },
@@ -242,21 +282,24 @@ private fun TextAuth(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
-
                 val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 val description = if (passwordVisible) "Mostrar contraseña" else "Ocultar contraseña"
 
                 IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector = icon, contentDescription = description)
+                    Icon(imageVector = icon, contentDescription = description, tint = MaterialTheme.colorScheme.primary)
                 }
             }
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(0.8f),
             enabled = textPassword.isNotEmpty(),
             onClick = onSignIn
         ) {
-            Text(text = "Iniciar sesión")
+            Text(
+                text = "Iniciar Sesión",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+            )
         }
     }
 }

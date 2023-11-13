@@ -1,9 +1,15 @@
-package com.integrame.app.core.data.network
+package com.integrame.app.core.data.network.api
 
-import com.integrame.app.core.data.model.content.EContentAdaptationFormats
-import com.integrame.app.core.data.model.content.EInteractionMethods
+import com.integrame.app.core.data.fake.FakeResources
+import com.integrame.app.core.data.model.content.ContentAdaptationFormats
+import com.integrame.app.core.data.model.content.InteractionMethods
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.data.model.user.StudentProfile
+import com.integrame.app.core.data.network.NetworkContentProfile
+import com.integrame.app.core.data.network.NetworkImageContent
+import com.integrame.app.core.data.network.NetworkSession
+import com.integrame.app.core.data.network.toContentProfile
+import com.integrame.app.core.data.network.toImageContent
 import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.NetworkAuthMethod
@@ -13,43 +19,10 @@ import com.integrame.app.login.data.network.NetworkTextAuthMethod
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import kotlinx.coroutines.delay
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
-
-private object FakeResources {
-    val networkImages: List<NetworkImageContent> = listOf(
-        NetworkImageContent(0, "ASD"),
-        NetworkImageContent(1, "BSD"),
-        NetworkImageContent(2, "BSD"),
-        NetworkImageContent(3, "BSD")
-    )
-
-    val contentProfiles = List(15) { i->
-        NetworkContentProfile(
-            contentAdaptationFormats = listOf(EContentAdaptationFormats.Image),
-            interactionMethods = listOf(EInteractionMethods.Default)
-        )
-    }
-
-    val identityCardList = List(15) { i -> NetworkIdentityCard(
-        userId = i,
-        nickname = "Nick Alumno Número $i",
-        avatar = NetworkImageContent(
-            id = i,
-            altDescription = "Avatar Gallina"
-        )
-    )}
-
-    val authMethodList = List(15) { i ->
-        if (i%2 == 0)
-            NetworkTextAuthMethod
-        else
-            NetworkImageAuthMethod(steps = 3, images = networkImages)
-    }
-}
 
 object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getStudentsIdentityCards(): List<NetworkIdentityCard> {
@@ -104,6 +77,13 @@ object FakeIntegraMeApi : IntegraMeApi {
 
     override suspend fun getStudentProfile(userId: Int): StudentProfile {
         delay(1000)
-        return StudentProfile(userId, contentProfile = FakeResources.contentProfiles[0].toContentProfile())
+        return StudentProfile(
+            userId,
+            "Fran",
+            "E. C.",
+            "francx11",
+            FakeResources.networkImages[0].toImageContent(),
+            contentProfile = FakeResources.contentProfiles[0].toContentProfile()
+        )
     }
 }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.integrame.app.core.util.AuthRequestResult
-import com.integrame.app.core.util.MyResult
+import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.StudentAuthProfile
 import com.integrame.app.login.data.model.StudentPassword
@@ -36,13 +36,10 @@ class StudentAuthViewModel @Inject constructor(
 
     fun loadStudentData(userId: Int) {
         viewModelScope.launch {
-            studentAuthUIState = StudentAuthUIState.Loading // TODO: Puede que no sea necesario hacer este reset
-
-            when (val studentProfile = getStudentAuthProfileUseCase(userId)) {
-                is MyResult.Success -> {
-                    studentAuthUIState = StudentAuthUIState.UserLoaded(studentProfile.value)
-                }
-                is MyResult.Error -> TODO()
+            studentAuthUIState = StudentAuthUIState.Loading
+            studentAuthUIState = when (val requestResult = getStudentAuthProfileUseCase(userId)) {
+                is RequestResult.Success -> StudentAuthUIState.UserLoaded(requestResult.data)
+                is RequestResult.Error -> StudentAuthUIState.Error(requestResult.error)
             }
         }
     }

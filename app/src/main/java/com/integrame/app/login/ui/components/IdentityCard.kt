@@ -39,11 +39,11 @@ fun IdentityCard(
             .clickable(onClick = onCardClick)
             .border(
                 width = 12.dp,
-                brush = SolidColor(MaterialTheme.colorScheme.primaryContainer),
+                brush = SolidColor(MaterialTheme.colorScheme.secondaryContainer),
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(all = 12.dp)
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .semantics(mergeDescendants = true) {},
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

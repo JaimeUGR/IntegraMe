@@ -10,6 +10,11 @@ import javax.inject.Inject
 class SplashScreenViewModel @Inject constructor(
     private val sessionRepository: SessionRepository
 ) : ViewModel() {
+
+    suspend fun initialize() {
+        //sessionRepository.loadSession()
+    }
+
     suspend fun hasAuthorizedSession() : Boolean {
         // TODO: Comprobar si el token sigue siendo válido?
         // No se debería hacer, para permitir el uso offline

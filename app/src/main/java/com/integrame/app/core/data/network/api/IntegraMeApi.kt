@@ -1,12 +1,15 @@
-package com.integrame.app.core.data.network
+package com.integrame.app.core.data.network.api
 
 import com.integrame.app.core.data.model.user.StudentProfile
+import com.integrame.app.core.data.network.NetworkContentProfile
+import com.integrame.app.core.data.network.NetworkSession
 import com.integrame.app.login.data.network.NetworkAuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -29,9 +32,7 @@ interface IntegraMeApi {
     @POST("teachers/signIn")
     suspend fun signInTeacher(@Body signInRequest: SignInTeacherRequest): NetworkSession
 
-    // TODO: Pasar el token
+    @Headers("Authorized")
     @GET("auth/students/{userId}/profile")
     suspend fun getStudentProfile(@Path("userId") userId: Int): StudentProfile
-
 }
-

@@ -32,6 +32,13 @@ class TeacherLoginViewModel @Inject constructor(
         password = newPassword
     }
 
+    fun resetAuthProcess() {
+        if (authProcessUIState == AuthProcessUIState.Pending)
+            return
+
+        authProcessUIState = AuthProcessUIState.Pending
+    }
+
     fun onSignIn() {
         viewModelScope.launch {
             if (authProcessUIState == AuthProcessUIState.Requesting)

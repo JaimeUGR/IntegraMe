@@ -3,6 +3,7 @@ package com.integrame.app.core.data
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.integrame.app.core.data.local.IntegraMeDatabase
 import com.integrame.app.core.data.local.entities.Teacher
 import com.integrame.app.core.data.local.entities.User
@@ -24,7 +25,7 @@ class DatabaseTest {
 
     @Before
     fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
         db = IntegraMeDatabase.getInMemoryDatabase(context)
         userDao = db.userDao()
     }

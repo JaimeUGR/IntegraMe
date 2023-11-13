@@ -1,24 +1,21 @@
-package com.integrame.app.core.data.network
+package com.integrame.app.core.data.network.api
 
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.util.Option
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import javax.inject.Inject
 
 /*
-    Quizás se utilizará en el futuro pero por motivos prácticos y de testing, se ha optado
-    por la inclusión manual de los tokens de autenticación a través del caso de uso base
-    AuthorizedUseCase, encargado de proporcionar la session a los repositorios que la necesitan.
+    Inyecta la sessión actual en las peticiones que requieran autenticación
  */
-class AuthInterceptor @Inject constructor(
+class AuthInterceptor constructor(
     private val sessionRepository: SessionRepository
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        if (!originalRequest.header("AuthorizationRequired").toBoolean())
+        if (!originalRequest.header("Authorized").toBoolean())
             return chain.proceed(originalRequest)
 
         val sessionOpt = runBlocking {

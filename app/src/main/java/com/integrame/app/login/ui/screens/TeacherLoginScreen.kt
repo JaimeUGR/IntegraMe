@@ -14,16 +14,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,12 +41,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.integrame.app.core.data.model.content.VectorImage
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.login.ui.viewmodel.AuthProcessUIState
 import com.integrame.app.login.ui.viewmodel.TeacherLoginViewModel
@@ -50,8 +57,8 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeacherLoginScreen(
+    onNavigateBack: () -> Unit,
     onAuthorized: () -> Unit,
-    onErrorScreenButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     teacherLoginViewModel: TeacherLoginViewModel = hiltViewModel()
 ) {
@@ -70,80 +77,116 @@ fun TeacherLoginScreen(
                 .background(Color(0.2f, 0.2f, 0.2f, 0.1f))
                 .clickable(enabled = false) { }
         ) {
-            if (authProcessUIState is AuthProcessUIState.Requesting)
-                CircularProgressIndicator(
+            when (authProcessUIState) {
+                is AuthProcessUIState.Requesting -> CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(80.dp)
                 )
-            else if (authProcessUIState is AuthProcessUIState.Authorized)
-                LaunchedEffect(Unit) {
+                is AuthProcessUIState.Authorized -> LaunchedEffect(Unit) {
                     onAuthorized()
                 }
-            else if (authProcessUIState is AuthProcessUIState.Unauthorized) {
-                // Tarjeta de error
-            }
-            else if (authProcessUIState is AuthProcessUIState.Error) {
-                ErrorCard(
-                    errorDescription = authProcessUIState.error,
-                    onPressContinue = { },//studentAuthViewModel.resetAuthProcess() },
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                else -> {
+                    val message =
+                        if (authProcessUIState is AuthProcessUIState.Error) authProcessUIState.error
+                        else "Usuario y/o contraseña incorrectos" // Error de autenticación
+
+                    ErrorCard(
+                        errorDescription = message,
+                        errorButtonText = "Cerrar",
+                        errorButtonImage = {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Cerrar",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        },
+                        onPressContinue = { teacherLoginViewModel.resetAuthProcess() },
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Identificación Docente",
-            modifier = Modifier.padding(vertical = 8.dp),
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = nickname,
-            onValueChange = { teacherLoginViewModel.onNicknameChange(it) },
-            label = { Text(text = "Usuario")},
-            placeholder = { Text(text = "Usuario")},
-            singleLine = true
-        )
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = password,
-            onValueChange = { teacherLoginViewModel.onPasswordChange(it) },
-            label = { Text(text = "Contraseña")},
-            placeholder = { Text(text = "Contraseña")},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-
-                val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                val description = if (passwordVisible) "Mostrar contraseña" else "Ocultar contraseña"
-
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector = icon, contentDescription = description)
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        Button(
-            onClick = { teacherLoginViewModel.onSignIn() },
-            modifier = Modifier.fillMaxWidth(0.6f),
-            enabled = nickname.isNotEmpty() &&
-                    password.isNotEmpty() &&
-                    teacherLoginViewModel.authProcessUIState == AuthProcessUIState.Pending
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Identificación Docente",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Retroceder",
+                            modifier = Modifier.size(32.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                )
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Iniciar Sesión")
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = nickname,
+                onValueChange = { teacherLoginViewModel.onNicknameChange(it) },
+                label = { Text(text = "Usuario")},
+                placeholder = { Text(text = "Usuario")},
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = password,
+                onValueChange = { teacherLoginViewModel.onPasswordChange(it) },
+                label = { Text(text = "Contraseña")},
+                placeholder = { Text(text = "Contraseña")},
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    val description = if (passwordVisible) "Mostrar contraseña" else "Ocultar contraseña"
+
+                    IconButton(onClick = {passwordVisible = !passwordVisible}){
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = description,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { teacherLoginViewModel.onSignIn() },
+                modifier = Modifier.fillMaxWidth(0.8f),
+                enabled = nickname.isNotEmpty() &&
+                        password.isNotEmpty() &&
+                        teacherLoginViewModel.authProcessUIState == AuthProcessUIState.Pending
+            ) {
+                Text(
+                    text = "Iniciar Sesión",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+                )
+            }
         }
     }
 }

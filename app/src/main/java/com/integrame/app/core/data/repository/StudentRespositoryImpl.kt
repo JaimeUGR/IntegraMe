@@ -3,7 +3,7 @@ package com.integrame.app.core.data.repository
 import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.data.model.user.StudentProfile
-import com.integrame.app.core.data.network.IntegraMeApi
+import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.domain.repository.StudentRepository
 import com.integrame.app.core.util.AuthRequestResult
