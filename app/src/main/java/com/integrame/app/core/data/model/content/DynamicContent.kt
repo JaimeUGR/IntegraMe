@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.serialization.Serializable
 
 /**
  * Engloba cualquier tipo de contenido dinámico que puede existir en la aplicación
@@ -39,6 +40,8 @@ data class VectorImage(val vectorImage: ImageVector, override val id: Int, val a
 /**
  * Representa imágenes cargadas desde red (url)
  */
+@Serializable
+// TODO: Ya no existirán imágenes remotas de red, sino que desde la api nos la formatearán con la url o crearán la url
 data class RemoteImage(val imageUrl: String, override val id: Int, val altDescription: String): ImageContent()
 
 /**

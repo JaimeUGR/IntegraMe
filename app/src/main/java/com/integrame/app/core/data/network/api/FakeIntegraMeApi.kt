@@ -81,14 +81,10 @@ object FakeIntegraMeApi : IntegraMeApi {
         delay(1000)
         return FakeResources.studentProfiles[0]
     }
-    /*
 
-    override fun getMenuTask(@Path("taskId") taskId : Int): MenuTask{
+
+    override suspend fun getMenuTask(taskId : Int): MenuTask{
         delay(1000)
-        return FakeResources.
+        return FakeResources.menuTasks[taskId]
     }
-
-     */
-
-
 }
