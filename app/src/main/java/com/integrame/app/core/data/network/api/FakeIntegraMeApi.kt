@@ -18,11 +18,13 @@ import com.integrame.app.login.data.network.NetworkImageAuthMethod
 import com.integrame.app.login.data.network.NetworkTextAuthMethod
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.MenuTask
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.http.Path
 
 object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getStudentsIdentityCards(): List<NetworkIdentityCard> {
@@ -79,4 +81,14 @@ object FakeIntegraMeApi : IntegraMeApi {
         delay(1000)
         return FakeResources.studentProfiles[0]
     }
+    /*
+
+    override fun getMenuTask(@Path("taskId") taskId : Int): MenuTask{
+        delay(1000)
+        return FakeResources.
+    }
+
+     */
+
+
 }

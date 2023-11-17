@@ -10,11 +10,13 @@ import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.NetworkImageAuthMethod
 import com.integrame.app.login.data.network.NetworkTextAuthMethod
+import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskState
 import com.integrame.app.tasks.data.model.TaskType
 
 val NUM_STUDENTS = 15
+val NUM_TASK = 10
 
 object FakeResources {
     val remoteImages = listOf(
@@ -116,4 +118,13 @@ object FakeResources {
         else
             NetworkImageAuthMethod(steps = 3, images = networkImages)
     }
+
+    /*
+    val menuTaskList = List(NUM_TASK){
+        i -> MenuTask
+    }
+
+     */
+
+
 }

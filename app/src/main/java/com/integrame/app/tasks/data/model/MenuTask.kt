@@ -9,6 +9,7 @@ data class MenuTask(
 ): Task()
 
 data class ClassroomMenuTask(
+    val classroomImage: ImageContent,
     val classroomId: Int,
     val menuOptions: List<MenuOption>
 )
