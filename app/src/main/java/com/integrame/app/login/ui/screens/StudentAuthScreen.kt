@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -189,7 +190,10 @@ fun StudentAuthScreen(
                 }
             ) { innerPadding ->
                 Column(
-                    modifier = Modifier.padding(innerPadding).fillMaxSize().padding(16.dp),
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     IdentityCard(
@@ -281,6 +285,9 @@ private fun TextAuth(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            leadingIcon = {
+                Icon(imageVector = Icons.Filled.Key, contentDescription = "Icono llave", tint = MaterialTheme.colorScheme.primary)
+            },
             trailingIcon = {
                 val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 val description = if (passwordVisible) "Mostrar contraseña" else "Ocultar contraseña"

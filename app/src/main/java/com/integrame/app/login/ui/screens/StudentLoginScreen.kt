@@ -16,8 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
@@ -38,8 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.integrame.app.core.data.model.content.VectorImage
 import com.integrame.app.core.ui.components.ErrorCard
+import com.integrame.app.core.ui.components.PaginatedBottomAppBar
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.ui.components.IdentityCard
 import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
@@ -97,45 +95,35 @@ fun StudentLoginScreen(
         },
         bottomBar = {
             if (loginUIState is StudentLoginUIState.IdentitiesReady) {
-                BottomAppBar(
+                val currentPage = studentLoginViewModel.currentPage
+                val totalPages = studentLoginViewModel.getTotalPages()
+
+                PaginatedBottomAppBar(
+                    currentPage = currentPage,
+                    isFirstPage = currentPage == 0,
+                    isLastPage = currentPage == totalPages - 1,
+                    onPressPrevious = { studentLoginViewModel.previousPage() },
+                    onPressNext = { studentLoginViewModel.nextPage() },
                     modifier = Modifier.height(65.dp),
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Página anterior",
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
-                        Button(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowForward,
-                                contentDescription = "Página siguiente",
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
-                    }
-                }
+                )
             }
         },
         modifier = modifier
     ) { innerPadding ->
         when (loginUIState) {
             is StudentLoginUIState.IdentitiesReady -> {
-                IdentityCardGrid(
-                    loginUIState.identityCards,
-                    onIdentityCardClick = onIdentitySelected,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)) {
+                    IdentityCardGrid(
+                        studentLoginViewModel.getIdentityCardsPage(),
+                        onIdentityCardClick = onIdentitySelected,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                }
+
             }
             is StudentLoginUIState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -175,7 +163,8 @@ fun IdentityCardGrid(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(24.dp),
-        modifier = modifier
+        modifier = modifier,
+        userScrollEnabled = false
     ) {
         items(identityCardList, key = { identityCard ->
             identityCard.userId

@@ -77,13 +77,6 @@ object FakeIntegraMeApi : IntegraMeApi {
 
     override suspend fun getStudentProfile(userId: Int): StudentProfile {
         delay(1000)
-        return StudentProfile(
-            userId,
-            "Fran",
-            "E. C.",
-            "francx11",
-            FakeResources.networkImages[0].toImageContent(),
-            contentProfile = FakeResources.contentProfiles[0].toContentProfile()
-        )
+        return FakeResources.studentProfiles[0]
     }
 }
