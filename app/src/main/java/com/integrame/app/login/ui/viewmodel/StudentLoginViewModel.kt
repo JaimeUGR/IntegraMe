@@ -1,6 +1,7 @@
 package com.integrame.app.login.ui.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -19,10 +20,40 @@ class StudentLoginViewModel @Inject constructor(
     var studentLoginUIState: StudentLoginUIState by mutableStateOf(StudentLoginUIState.Loading)
         private set
 
+    private val pageSize = 6
+    var currentPage: Int by mutableIntStateOf(0)
+
     init {
         viewModelScope.launch {
             loadIdentityCards()
         }
+    }
+
+    fun nextPage() {
+        currentPage++
+    }
+
+    fun previousPage() {
+        currentPage--
+    }
+
+    fun getTotalPages(): Int {
+        if (studentLoginUIState !is StudentLoginUIState.IdentitiesReady)
+            return 0;
+
+        return ((studentLoginUIState as StudentLoginUIState.IdentitiesReady).identityCards.size + pageSize - 1) / pageSize
+    }
+
+    fun getIdentityCardsPage(): List<IdentityCard> {
+        if (studentLoginUIState !is StudentLoginUIState.IdentitiesReady)
+            return emptyList()
+
+        val identityCards = (studentLoginUIState as StudentLoginUIState.IdentitiesReady).identityCards
+
+        return identityCards.subList(
+            currentPage * pageSize,
+            minOf((currentPage + 1) * pageSize, identityCards.size)
+        )
     }
 
     fun reloadIdentityCards() {

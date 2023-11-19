@@ -78,11 +78,13 @@ fun DashboardScreen(
             when (val profile = dashboardUIState.profile) {
                 is StudentProfile -> {
                     StudentDashboard(
+                        studentProfile = profile,
                         onSignOut = { dashboardViewModel.signOut() }
                     )
                 }
                 is TeacherProfile -> {
                     TeacherDashboard(
+                        teacherProfile = profile,
                         onSignOut = { dashboardViewModel.signOut() }
                     )
                 }

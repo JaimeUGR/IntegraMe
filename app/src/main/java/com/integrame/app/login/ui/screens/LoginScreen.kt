@@ -43,7 +43,11 @@ fun LoginScreen(
                 LaunchedEffect(key1 = Unit) {
                     delay(2000)
                     // TODO: Mostrar un error y volver a la pantalla de login
-                    navController.navigate(route = LoginNavGraph.StudentLogin.route)
+
+                    // TODO: Revisar si esto es correcto
+                    navController.navigate(route = LoginNavGraph.StudentLogin.route) {
+                        popUpTo(route = LoginNavGraph.StudentLogin.route)
+                    }
                 }
             else
                 StudentAuthScreen(
