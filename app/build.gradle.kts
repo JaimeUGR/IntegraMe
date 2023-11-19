@@ -19,7 +19,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.integrame.app.CustomTestRunner"
+
+
+        //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -139,6 +142,20 @@ dependencies {
     // Crypto
     //
     implementation("androidx.security:security-crypto:1.0.0")
+
+    //
+    //Dependecias testint interfaz
+    //
+    testImplementation( "androidx.compose.ui:ui-test-junit4:$version")
+    debugImplementation( "androidx.compose.ui:ui-test-manifest:$rootProject.composeVersion")
+
+    testImplementation("com.google.dagger:hilt-android-testing:2.44")
+
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
+    // ...with Kotlin.
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
+    testImplementation("androidx.compose.ui:ui-test")
+
 }
 
 // Dagger-Hilt

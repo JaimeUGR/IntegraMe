@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import com.integrame.app.ui.navigation.IntegraMeNavHost
 import com.integrame.app.ui.theme.IntegraMeTheme
 
+
 @Composable
 fun IntegraMeApp() {
     IntegraMeTheme {
