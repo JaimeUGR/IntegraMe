@@ -10,11 +10,15 @@ import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.NetworkImageAuthMethod
 import com.integrame.app.login.data.network.NetworkTextAuthMethod
+import com.integrame.app.tasks.data.model.ClassroomMenuTask
+import com.integrame.app.tasks.data.model.MenuOption
+import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskState
 import com.integrame.app.tasks.data.model.TaskType
 
 val NUM_STUDENTS = 15
+val NUM_TASKS = 10
 
 object FakeResources {
     val remoteImages = listOf(
@@ -73,7 +77,7 @@ object FakeResources {
         NetworkImageContent(3, "BSD")
     )
 
-    val contentProfiles = List(NUM_STUDENTS) { i->
+    val contentProfiles = List(NUM_STUDENTS) { i ->
         NetworkContentProfile(
             contentAdaptationFormats = listOf(ContentAdaptationFormats.Image),
             interactionMethods = listOf(InteractionMethods.Default)
@@ -99,21 +103,41 @@ object FakeResources {
         }
     }
 
-    val identityCardList = List(NUM_STUDENTS) { i -> NetworkIdentityCard(
-        userId = i,
-        nickname = "Nick Alumno Número $i",
-        avatar = NetworkImageContent(
-            id = i,
-            altDescription = "Avatar Gallina",
-            imageUrl = remoteImages[i%remoteImages.size].imageUrl
+    val identityCardList = List(NUM_STUDENTS) { i ->
+        NetworkIdentityCard(
+            userId = i,
+            nickname = "Nick Alumno Número $i",
+            avatar = NetworkImageContent(
+                id = i,
+                altDescription = "Avatar Gallina",
+                imageUrl = remoteImages[i % remoteImages.size].imageUrl
+            )
         )
-    )
     }
 
     val authMethodList = List(NUM_STUDENTS) { i ->
-        if (i%2 == 0)
+        if (i % 2 == 0)
             NetworkTextAuthMethod
         else
             NetworkImageAuthMethod(steps = 3, images = networkImages)
+    }
+
+
+    val menuTasks: List<MenuTask> = List(NUM_TASKS) { i ->
+        MenuTask(
+            "Tarea Menú $i",
+            remoteImages[i % remoteImages.size],
+            List(minOf(4, i)) { j ->
+                ClassroomMenuTask(
+                    j,
+                    List(j){ k ->
+                        MenuOption(
+                            "Menú $j-$k",
+                            remoteImages[k % remoteImages.size]
+                        )
+                    }
+                )
+            }
+        )
     }
 }
