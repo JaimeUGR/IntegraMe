@@ -19,6 +19,7 @@ import com.integrame.app.login.data.network.NetworkTextAuthMethod
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
@@ -86,5 +87,9 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getMenuTask(taskId : Int): MenuTask{
         delay(1000)
         return FakeResources.menuTasks[taskId]
+    }
+
+    override suspend fun postTaskInfo(value: TaskInfo): TaskInfo {
+        TODO("Not yet implemented")
     }
 }

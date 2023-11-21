@@ -9,6 +9,7 @@ import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.teacher.data.model.task.TaskInfo
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -43,8 +44,8 @@ interface IntegraMeApi {
     @GET("auth/students/tasks/{taskId}")
     suspend fun getMenuTask(@Path("taskId") taskId : Int): MenuTask
 
-    @POST("teachers/task")
-    suspend fun postTaskInfo(value: TaskInfo): TaskInfo
+    @POST("tasks/update")
+    suspend fun postTaskInfo(@Body taskInfo: TaskInfo): TaskInfo
 
 
 }
