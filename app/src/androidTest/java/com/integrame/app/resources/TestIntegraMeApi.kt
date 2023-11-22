@@ -1,24 +1,20 @@
 package com.integrame.app.resources
 
 import com.integrame.app.core.data.fake.FakeResources
-import com.integrame.app.core.data.model.content.ContentAdaptationFormats
-import com.integrame.app.core.data.model.content.InteractionMethods
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.core.data.network.NetworkContentProfile
-import com.integrame.app.core.data.network.NetworkImageContent
 import com.integrame.app.core.data.network.NetworkSession
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.data.network.toImageContent
+import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.TextPassword
-import com.integrame.app.login.data.network.NetworkAuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
-import com.integrame.app.login.data.network.NetworkImageAuthMethod
-import com.integrame.app.login.data.network.NetworkTextAuthMethod
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.Task
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
@@ -40,7 +36,7 @@ object TestIntegraMeApi : IntegraMeApi {
         return FakeResources.contentProfiles[userId]
     }
 
-    override suspend fun getStudentAuthMethod(userId: Int): NetworkAuthMethod {
+    override suspend fun getStudentAuthMethod(userId: Int): AuthMethod {
         delay(1000)
         return FakeResources.authMethodList[userId]
     }
@@ -91,8 +87,12 @@ object TestIntegraMeApi : IntegraMeApi {
             "Fran",
             "E. C.",
             "francx11",
-            FakeResources.networkImages[0].toImageContent(),
+            FakeResources.remoteImages[0],
             contentProfile = FakeResources.contentProfiles[0].toContentProfile()
         )
+    }
+
+    override suspend fun getTask(taskId: Int): Task {
+        return FakeResources.tasks[taskId]
     }
 }

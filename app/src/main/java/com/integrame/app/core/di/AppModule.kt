@@ -11,6 +11,7 @@ import com.integrame.app.core.data.repository.TeacherRepositoryImpl
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
+import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -41,7 +42,7 @@ object AppModule {
         
         return Retrofit.Builder()
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl("http://34.175.9.11:30000/api/v1/")
+            .baseUrl("http://35.210.189.6:6969/api/v1/")
             .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor(sessionRepository)).build())
             .build()
             .create(IntegraMeApi::class.java)
@@ -54,6 +55,14 @@ object AppModule {
         api: IntegraMeApi
     ): StudentRespositoryImpl {
         return StudentRespositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskRepositoryImpl(
+        api: IntegraMeApi
+    ): TaskRepositoryImpl {
+        return TaskRepositoryImpl(api)
     }
 
     @Provides

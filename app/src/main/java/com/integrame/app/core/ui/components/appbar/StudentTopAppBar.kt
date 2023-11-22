@@ -1,4 +1,4 @@
-package com.integrame.app.core.ui.components
+package com.integrame.app.core.ui.components.appbar
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +25,7 @@ import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.data.model.content.UserContentAdaptationFormats
 import com.integrame.app.core.data.model.content.UserInteractionMethods
 import com.integrame.app.core.data.model.user.StudentProfile
+import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.ui.theme.IntegraMeTheme
 
 // TODO: En el menú principal la barra tendrá el botón de cerrar sesión, título y el botón de campanita y perfil.

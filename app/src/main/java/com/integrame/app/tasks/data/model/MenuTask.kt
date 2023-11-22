@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MenuTask(
     override val displayName: String,
-    override val displayImage: RemoteImage,
+    override val displayImage: ImageContent,
     val classroomMenus: List<ClassroomMenuTask>
 ): Task()
 
@@ -20,7 +20,7 @@ data class ClassroomMenuTask(
 @Serializable
 data class MenuOption(
     val name: String,
-    val image: RemoteImage
+    val image: ImageContent
 ) {
     var requestedAmount: Int = 0
         private set
