@@ -1,31 +1,16 @@
 package com.integrame.app.tasks.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Pending
-import androidx.compose.material.icons.filled.PendingActions
-import androidx.compose.material.icons.filled.RepeatOn
-import androidx.compose.material.icons.filled.ThumbDown
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.outlined.EventNote
-import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,20 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.ui.components.DynamicImage
-import com.integrame.app.core.ui.components.PaginatedBottomAppBar
-import com.integrame.app.tasks.data.model.TaskState
+import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
 import com.integrame.app.tasks.ui.components.TaskCard
 import com.integrame.app.tasks.ui.viewmodel.TaskScheduleScreenViewModel
 
@@ -119,7 +100,7 @@ fun TaskScheduleScreen(
             PaginatedBottomAppBar(
                 currentPage = 0,
                 isFirstPage = true,
-                isLastPage = false,
+                isLastPage = true,
                 onPressNext = { /*TODO*/ },
                 onPressPrevious = { /*TODO*/ },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -164,7 +145,7 @@ fun TaskScheduleScreen(
             ) { taskCard ->
                 TaskCard(
                     taskCard = taskCard,
-                    onCardClick = { /*TODO*/ },
+                    onCardClick = { onSelectTask(taskCard.taskId) },
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
             }

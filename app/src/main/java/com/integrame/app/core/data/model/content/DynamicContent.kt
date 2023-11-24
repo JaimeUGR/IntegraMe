@@ -15,11 +15,13 @@ interface DynamicContent
 /**
  * Representa contenido textual
  */
+@Serializable
 data class TextContent(val text: String): DynamicContent
 
 /**
  * Representa contenido de imágenes con un id asociado
  */
+@Serializable
 sealed class ImageContent: DynamicContent { abstract val id: Int }
 
 /**
@@ -47,9 +49,11 @@ data class RemoteImage(val imageUrl: String, override val id: Int, val altDescri
 /**
  * Representa vídeos cargados desde red (url)
  */
+@Serializable
 data class VideoContent(val videoUrl: String, val id: Int): DynamicContent
 
 /**
  * Representa audios cargados desde red (url)
  */
+@Serializable
 data class AudioContent(val audioUrl: String, val id: Int): DynamicContent
