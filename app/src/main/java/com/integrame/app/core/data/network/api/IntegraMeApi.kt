@@ -3,11 +3,12 @@ package com.integrame.app.core.data.network.api
 import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.data.network.NetworkContentProfile
 import com.integrame.app.core.data.network.NetworkSession
-import com.integrame.app.login.data.network.NetworkAuthMethod
+import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,7 +28,7 @@ interface IntegraMeApi {
     suspend fun getStudentContentProfile(@Path("userId") userId: Int): NetworkContentProfile
 
     @GET("students/{userId}/authMethod")
-    suspend fun getStudentAuthMethod(@Path("userId") userId: Int): NetworkAuthMethod
+    suspend fun getStudentAuthMethod(@Path("userId") userId: Int): AuthMethod
 
     @POST("students/login")
     suspend fun signInStudent(@Body signInRequest: SignInStudentRequest): NetworkSession
@@ -39,7 +40,6 @@ interface IntegraMeApi {
     @GET("auth/students/{userId}/profile")
     suspend fun getStudentProfile(@Path("userId") userId: Int): StudentProfile
 
-
     @Headers("Authorized")
     @GET("auth/students/tasks/{taskId}")
     suspend fun getMenuTask(@Path("taskId") taskId : Int): MenuTask
@@ -48,4 +48,7 @@ interface IntegraMeApi {
     suspend fun postTaskInfo(@Body taskInfo: TaskInfo): TaskInfo
 
 
+    @Headers("Authorized")
+    @GET("auth/students/tasks/{taskId}")
+    suspend fun getTask(@Path("taskId") taskId : Int): Task
 }
