@@ -43,6 +43,9 @@ import com.integrame.app.R
 import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.LocalImage
 import com.integrame.app.core.ui.components.DynamicImage
+import com.integrame.app.core.ui.components.StudentTopAppBar
+import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
+import com.integrame.app.dashboard.ui.navigation.StudentDashboardNavGraph
 import com.integrame.app.login.ui.components.IdentityCard
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -50,17 +53,21 @@ import com.integrame.app.login.ui.components.IdentityCard
 @Composable
 fun MenuTaskScreen(
     modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit,
+    onPressHome: () -> Unit,
+    onPressChat: () -> Unit,
+
 ) {
     Scaffold(
         modifier = modifier
             .background(MaterialTheme.colorScheme.primaryContainer),
+
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Menú \ncomedor"
-                    )
-                }
+            StudentTaskTopAppBar(
+                title = task.displayName,
+                onNavigateBack = onNavigateBack,
+                onPressHome = onPressHome,
+                onPressChat = onPressChat
             )
         }
     ) { innerPadding ->
@@ -87,7 +94,7 @@ fun MenuTaskScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(60.dp)
-                            .padding( all = padding),
+                            .padding(all = padding),
                         text = "La clase " + classroomLetter
                     )
                 }
@@ -98,7 +105,7 @@ fun MenuTaskScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp)
-                            .padding( all = padding),
+                            .padding(all = padding),
 
                         onClick = { /*TODO*/ }
                     ) {
@@ -112,14 +119,14 @@ fun MenuTaskScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp)
-                            .padding( all = padding),
+                            .padding(all = padding),
                         text = "IMAGEN TIPO DE MENU"
                     )
                     Button(
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp)
-                            .padding( all = padding),
+                            .padding(all = padding),
                         onClick = { /*TODO*/ }
                     ) {
                         Icon(
