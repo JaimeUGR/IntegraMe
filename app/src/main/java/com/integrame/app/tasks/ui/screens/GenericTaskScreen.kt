@@ -1,6 +1,7 @@
 package com.integrame.app.tasks.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -84,7 +85,7 @@ val contentSelectorCards = mapOf<ContentAdaptationFormats, @Composable (Modifier
     },
     ContentAdaptationFormats.Video to { modifier ->
         AsyncImage(
-            model = "https://static.arasaac.org/pictograms/11219/11219_300.png",
+            model = "https://static.arasaac.org/pictograms/6626/6626_300.png",
             contentDescription = "Seleccionar vídeo",
             modifier = modifier
         )
@@ -135,6 +136,8 @@ fun GenericTaskScreen(
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
+
+            // Imagen de la tarea
             DynamicImage(
                 image = task.displayImage,
                 modifier = Modifier
@@ -145,10 +148,11 @@ fun GenericTaskScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Caja de contenido
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Tarjetas seleccionables
+                // Selectores de contenido
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -163,6 +167,7 @@ fun GenericTaskScreen(
                                     else MaterialTheme.colorScheme.surfaceVariant
                                 )
                                 .weight(1f)
+                                .border(1.dp, Color.Black)
                                 .clickable {
                                     selectedAdaptationFormat = i
                                 }
@@ -174,6 +179,7 @@ fun GenericTaskScreen(
                     }
                 }
 
+                // Caja de contenido seleccionado
                 Box(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.secondaryContainer)

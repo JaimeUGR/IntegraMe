@@ -337,8 +337,45 @@ private fun ImageAuth(
     Column(
         modifier = modifier,
     ) {
+        LazyVerticalGrid(
+            modifier = Modifier.padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            columns = GridCells.Fixed(2)
+        ) {
+            itemsIndexed(images) { i, imageContent ->
+                // TODO: Añadir semantics
+                DynamicImage(
+                    image = imageContent,
+                    modifier = Modifier
+                        .height(100.dp)
+                        .clickable(
+                            onClickLabel = "Añadir imagen a contraseña",
+                            role = Role.Image,
+                            enabled = passwordLength < steps
+                        ) {
+                            onSelectImage(i)
+                        },
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+        // TODO: eliminar este botón cuando esté el check por imagen introducida
+        IconButton(
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
+            onClick = onRemoveImage,
+            enabled = imagePassword.isNotEmpty()
+        ) {
+            Icon(
+                modifier = Modifier.size(32.dp),
+                imageVector = Icons.Filled.Backspace,
+                contentDescription = "Borrar una imagen",
+                tint = if (imagePassword.isNotEmpty()) Color.Red else Color.Gray
+            )
+        }
         Row(
             modifier = Modifier
+                .padding(top = 24.dp)
                 .fillMaxWidth()
                 .semantics {
                     contentDescription =
@@ -363,41 +400,6 @@ private fun ImageAuth(
                         )
                 }
             }
-        }
-        LazyVerticalGrid(
-            modifier = Modifier.padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            columns = GridCells.Fixed(2)
-        ) {
-            itemsIndexed(images) { i, imageContent ->
-                // TODO: Añadir semantics
-                DynamicImage(
-                    image = imageContent,
-                    modifier = Modifier
-                        .height(100.dp)
-                        .clickable(
-                            onClickLabel = "Añadir imagen a contraseña",
-                            role = Role.Image,
-                            enabled = passwordLength < steps
-                        ) {
-                            onSelectImage(i)
-                        },
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-        IconButton(
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-            onClick = onRemoveImage,
-            enabled = imagePassword.isNotEmpty()
-        ) {
-            Icon(
-                modifier = Modifier.size(32.dp),
-                imageVector = Icons.Filled.Backspace,
-                contentDescription = "Borrar una imagen",
-                tint = if (imagePassword.isNotEmpty()) Color.Red else Color.Gray
-            )
         }
     }
 }
