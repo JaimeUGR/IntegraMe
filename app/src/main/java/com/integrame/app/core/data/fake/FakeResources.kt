@@ -101,7 +101,7 @@ object FakeResources {
             List(minOf(4, i + 1)) { j ->
                 ClassroomMenuTask(
                     j,
-                    List(j){ k ->
+                    List(j+1){ k ->
                         MenuOption(
                             "Menú $j-$k",
                             remoteImages[k % remoteImages.size]
