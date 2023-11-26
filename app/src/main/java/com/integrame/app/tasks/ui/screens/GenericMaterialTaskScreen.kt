@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,10 +77,8 @@ fun GenericMaterialTaskScreen(
             Row(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(60.dp)
+                    .fillMaxWidth()
             ) {
-
                 // TODO: Imagen clase
                 Box(modifier = Modifier
                     .size(92.dp)
@@ -87,44 +86,16 @@ fun GenericMaterialTaskScreen(
                     .align(Alignment.CenterVertically)
                 ) {}
 
-                // TODO: Row con Entregado y tick
-                Row(modifier = Modifier
-                    .background(color = Color.Cyan)
-                    ,
-                    horizontalArrangement = Arrangement.End){
-
-                    // TODO: Foto entregado
-                    Box(modifier = Modifier
-                        .padding(16.dp)
-                        .size(64.dp)
-                        .background(Color.Red)
-                        .align(Alignment.CenterVertically)
-                        .padding()
-                    ) {}
-
-                    // TODO : TICK
-                    Box(modifier = Modifier
-                        .padding(16.dp)
-                        .size(32.dp)
-                        //.background(Color.Green)
-                        .align(Alignment.CenterVertically)
-
-                    ) {
-                        Checkbox(checked = true, onCheckedChange = {}, modifier = Modifier.size(120.dp))
-                    }
-                }
             }
 
             Text(text = "Aquí va el nombre del material",
                 modifier = Modifier.padding(16.dp),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
-
                 )
 
-            // imagen material, color y cantidad
             Column(modifier = Modifier
-                .background(Color.LightGray)
-                .fillMaxSize(),
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally)
                 {
                 // TODO : Material
@@ -133,7 +104,7 @@ fun GenericMaterialTaskScreen(
                     .size(width = 120.dp, height = 120.dp)
                     .background(Color.Green)
                 ) {}
-                // Color y Cantidad
+
                 Row(
                     modifier = Modifier
                         .padding(16.dp)
@@ -171,6 +142,19 @@ fun GenericMaterialTaskScreen(
                 }
             }
 
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End){
+
+                Box(modifier = Modifier
+                    .padding(32.dp)
+                    .size(32.dp)
+                    .align(Alignment.CenterVertically)
+
+                ) {
+                    Checkbox(checked = true, onCheckedChange = {}, modifier = Modifier.scale(2f))
+                }
+            }
         }
     }
 }
