@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             IntegraMeApp()
-            //MenuTaskScreen(task = FakeResources.menuTasks[0], onNavigateBack = { /*TODO*/ }, onPressHome = { /*TODO*/ }) { }
         }
     }
 }

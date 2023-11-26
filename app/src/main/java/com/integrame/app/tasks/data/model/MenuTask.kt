@@ -24,9 +24,4 @@ data class MenuOption(
 ) {
     var requestedAmount: Int = 0
         private set
-
-    fun setRequestedAmount(nuevoValor: Int) {
-        requestedAmount = nuevoValor
-    }
-
 }

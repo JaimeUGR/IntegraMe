@@ -1,34 +1,25 @@
 package com.integrame.app.tasks.ui.screens
 
 import android.annotation.SuppressLint
-import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.integrame.app.R
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.ui.components.DynamicImage
@@ -62,13 +51,12 @@ fun MenuTaskScreen(
     task: MenuTask,
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
-    onPressChat: () -> Unit,
-    numClas: Int
+    onPressChat: () -> Unit
     ) {
 
-    var numMenuActual by remember { mutableStateOf(0) }
-    var numClaseActual by remember { mutableStateOf(numClas) }
-    var requestAmountActual by remember { mutableStateOf(0) }
+    var numMenu by remember { mutableStateOf(0) }
+    var numClassroom by remember { mutableStateOf(0) }
+    var requestAmount by remember { mutableStateOf(0) }
     var classroomLetter = "A"
     var padding = 10.dp
 
@@ -130,10 +118,10 @@ fun MenuTaskScreen(
                             .padding(all = padding),
 
                         onClick = {
-                            if (numMenuActual != 0) {
-                                numMenuActual--;
-                                requestAmountActual = task.classroomMenus[numClaseActual.toInt()].menuOptions[numMenuActual].requestedAmount;
-                                println("numMenuActual: " + numMenuActual);
+                            if (numMenu != 0) {
+                                numMenu--;
+                                requestAmount = task.classroomMenus[numClassroom.toInt()].menuOptions[numMenu].requestedAmount;
+                                println("numMenuActual: " + numMenu);
                             }
                         }
                     ) {
@@ -144,7 +132,7 @@ fun MenuTaskScreen(
                         )
                     }
                     DynamicImage(
-                        image = task.classroomMenus[numMenuActual].menuOptions[0].image,
+                        image = task.classroomMenus[numMenu].menuOptions[0].image,
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp)
@@ -156,9 +144,9 @@ fun MenuTaskScreen(
                             .height(120.dp)
                             .padding(all = padding),
                         onClick = {
-                            if (numMenuActual + 1 != task.classroomMenus[numClaseActual.toInt()].menuOptions.size) {
-                                numMenuActual++;
-                                requestAmountActual = task.classroomMenus[numClaseActual.toInt()].menuOptions[numMenuActual].requestedAmount;
+                            if (numMenu + 1 != task.classroomMenus[numClassroom.toInt()].menuOptions.size) {
+                                numMenu++;
+                                requestAmount = task.classroomMenus[numClassroom.toInt()].menuOptions[numMenu].requestedAmount;
 
                             }
                         }
@@ -198,12 +186,13 @@ fun MenuTaskScreen(
                                 .height(130.dp)
                                 .padding(all = 2.dp),
                             onClick = {
-                                task.classroomMenus[numClaseActual.toInt()].menuOptions[numMenuActual].setRequestedAmount(index);
-                                requestAmountActual = index;
+                                //Se debe de actualizar la cantidadc que queremos de ese menu
+                                //task.classroomMenus[numClaseActual.toInt()].menuOptions[numMenuActual].setRequestedAmount(index);
+                                requestAmount = index;
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor =
-                                if(requestAmountActual == index){
+                                if(requestAmount == index){
                                     Color.Green
                                 }else{
                                     Color.Gray
@@ -230,7 +219,6 @@ fun MenuTaskScreenPreview() {
         onNavigateBack = { /*TODO*/ },
         onPressHome = { /*TODO*/ },
         onPressChat = { /*TODO*/ },
-        modifier = Modifier.fillMaxSize(),
-        numClas = 3
+        modifier = Modifier.fillMaxSize()
     )
 }
