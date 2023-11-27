@@ -10,6 +10,10 @@ import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.login.domain.repository.AuthRepository
 import com.integrame.app.login.domain.repository.IdentityCardRepository
+import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
+import com.integrame.app.tasks.domain.repository.GenericTaskRepository
+import com.integrame.app.tasks.domain.repository.TaskRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,6 +28,18 @@ abstract class RepositoryModule {
     abstract fun bindStudentRepository(
         studentRespositoryImpl: StudentRespositoryImpl
     ): StudentRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTaskRepository(
+        taskRepositoryImpl: TaskRepositoryImpl
+    ): TaskRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGenericTaskRepository(
+        genericTaskRepositoryImpl: GenericTaskRepositoryImpl
+    ): GenericTaskRepository
 
     @Binds
     @Singleton

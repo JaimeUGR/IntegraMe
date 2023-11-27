@@ -9,6 +9,8 @@ sealed interface Profile {
     val userId: Int
 }
 
+// TODO: Añadir la serialización para el perfil del estudiante
+
 data class StudentProfile(
     override val userId: Int,
     val name: String,

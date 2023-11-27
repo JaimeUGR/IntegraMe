@@ -3,9 +3,7 @@ package com.integrame.app.login.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,13 +11,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.ui.components.ErrorCard
-import com.integrame.app.core.ui.components.PaginatedBottomAppBar
+import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.ui.components.IdentityCard
 import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
@@ -99,7 +93,7 @@ fun StudentLoginScreen(
                 val totalPages = studentLoginViewModel.getTotalPages()
 
                 PaginatedBottomAppBar(
-                    currentPage = currentPage,
+                    currentPage = currentPage + 1,
                     isFirstPage = currentPage == 0,
                     isLastPage = currentPage == totalPages - 1,
                     onPressPrevious = { studentLoginViewModel.previousPage() },

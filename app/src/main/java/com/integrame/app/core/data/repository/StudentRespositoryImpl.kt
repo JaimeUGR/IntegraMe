@@ -23,6 +23,6 @@ class StudentRespositoryImpl @Inject constructor(
     }
 
     override suspend fun getAuthMethod(userId: Int): RequestResult<AuthMethod> {
-        return RequestResult.Success(api.getStudentAuthMethod(userId).toAuthMethod())
+        return RequestResult.Success(api.getStudentAuthMethod(userId))
     }
 }

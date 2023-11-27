@@ -14,7 +14,9 @@ import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.domain.repository.AuthRepository
 import com.integrame.app.login.domain.usecase.GetStudentAuthProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +33,8 @@ class StudentAuthViewModel @Inject constructor(
     var textPassword by mutableStateOf("")
         private set
 
-    var imagePassword by mutableStateOf(emptyList<Int>())
+    // Par <Id Imagen, Índice en la lista de imágenes>
+    var imagePassword by mutableStateOf(emptyList<Pair<Int, Int>>())
         private set
 
     fun loadStudentData(userId: Int) {
@@ -48,9 +51,9 @@ class StudentAuthViewModel @Inject constructor(
         textPassword = newTextPassword
     }
 
-    fun onAddImage(newImage: Int): Int {
+    fun onAddImage(imageId: Int, imageIndex: Int): Int {
         imagePassword = imagePassword.toMutableList().apply {
-            add(newImage)
+            add(Pair(imageId, imageIndex))
         }
 
         return imagePassword.size
@@ -78,7 +81,11 @@ class StudentAuthViewModel @Inject constructor(
 
     fun imageAuthSignIn(userId: Int) {
         viewModelScope.launch {
-            signIn(userId, ImagePassword(imagePassword))
+            withContext(Dispatchers.IO) {
+                signIn(userId, ImagePassword(imagePassword.map { id_idx ->
+                    id_idx.first
+                }))
+            }
         }
     }
 
