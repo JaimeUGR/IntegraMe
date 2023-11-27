@@ -4,8 +4,15 @@ import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
 import kotlinx.serialization.Serializable
 
+data class MenuTaskModel(
+    override val taskId: Int,
+    override val displayName: String,
+    override val displayImage: ImageContent
+): TaskModel()
+
 @Serializable
 data class MenuTask(
+    override val taskId: Int,
     override val displayName: String,
     override val displayImage: ImageContent,
     val classroomMenus: List<ClassroomMenuTask>

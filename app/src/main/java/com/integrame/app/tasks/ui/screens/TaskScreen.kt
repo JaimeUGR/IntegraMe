@@ -20,8 +20,11 @@ import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.tasks.data.model.GenericTask
+import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.MaterialTask
+import com.integrame.app.tasks.data.model.MaterialTaskModel
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.ui.viewmodel.TaskScreenUIState
 import com.integrame.app.tasks.ui.viewmodel.TaskScreenViewModel
 
@@ -79,10 +82,10 @@ fun TaskScreen(
             }
         }
         is TaskScreenUIState.TaskReady -> {
-            when (val task = taskScreenUIState.task) {
-                is GenericTask -> {
+            when (val taskModel = taskScreenUIState.taskModel) {
+                is GenericTaskModel -> {
                     GenericTaskScreen(
-                        task = FakeResources.genericTasks[0],
+                        taskModel = taskModel,
                         contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
                         onNavigateBack = onNavigateBack,
                         onPressHome = { /*TODO*/ },
@@ -90,10 +93,10 @@ fun TaskScreen(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-                is MenuTask -> {
+                is MenuTaskModel -> {
                     Text(text = "Menu Task")
                 }
-                is MaterialTask -> {
+                is MaterialTaskModel -> {
                     Text(text = "Material Task")
                 }
             }

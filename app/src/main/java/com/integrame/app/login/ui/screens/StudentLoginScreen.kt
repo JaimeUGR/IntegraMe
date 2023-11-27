@@ -93,7 +93,7 @@ fun StudentLoginScreen(
                 val totalPages = studentLoginViewModel.getTotalPages()
 
                 PaginatedBottomAppBar(
-                    currentPage = currentPage,
+                    currentPage = currentPage + 1,
                     isFirstPage = currentPage == 0,
                     isLastPage = currentPage == totalPages - 1,
                     onPressPrevious = { studentLoginViewModel.previousPage() },

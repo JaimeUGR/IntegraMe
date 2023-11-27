@@ -14,8 +14,6 @@ import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.login.data.model.ImageAuthMethod
 import com.integrame.app.login.data.model.TextAuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
-import com.integrame.app.login.data.network.NetworkImageAuthMethod
-import com.integrame.app.login.data.network.NetworkTextAuthMethod
 import com.integrame.app.tasks.data.model.ClassroomMenuTask
 import com.integrame.app.tasks.data.model.GenericTask
 import com.integrame.app.tasks.data.model.GenericTaskStep
@@ -56,36 +54,7 @@ object FakeResources {
         )
     )
 
-    val taskCards: List<TaskCard> = listOf(
-        TaskCard(
-            0,
-            TaskState.Failed,
-            "Hacer la cama",
-            remoteImages[0],
-            TaskType.Generic
-        ),
-        TaskCard(
-            1,
-            TaskState.Pending,
-            "Menú comedor pero tiene un nombre extremadamente largo",
-            remoteImages[1],
-            TaskType.FoodMenu
-        ),
-        TaskCard(
-            2,
-            TaskState.Completed,
-            "Petición almacén",
-            remoteImages[2],
-            TaskType.MaterialRequest
-        ),
-        TaskCard(
-            3,
-            TaskState.Completed,
-            "Petición almacén",
-            remoteImages[3],
-            TaskType.MaterialRequest
-        )
-    )
+    val taskCards: List<TaskCard>
 
     val contentProfiles = List(NUM_STUDENTS) { i ->
         NetworkContentProfile(
@@ -96,6 +65,7 @@ object FakeResources {
 
     val menuTasks: List<MenuTask> = List(NUM_TASKS) { i ->
         MenuTask(
+            i,
             "Tarea Menú $i",
             remoteImages[i % remoteImages.size],
             List(minOf(4, i + 1)) { j ->
@@ -114,6 +84,7 @@ object FakeResources {
 
     val genericTasks: List<GenericTask> = List(NUM_TASKS) { i ->
         GenericTask(
+            i,
             "Tarea Genérica $i",
             remoteImages[i % remoteImages.size],
             List(minOf(4, i + 1)) { j ->
@@ -135,6 +106,7 @@ object FakeResources {
 
     val materialTasks: List<MaterialTask> = List(NUM_TASKS) { i ->
         MaterialTask(
+            i,
             "Tarea Material $i",
             remoteImages[i % remoteImages.size],
             List(minOf(4, i + 1)) { j ->
@@ -167,11 +139,39 @@ object FakeResources {
         }
 
         tasks = listOf(
-            genericTasks[0],
+            genericTasks[4],
             menuTasks[0],
             materialTasks[0],
             materialTasks[1]
         )
+
+        taskCards = List(NUM_TASKS) { i ->
+            if (i % 3 == 0) {
+                TaskCard(
+                    i,
+                    TaskState.Failed,
+                    "Hacer la cama",
+                    remoteImages[0],
+                    TaskType.GenericTask
+                )
+            } else if (i % 3 == 1) {
+                TaskCard(
+                    i,
+                    TaskState.Pending,
+                    "Menú comedor pero tiene un nombre extremadamente largo",
+                    remoteImages[1],
+                    TaskType.MenuTask
+                )
+            } else {
+                TaskCard(
+                    i,
+                    TaskState.Completed,
+                    "Petición almacén",
+                    remoteImages[2],
+                    TaskType.MaterialTask
+                )
+            }
+        }
     }
 
     val identityCardList = List(NUM_STUDENTS) { i ->
