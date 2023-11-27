@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.integrame.app.core.util.AuthRequestResult
-import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.domain.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class TaskScreenViewModel @Inject constructor(
     fun loadTask(taskId: Int) {
         viewModelScope.launch {
             taskScreenUIState = TaskScreenUIState.Loading
-            taskScreenUIState = when (val requestResult = taskRepository.getTask(taskId)) {
+            taskScreenUIState = when (val requestResult = taskRepository.getTaskModel(taskId)) {
                 is AuthRequestResult.Authorized -> TaskScreenUIState.TaskReady(requestResult.data)
                 is AuthRequestResult.Unauthorized -> TaskScreenUIState.Unauthorized
                 is AuthRequestResult.Error -> TaskScreenUIState.Error(requestResult.error)
@@ -33,7 +33,7 @@ class TaskScreenViewModel @Inject constructor(
 
 sealed interface TaskScreenUIState {
     object Loading: TaskScreenUIState
-    data class TaskReady(val task: Task): TaskScreenUIState
+    data class TaskReady(val taskModel: TaskModel): TaskScreenUIState
     object Unauthorized: TaskScreenUIState
     data class Error(val error: String): TaskScreenUIState
 }

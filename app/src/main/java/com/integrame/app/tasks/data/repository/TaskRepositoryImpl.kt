@@ -1,11 +1,7 @@
 package com.integrame.app.tasks.data.repository
 
-import com.integrame.app.core.data.local.entities.UserType
-import com.integrame.app.core.data.network.toSession
+import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.util.AuthRequestResult
-import com.integrame.app.core.util.RequestResult
-import com.integrame.app.login.data.network.SignInTeacherRequest
-import com.integrame.app.login.data.network.toIdentityCard
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.tasks.data.model.TaskCard
@@ -13,12 +9,17 @@ import com.integrame.app.tasks.domain.repository.TaskRepository
 import retrofit2.HttpException
 import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.tasks.data.model.GenericTask
+import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.MaterialTask
+import com.integrame.app.tasks.data.model.MaterialTaskModel
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.data.model.TaskModel
 
 
 class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
-    override suspend fun getPendingTasks(): List<TaskCard> {
-        return emptyList()
+    // TODO: Incorporar api
+    override suspend fun getPendingTaskCards(): AuthRequestResult<List<TaskCard>> {
+        return AuthRequestResult.Authorized(FakeResources.taskCards)
     }
 
     override suspend fun getTask(taskId: Int): AuthRequestResult<Task> {
@@ -29,6 +30,39 @@ class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
             AuthRequestResult.Error("Error code: $statusCode")
         } catch (e: Exception) {
             AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
+        }
+    }
+
+    override suspend fun getTaskModel(taskId: Int): AuthRequestResult<TaskModel> {
+        return when (val requestResult = getTask(taskId)) {
+            is AuthRequestResult.Authorized -> {
+                AuthRequestResult.Authorized(
+                    when(val task = requestResult.data) {
+                        is GenericTask -> {
+                            GenericTaskModel.fromGenericTask(task)
+                        }
+                        is MenuTask -> {
+                            MenuTaskModel(
+                                task.taskId,
+                                task.displayName,
+                                task.displayImage
+                            )
+                        }
+                        is MaterialTask -> {
+                            MaterialTaskModel(
+                                task.taskId,
+                                task.displayName,
+                                task.displayImage
+                            )
+                        }
+                        else -> {
+                            return AuthRequestResult.Error("Tipo de tarea desconocido: ${task.javaClass}")
+                        }
+                    }
+                )
+            }
+            is AuthRequestResult.Error -> AuthRequestResult.Error(requestResult.error)
+            is AuthRequestResult.Unauthorized -> AuthRequestResult.Unauthorized()
         }
     }
 
