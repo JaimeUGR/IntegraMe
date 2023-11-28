@@ -5,33 +5,45 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.integrame.app.core.data.model.content.ContentPack
-import com.integrame.app.tasks.data.model.GenericTaskStep
-import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MenuViewModel @Inject constructor(
+class SelectClassMenuViewModel @Inject constructor(
     private val menuTaskRepository: MenuTaskRepository
 ): ViewModel() {
     private lateinit var menuTaskModel: MenuTaskModel
+    var uiState: SelectClassMenuUIState by mutableStateOf(SelectClassMenuUIState.Loading)
+        private set
 
+    var classrooms: List<Int> = emptyList()
+        private set
 
+    suspend fun loadClassrooms(menuTaskModel: MenuTaskModel) {
+        this.menuTaskModel = menuTaskModel
+        uiState = SelectClassMenuUIState.Loading
 
+        viewModelScope.launch {
+            // Cargar la lista de aulas
+            classrooms = menuTaskRepository.getClassroomIds(menuTaskModel.taskId)
+            // Cambiar el estado a ListLoaded cuando se cargan las aulas
+            uiState = SelectClassMenuUIState.ListLoaded(classrooms)
+        }
+    }
 
+    /*
+    fun selectClassroom(classroom: ClassroomMenuTask) {
+        _selectedClassroom.value = classroom
+    }
+     */
 
 }
 
-sealed interface MenuTaskUIState {
-    object Loading: MenuTaskUIState
-
-
+sealed interface SelectClassMenuUIState {
+    object Loading : SelectClassMenuUIState
+    class ListLoaded(val classrooms: List<Int>?) : SelectClassMenuUIState
 
 }
-
