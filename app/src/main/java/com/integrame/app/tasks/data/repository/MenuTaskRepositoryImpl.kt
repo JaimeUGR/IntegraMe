@@ -28,10 +28,14 @@ class MenuTaskRepositoryImpl(
 
     }
 
-    // Para sacar la letra de cada clase
-    override fun getClassroomId(taskId: Int, classroomId: Int): Int {
-        return FakeResources.menuTasks[taskId].classroomMenus[classroomId].classroomId
+    // Para sacar la lista de ids de las aulas de las clases
+    override fun getClassroomIds(taskId: Int): List<Int> {
+        val classroomList = FakeResources.menuTasks[taskId].classroomMenus
 
+        // Utiliza map para obtener los ids de todas las ClassroomMenuTask en la lista
+        return classroomList.map { classroomMenuTask ->
+            classroomMenuTask.classroomId
+        }
     }
 
     // Para sacar la lista de menús de cada clase

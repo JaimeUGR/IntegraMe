@@ -1,30 +1,37 @@
 package com.integrame.app.tasks.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.integrame.app.core.data.model.content.ContentPack
+import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.domain.repository.MenuTaskRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-/*
+import javax.inject.Inject
 
-class MenuViewModel : ViewModel() {
+@HiltViewModel
+class MenuViewModel @Inject constructor(
+    private val menuTaskRepository: MenuTaskRepository
+): ViewModel() {
+    private lateinit var menuTaskModel: MenuTaskModel
 
-    private val _menuDayState = MutableStateFlow<MenuTask?>(null)
-    val menuDayState: StateFlow<MenuTask?> get() = _menuDayState
 
-    fun loadMenuDay(date: String) {
 
-        }
-    }
 
-    private fun getMenuDayFromRepository(date: String): MenuTask {
-        // Aquí obtendrías los datos del menú del día desde una fuente de datos (puede ser una base de datos, una API, etc.)
-        // Este es un ejemplo simulado
-        //return MenuTask;
-        TODO("Por implementar")
 
-    }
 }
 
- */
+sealed interface MenuTaskUIState {
+    object Loading: MenuTaskUIState
+
+
+
+}
+

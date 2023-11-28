@@ -9,7 +9,17 @@ data class MenuTaskModel(
     override val taskId: Int,
     override val displayName: String,
     override val displayImage: ImageContent
-): TaskModel()
+): TaskModel(){
+    companion object {
+        fun fromMenuTask(task: MenuTask): MenuTaskModel {
+            return MenuTaskModel(
+                taskId = task.taskId,
+                displayName = task.displayName,
+                displayImage = task.displayImage,
+            )
+        }
+    }
+}
 
 @Serializable
 data class MenuTask(

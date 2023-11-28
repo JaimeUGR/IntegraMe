@@ -23,8 +23,8 @@ interface MenuTaskRepository {
     // Para sacar la lista de clases que tiene la tarea de menú asociada
     fun getClassroomMenus(taskId: Int): List<ClassroomMenuTask>
 
-    // Para sacar la letra de cada clase
-    fun getClassroomId(taskId: Int, classroomId: Int): Int
+    // Para sacar una lista con los ids de las aulas
+    fun getClassroomIds(taskId: Int): List<Int>
 
     // Para sacar la lista de menús de cada clase
     fun getMenuOptions(taskId: Int, classroomId: Int): List<MenuOption>

@@ -1,7 +1,5 @@
 package com.integrame.app.tasks.ui.screens
 
-import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -10,43 +8,47 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.integrame.app.R
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
-import com.integrame.app.tasks.data.model.MenuTask
-import java.lang.System.exit
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.ui.viewmodel.SelectClassMenuViewModel
+import com.integrame.app.core.data.model.content.ContentProfile
+import com.integrame.app.core.data.network.toContentProfile
+import com.integrame.app.core.ui.components.DynamicImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectClassMenuScreen(
-    modifier: Modifier = Modifier,
-    task: MenuTask,
+    taskModel: MenuTaskModel,
+    contentProfile: ContentProfile,
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
     onPressChat: () -> Unit,
+    modifier: Modifier = Modifier,
+    selectClassMenuViewModel: SelectClassMenuViewModel = hiltViewModel()
 ) {
 
-    var numClaseActual by remember { mutableStateOf(0) }
+    var numClassroom = 0
     var padding = 10.dp
 
+    // Observar los cambios en el estado del ViewModel
+    val menuTaskTaskUIState = selectClassMenuViewModel.uiState
+
+    LaunchedEffect(Unit) {
+        selectClassMenuViewModel.loadClassrooms(taskModel)
+    }
 
     Scaffold(
         modifier = modifier
@@ -54,7 +56,7 @@ fun SelectClassMenuScreen(
 
         topBar = {
             StudentTaskTopAppBar(
-                title = task.displayName,
+                title = taskModel.displayName,
                 onNavigateBack = onNavigateBack,
                 onPressHome = onPressHome,
                 onPressChat = onPressChat
@@ -68,13 +70,13 @@ fun SelectClassMenuScreen(
                 .fillMaxSize()
                 .padding(16.dp),
         ) {
-            itemsIndexed(task.classroomMenus) { index, item ->
+            itemsIndexed(selectClassMenuViewModel.classrooms) { index, item ->
                 Button(
                     modifier = Modifier
                         .height(130.dp)
                         .padding(all = 10.dp),
                     onClick = {
-                        numClaseActual = index;
+                        numClassroom = index;
                     },
                     shape = RoundedCornerShape(26.dp)
                 ) {
@@ -83,12 +85,11 @@ fun SelectClassMenuScreen(
                             .weight(1f)
                             .height(75.dp)
                             .padding(all = padding),
-                        text = "La clase X",
+                        text = "La clase $numClassroom",
                         fontSize = MaterialTheme.typography.displaySmall.fontSize
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.clase),
-                        contentDescription = "Imagen de una clase",
+                    DynamicImage(
+                        image = FakeResources.remoteImages[0],
                         modifier = Modifier
                             .size(100.dp)
                             .padding(all = padding)
@@ -105,10 +106,12 @@ fun SelectClassMenuScreen(
 @Composable
 fun SelectClassMenuScreenPreview() {
     SelectClassMenuScreen(
-        task = FakeResources.menuTasks[5],
+        taskModel = MenuTaskModel.fromMenuTask(FakeResources.menuTasks[0]),
+        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
         onNavigateBack = { /*TODO*/ },
         onPressHome = { /*TODO*/ },
         onPressChat = { /*TODO*/ },
         modifier = Modifier.fillMaxSize()
     )
 }
+
