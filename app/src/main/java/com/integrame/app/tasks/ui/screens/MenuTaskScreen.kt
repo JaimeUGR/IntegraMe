@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,10 +24,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.tasks.data.model.MenuTaskModel
-import com.integrame.app.tasks.ui.viewmodel.SelectClassMenuViewModel
 import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.DynamicImage
+import com.integrame.app.tasks.ui.viewmodel.ClassroomListUIState
+import com.integrame.app.tasks.ui.viewmodel.GenericTaskUIState
+import com.integrame.app.tasks.ui.viewmodel.MenuTaskScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,18 +40,25 @@ fun MenuTaskScreen(
     onPressHome: () -> Unit,
     onPressChat: () -> Unit,
     modifier: Modifier = Modifier,
-    selectClassMenuViewModel: SelectClassMenuViewModel = hiltViewModel()
+    menuTaskViewModel: MenuTaskScreenViewModel = hiltViewModel()
 ) {
 
     var numClassroom = 0
     var padding = 10.dp
 
     // Observar los cambios en el estado del ViewModel
-    val menuTaskTaskUIState = selectClassMenuViewModel.uiState
+    val classroomListUIState = menuTaskViewModel.uiStateClassroomList
 
     LaunchedEffect(Unit) {
-        selectClassMenuViewModel.loadClassrooms(taskModel)
+        menuTaskViewModel.loadClassroomsIds(taskModel)
     }
+
+    if (classroomListUIState == ClassroomListUIState.Loading)
+    {
+        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        return
+    }
+
 
     Scaffold(
         modifier = modifier
@@ -70,13 +80,16 @@ fun MenuTaskScreen(
                 .fillMaxSize()
                 .padding(16.dp),
         ) {
-            itemsIndexed(selectClassMenuViewModel.classrooms) { index, item ->
+            itemsIndexed(
+                (classroomListUIState as ClassroomListUIState.ListLoaded).classroomsIds
+            ) { index, item ->
                 Button(
                     modifier = Modifier
                         .height(130.dp)
                         .padding(all = 10.dp),
                     onClick = {
                         numClassroom = index;
+                        menuTaskViewModel.updateSelectClassroom(numClassroom)
                     },
                     shape = RoundedCornerShape(26.dp)
                 ) {
@@ -85,7 +98,7 @@ fun MenuTaskScreen(
                             .weight(1f)
                             .height(75.dp)
                             .padding(all = padding),
-                        text = "La clase $numClassroom",
+                        text = "La clase ${numClassroom}",
                         fontSize = MaterialTheme.typography.displaySmall.fontSize
                     )
                     DynamicImage(

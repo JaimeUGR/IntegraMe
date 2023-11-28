@@ -20,12 +20,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,28 +38,49 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.R
 import com.integrame.app.core.data.fake.FakeResources
+import com.integrame.app.core.data.model.content.ContentProfile
+import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.ui.viewmodel.ClassroomListUIState
+import com.integrame.app.tasks.ui.viewmodel.MenuTaskScreenViewModel
+import com.integrame.app.tasks.ui.viewmodel.SelectMenuUIState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
 fun SelectMenuScreen(
-    modifier: Modifier = Modifier,
-    task: MenuTask,
+    taskModel: MenuTaskModel,
+    contentProfile: ContentProfile,
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
-    onPressChat: () -> Unit
+    onPressChat: () -> Unit,
+    modifier: Modifier = Modifier,
+    menuTaskScreenViewModel: MenuTaskScreenViewModel = hiltViewModel()
 ) {
 
-    var numMenu by remember { mutableStateOf(0) }
-    var numClassroom by remember { mutableStateOf(0) }
-    var requestAmount by remember { mutableStateOf(0) }
-    var classroomLetter = "A"
+    val selectMenuUIState = menuTaskScreenViewModel.uiStateSelectMenu
+
+
+    LaunchedEffect(Unit) {
+        menuTaskScreenViewModel.loadClassroomsIds(taskModel)
+        menuTaskScreenViewModel.loadClassroomsMenus(taskModel)
+    }
+
+    if (selectMenuUIState == SelectMenuUIState.Loading)
+    {
+        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        return
+    }
+
+    var numMenu = menuTaskScreenViewModel.numMenu
+
     var padding = 10.dp
 
     Scaffold(
@@ -66,7 +89,7 @@ fun SelectMenuScreen(
 
         topBar = {
             StudentTaskTopAppBar(
-                title = task.displayName,
+                title = taskModel.displayName,
                 onNavigateBack = onNavigateBack,
                 onPressHome = onPressHome,
                 onPressChat = onPressChat
@@ -97,17 +120,19 @@ fun SelectMenuScreen(
                             .weight(1f)
                             .height(75.dp)
                             .padding(all = padding),
-                        text = "La clase " + classroomLetter,
+                        text = "La clase " + menuTaskScreenViewModel.selectClassroom,
                         fontSize = MaterialTheme.typography.displaySmall.fontSize
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.clase),
-                        contentDescription = "Imagen de una clase",
+
+                    DynamicImage(
+                        image = FakeResources.remoteImages[0],
                         modifier = Modifier
                             .size(100.dp)
                             .padding(all = padding)
                     )
+
                 }
+
                 Row(
                     modifier = Modifier
                 ) {
@@ -120,7 +145,7 @@ fun SelectMenuScreen(
                         onClick = {
                             if (numMenu != 0) {
                                 numMenu--;
-                                requestAmount = task.classroomMenus[numClassroom.toInt()].menuOptions[numMenu].requestedAmount;
+                                menuTaskScreenViewModel.updateRememberAmount(menuTaskScreenViewModel.classroomMenus[numMenu].requestedAmount)
                                 println("numMenuActual: " + numMenu);
                             }
                         }
@@ -132,7 +157,7 @@ fun SelectMenuScreen(
                         )
                     }
                     DynamicImage(
-                        image = task.classroomMenus[numMenu].menuOptions[0].image,
+                        image = menuTaskScreenViewModel.classroomMenus[numMenu].image,
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp)
@@ -144,10 +169,9 @@ fun SelectMenuScreen(
                             .height(120.dp)
                             .padding(all = padding),
                         onClick = {
-                            if (numMenu + 1 != task.classroomMenus[numClassroom.toInt()].menuOptions.size) {
+                            if (numMenu + 1 != menuTaskScreenViewModel.classroomMenus.size ) {
                                 numMenu++;
-                                requestAmount = task.classroomMenus[numClassroom.toInt()].menuOptions[numMenu].requestedAmount;
-
+                                menuTaskScreenViewModel.updateRememberAmount(menuTaskScreenViewModel.classroomMenus[numMenu].requestedAmount)
                             }
                         }
                     ) {
@@ -159,7 +183,6 @@ fun SelectMenuScreen(
                     }
 
                 }
-
 
                 val listaRecursos = listOf(
                     R.drawable.cero,
@@ -188,11 +211,12 @@ fun SelectMenuScreen(
                             onClick = {
                                 //Se debe de actualizar la cantidadc que queremos de ese menu
                                 //task.classroomMenus[numClaseActual.toInt()].menuOptions[numMenuActual].setRequestedAmount(index);
-                                requestAmount = index;
+                                menuTaskScreenViewModel.updateRequestedAmount(numMenu, index)
+                                menuTaskScreenViewModel.rememberAmount = index;
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor =
-                                if(requestAmount == index){
+                                if(menuTaskScreenViewModel.rememberAmount == index){
                                     Color.Green
                                 }else{
                                     Color.Gray
@@ -215,7 +239,8 @@ fun SelectMenuScreen(
 @Composable
 fun SelectMenuScreenPreview() {
     SelectMenuScreen(
-        task = FakeResources.menuTasks[5],
+        taskModel = MenuTaskModel.fromMenuTask(FakeResources.menuTasks[0]),
+        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
         onNavigateBack = { /*TODO*/ },
         onPressHome = { /*TODO*/ },
         onPressChat = { /*TODO*/ },

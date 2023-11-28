@@ -91,12 +91,24 @@ fun TaskScreen(
                     )
                 }
                 is MenuTaskModel -> {
-                    SelectClassMenuScreen(
+                    /*
+                    MenuTaskScreen(
                         taskModel = taskModel,
                         contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
                         onNavigateBack = onNavigateBack,
                         onPressHome = { /*TODO*/ },
                         onPressChat = { /*TODO*/ })
+                    */
+
+                    SelectMenuScreen(
+                        taskModel = taskModel,
+                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        onNavigateBack = onNavigateBack,
+                        onPressHome = { /*TODO*/ },
+                        onPressChat = { /*TODO*/ }
+                    )
+
+
                 }
                 is MaterialTaskModel -> {
                     Text(text = "Material Task")
