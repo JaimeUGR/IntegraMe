@@ -24,18 +24,11 @@ class MenuTaskScreenViewModel @Inject constructor(
     var uiStateSelectMenu: SelectMenuUIState by mutableStateOf(SelectMenuUIState.Loading)
         private set
 
-    var classroomMenus: List<MenuOption> = emptyList()
-        private set
-
     var selectClassroom: Int = 0
 
     var rememberAmount: Int by mutableIntStateOf(0)
 
     var numMenu: Int = 0
-
-    init{
-
-    }
 
     fun updateSelectClassroom(idClassroom: Int){
         selectClassroom = idClassroom
@@ -46,12 +39,15 @@ class MenuTaskScreenViewModel @Inject constructor(
     }
 
     fun updateRequestedAmount(numMenu: Int, amount: Int){
-        var menuSelect = classroomMenus[numMenu]
 
-        menuSelect.setRequestAmount(amount)
+        if(uiStateSelectMenu is SelectMenuUIState.ListLoaded){
+            var classroomMenus = (uiStateSelectMenu as SelectMenuUIState.ListLoaded).classroomMenus
+            var menuSelect = classroomMenus[numMenu]
+
+            menuSelect.setRequestAmount(amount)
+        }
 
     }
-
 
     suspend fun loadClassroomsIds(menuTaskModel: MenuTaskModel) {
         this.menuTaskModel = menuTaskModel
@@ -65,7 +61,6 @@ class MenuTaskScreenViewModel @Inject constructor(
         }
     }
 
-
     suspend fun loadClassroomsMenus(menuTaskModel: MenuTaskModel) {
         this.menuTaskModel = menuTaskModel
         uiStateSelectMenu = SelectMenuUIState.Loading
@@ -78,14 +73,11 @@ class MenuTaskScreenViewModel @Inject constructor(
         }
     }
 
-
-
 }
 
 sealed interface ClassroomListUIState {
     object Loading : ClassroomListUIState
     data class ListLoaded(val classroomsIds: List<Int>) : ClassroomListUIState
-
 
 }
 
