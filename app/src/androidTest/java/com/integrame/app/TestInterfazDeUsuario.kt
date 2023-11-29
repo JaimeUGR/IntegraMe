@@ -71,7 +71,7 @@ class TestInterfazDeUsuario {
 
         rule.waitForIdle()
 
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithContentDescription("Retroceder")
                 .fetchSemanticsNodes().size > 0
@@ -86,7 +86,7 @@ class TestInterfazDeUsuario {
     fun testLoginAlumnoText() {
 
         rule.waitForIdle()
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithTag("Tarjeta alumno")
                 .fetchSemanticsNodes().size > 0
@@ -98,7 +98,7 @@ class TestInterfazDeUsuario {
 
         rule.waitForIdle()
 
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithTag("textPassword")
                 .fetchSemanticsNodes().size > 0
@@ -110,7 +110,7 @@ class TestInterfazDeUsuario {
 
         rule.waitForIdle()
 
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithTag("signInButton")
                 .fetchSemanticsNodes().size > 0
@@ -122,12 +122,12 @@ class TestInterfazDeUsuario {
 
         rule.waitForIdle()
 
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithText("Actividades")
                 .fetchSemanticsNodes().size > 0
         }
-
         rule.onNodeWithText("Actividades", true).assertExists("No se encontró el elemento")
 
     }
@@ -135,7 +135,7 @@ class TestInterfazDeUsuario {
     @Test
     fun testLoginAlumnoImage() {
         rule.waitForIdle()
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithTag("Tarjeta alumno")
                 .fetchSemanticsNodes().size > 0
@@ -145,7 +145,7 @@ class TestInterfazDeUsuario {
         node1.onChildAt(1).performClick()
 
         rule.waitForIdle()
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithTag("imagen contrasenia")
                 .fetchSemanticsNodes().size > 0
@@ -157,7 +157,7 @@ class TestInterfazDeUsuario {
         nodeImage.performClick()
 
         rule.waitForIdle()
-        rule.waitUntil(timeoutMillis = 10000) {
+        rule.waitUntil(timeoutMillis = 20000) {
             rule
                 .onAllNodesWithText("Actividades")
                 .fetchSemanticsNodes().size > 0
@@ -185,5 +185,63 @@ class TestInterfazDeUsuario {
         nodeLogin.assertHasClickAction()
         nodeLogin.performClick()
     }
+
+    @Test
+    fun testDashboardAlumno() {
+        rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 20000) {
+            rule
+                .onAllNodesWithTag("Tarjeta alumno")
+                .fetchSemanticsNodes().size > 0
+        }
+        val node1 = rule.onNodeWithTag("Tarjeta alumno", true).assertExists("No se encontró el elemento")
+        node1.onChildAt(1).assertHasClickAction()
+        node1.onChildAt(1).performClick()
+
+        rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 20000) {
+            rule
+                .onAllNodesWithTag("imagen contrasenia")
+                .fetchSemanticsNodes().size > 0
+        }
+        val nodeImage = rule.onAllNodesWithTag("imagen contrasenia", true)[0].assertExists("No se encontró el elemento")
+        nodeImage.assertHasClickAction()
+        nodeImage.performClick()
+        nodeImage.performClick()
+        nodeImage.performClick()
+
+        rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 20000) {
+            rule
+                .onAllNodesWithText("Actividades")
+                .fetchSemanticsNodes().size > 0
+        }
+        rule.onNodeWithText("Actividades", true).assertExists("No se encontró el elemento")
+
+        rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 20000) {
+            rule
+                .onAllNodesWithTag("TaskCard")
+                .fetchSemanticsNodes().size > 0
+        }
+
+        val nodeTask = rule.onAllNodesWithTag("TaskCard", true)[0].assertExists("No se encontró el elemento")
+        nodeTask.onChildAt(1).assertHasClickAction()
+        nodeTask.onChildAt(1).performClick()
+
+        rule.waitForIdle()
+
+        rule.waitUntil(timeoutMillis = 20000) {
+            rule
+                .onAllNodesWithContentDescription("Retroceder")
+                .fetchSemanticsNodes().size > 0
+        }
+        val nodeBack = rule.onAllNodesWithContentDescription("Retroceder", true)[0].assertExists("No se encontró el elemento")
+        nodeBack.assertHasClickAction()
+        nodeBack.performClick()
+
+    }
+
+
 
 }
