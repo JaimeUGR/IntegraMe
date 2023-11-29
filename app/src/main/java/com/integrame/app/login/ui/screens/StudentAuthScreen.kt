@@ -205,13 +205,11 @@ fun StudentAuthScreen(
                         onCardClick = {},
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-
                     Divider(
                         modifier = Modifier.padding(vertical = 16.dp),
                         color = Color.Gray,
                         thickness = 2.dp
                     )
-
                     when (authProfile.authMethod) {
                         is TextAuthMethod -> {
                             TextAuth(
@@ -235,7 +233,6 @@ fun StudentAuthScreen(
                     }
                 }
             }
-
         }
         is StudentAuthUIState.Loading -> {
             Box(modifier = modifier.fillMaxSize()) {
@@ -328,7 +325,6 @@ private fun ImageAuth(
 ) {
     val imagePassword = studentAuthViewModel.imagePassword
     val passwordLength = imagePassword.size
-
 
     LaunchedEffect(imagePassword) {
         if (passwordLength >= steps)

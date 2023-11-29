@@ -94,7 +94,6 @@ fun StudentLoginScreen(
             if (loginUIState is StudentLoginUIState.IdentitiesReady) {
                 val currentPage = studentLoginViewModel.currentPage
                 val totalPages = studentLoginViewModel.getTotalPages()
-
                 PaginatedBottomAppBar(
                     currentPage = currentPage + 1,
                     isFirstPage = currentPage == 0,
@@ -115,7 +114,6 @@ fun StudentLoginScreen(
                     .padding(innerPadding)
                     ) {
                     IdentityCardGrid(
-
                         studentLoginViewModel.getIdentityCardsPage(),
                         onIdentityCardClick = onIdentitySelected,
                         modifier = Modifier
@@ -123,7 +121,6 @@ fun StudentLoginScreen(
                             .semantics { testTag = "Tarjeta alumno" }
                     )
                 }
-
             }
             is StudentLoginUIState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
