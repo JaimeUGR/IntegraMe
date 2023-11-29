@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -79,7 +81,10 @@ fun MenuTaskScreen(
                 onPressHome = { /*TODO*/ },
                 onPressChat = { /*TODO*/ },
                 modifier = Modifier.fillMaxSize(),
-                menuTaskViewModel = menuTaskViewModel
+                menuTaskViewModel = menuTaskViewModel,
+                onClassroomSelected = {
+                  navController.navigate("menus")
+                }
             )
         }
 
@@ -87,7 +92,9 @@ fun MenuTaskScreen(
             SelectMenuScreen(
                 taskModel = taskModel,
                 contentProfile = contentProfile,
-                onNavigateBack = { /*TODO: Si o si*/ },
+                onNavigateBack = {
+                                 navController.navigate("classrooms")
+                },
                 onPressHome = { /*TODO*/ },
                 onPressChat = { /*TODO*/ },
                 modifier = Modifier.fillMaxSize(),
@@ -95,6 +102,8 @@ fun MenuTaskScreen(
             )
         }
     }
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,6 +114,7 @@ private fun SelectClassroomScreen(
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
     onPressChat: () -> Unit,
+    onClassroomSelected: () -> Unit,
     modifier: Modifier = Modifier,
     menuTaskViewModel: MenuTaskScreenViewModel = hiltViewModel()
 ) {
@@ -124,7 +134,6 @@ private fun SelectClassroomScreen(
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
         return
     }
-
 
     Scaffold(
         modifier = modifier
@@ -156,6 +165,7 @@ private fun SelectClassroomScreen(
                     onClick = {
                         numClassroom = index;
                         menuTaskViewModel.updateSelectClassroom(numClassroom)
+                        onClassroomSelected()
                     },
                     shape = RoundedCornerShape(26.dp)
                 ) {
@@ -179,7 +189,6 @@ private fun SelectClassroomScreen(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectMenuScreen(
@@ -193,7 +202,6 @@ private fun SelectMenuScreen(
 ) {
 
     val selectMenuUIState = menuTaskViewModel.uiStateSelectMenu
-
 
     LaunchedEffect(Unit) {
         menuTaskViewModel.loadClassroomsIds(taskModel)
