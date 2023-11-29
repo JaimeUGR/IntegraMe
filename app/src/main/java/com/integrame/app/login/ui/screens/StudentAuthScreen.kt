@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -47,11 +49,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -189,7 +193,10 @@ fun StudentAuthScreen(
                 }
             ) { innerPadding ->
                 Column(
-                    modifier = Modifier.padding(innerPadding).fillMaxSize().padding(16.dp),
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     IdentityCard(
@@ -218,7 +225,7 @@ fun StudentAuthScreen(
                                 steps = authProfile.authMethod.steps,
                                 images = authProfile.authMethod.imageList,
                                 contentProfile = authProfile.contentProfile,
-                                onAddImage = { studentAuthViewModel.onAddImage(it) },
+                                onSelectImage = { idx -> studentAuthViewModel.onAddImage(authProfile.authMethod.imageList[idx].id, idx) },
                                 onRemoveImage = { studentAuthViewModel.onRemoveImage() },
                                 onSignIn = { studentAuthViewModel.imageAuthSignIn(userId) },
                                 studentAuthViewModel = studentAuthViewModel
@@ -281,6 +288,9 @@ private fun TextAuth(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            leadingIcon = {
+                Icon(imageVector = Icons.Filled.Key, contentDescription = "Icono llave", tint = MaterialTheme.colorScheme.primary)
+            },
             trailingIcon = {
                 val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 val description = if (passwordVisible) "Mostrar contraseña" else "Ocultar contraseña"
@@ -309,60 +319,48 @@ private fun ImageAuth(
     steps: Int,
     images: List<ImageContent>,
     contentProfile: ContentProfile,
-    onAddImage: (Int) -> Int,
+    onSelectImage: (Int) -> Unit,
     onRemoveImage: () -> Unit,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
     studentAuthViewModel: StudentAuthViewModel = hiltViewModel()
 ) {
     val imagePassword = studentAuthViewModel.imagePassword
+    val passwordLength = imagePassword.size
+
+
+    LaunchedEffect(imagePassword) {
+        if (passwordLength >= steps)
+            onSignIn()
+    }
 
     Column(
         modifier = modifier,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics {
-                    contentDescription =
-                        "Te quedan por seleccionar ${steps - imagePassword.size} imágenes"
-                },
-            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.CenterHorizontally)
-        ) {
-            repeat(steps) { i ->
-                Box(modifier = Modifier
-                    .size(32.dp)
-                    .background(
-                        color =
-                        if (i == imagePassword.size) Color.Yellow
-                        else if (i > imagePassword.size) Color.Gray
-                        else Color.Green, shape = CircleShape
-                    )
-                )
-            }
-        }
         LazyVerticalGrid(
-            modifier = Modifier.padding(vertical = 24.dp),
+            modifier = Modifier.padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
             columns = GridCells.Fixed(2)
         ) {
-            items(images) { imageContent ->
+            itemsIndexed(images) { i, imageContent ->
+                // TODO: Añadir semantics
                 DynamicImage(
                     image = imageContent,
                     modifier = Modifier
-                        .border(4.dp, Color.Black)
+                        .height(100.dp)
                         .clickable(
                             onClickLabel = "Añadir imagen a contraseña",
                             role = Role.Image,
-                            enabled = imagePassword.size < steps
+                            enabled = passwordLength < steps
                         ) {
-                            if (onAddImage(imageContent.id) >= steps)
-                                onSignIn()
-                        }
+                            onSelectImage(i)
+                        },
+                    contentScale = ContentScale.Crop
                 )
             }
         }
+        // TODO: eliminar este botón cuando esté el check por imagen introducida
         IconButton(
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
             onClick = onRemoveImage,
@@ -374,6 +372,34 @@ private fun ImageAuth(
                 contentDescription = "Borrar una imagen",
                 tint = if (imagePassword.isNotEmpty()) Color.Red else Color.Gray
             )
+        }
+        Row(
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription =
+                        "Te quedan por seleccionar ${steps - passwordLength} imágenes"
+                },
+            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            repeat(steps) { i ->
+                Box(
+                    modifier = Modifier
+                        .border(2.dp, Color.Gray)
+                        .size(64.dp)
+                        .background(
+                            color = Color.LightGray
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (passwordLength > i)
+                        DynamicImage(
+                            image = images[imagePassword[i].second],
+                            contentScale = ContentScale.Crop
+                        )
+                }
+            }
         }
     }
 }
