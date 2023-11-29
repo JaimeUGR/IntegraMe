@@ -60,6 +60,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -280,7 +281,7 @@ private fun TextAuth(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().semantics { testTag = "textPassword" },
             value = textPassword,
             onValueChange = { onTextPasswordChange(it) },
             label = { Text(text = "Contraseña")},
@@ -302,7 +303,7 @@ private fun TextAuth(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            modifier = Modifier.fillMaxWidth(0.8f),
+            modifier = Modifier.fillMaxWidth(0.8f).semantics { testTag = "signInButton" },
             enabled = textPassword.isNotEmpty(),
             onClick = onSignIn
         ) {
@@ -355,7 +356,8 @@ private fun ImageAuth(
                             enabled = passwordLength < steps
                         ) {
                             onSelectImage(i)
-                        },
+                        }
+                        .semantics { testTag = "imagen contrasenia" },
                     contentScale = ContentScale.Crop
                 )
             }

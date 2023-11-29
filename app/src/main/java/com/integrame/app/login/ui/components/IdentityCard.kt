@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +49,7 @@ fun IdentityCard(
             )
             .padding(12.dp)
             .semantics(mergeDescendants = true) {},
+
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DynamicImage(

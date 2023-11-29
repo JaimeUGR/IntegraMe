@@ -41,6 +41,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -144,7 +145,7 @@ fun TeacherLoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { testTag = "textUser" },
                 value = nickname,
                 onValueChange = { teacherLoginViewModel.onNicknameChange(it) },
                 label = { Text(text = "Usuario")},
@@ -153,7 +154,7 @@ fun TeacherLoginScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { testTag = "textPassword" },
                 value = password,
                 onValueChange = { teacherLoginViewModel.onPasswordChange(it) },
                 label = { Text(text = "Contraseña")},
@@ -177,7 +178,7 @@ fun TeacherLoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { teacherLoginViewModel.onSignIn() },
-                modifier = Modifier.fillMaxWidth(0.8f),
+                modifier = Modifier.fillMaxWidth(0.8f).semantics { testTag = "signInButton" },
                 enabled = nickname.isNotEmpty() &&
                         password.isNotEmpty() &&
                         teacherLoginViewModel.authProcessUIState == AuthProcessUIState.Pending
