@@ -93,7 +93,7 @@ fun MenuTaskScreen(
                 taskModel = taskModel,
                 contentProfile = contentProfile,
                 onNavigateBack = {
-                                 navController.navigate("classrooms")
+                                 navController.popBackStack()
                 },
                 onPressHome = { /*TODO*/ },
                 onPressChat = { /*TODO*/ },
@@ -370,20 +370,3 @@ private fun SelectMenuScreen(
         }
     }
 }
-
-/*
-@Preview(showSystemUi = true)
-@Composable
-fun MenuTaskScreenPreview() {
-    MenuTaskScreen(
-        taskModel = MenuTaskModel.fromMenuTask(FakeResources.menuTasks[0]),
-        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
-        onNavigateBack = { /*TODO*/ },
-        onPressHome = { /*TODO*/ },
-        onPressChat = { /*TODO*/ },
-        modifier = Modifier.fillMaxSize()
-    )
-}
-
- */
-
