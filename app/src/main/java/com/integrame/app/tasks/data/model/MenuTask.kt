@@ -14,7 +14,7 @@ data class MenuTaskModel(
 data class MenuTask(
     override val taskId: Int,
     override val displayName: String,
-    override val displayImage: ImageContent,
+    override val displayImage: RemoteImage,
     val classroomMenus: List<ClassroomMenuTask>
 ): Task()
 
@@ -27,7 +27,7 @@ data class ClassroomMenuTask(
 @Serializable
 data class MenuOption(
     val name: String,
-    val image: ImageContent
+    val image: RemoteImage
 ) {
     var requestedAmount: Int = 0
         private set

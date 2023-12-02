@@ -7,7 +7,10 @@ import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.teacher.data.model.task.TaskInfo
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -36,6 +39,14 @@ interface IntegraMeApi {
     @Headers("Authorized")
     @GET("auth/students/{userId}/profile")
     suspend fun getStudentProfile(@Path("userId") userId: Int): StudentProfile
+
+    @Headers("Authorized")
+    @GET("auth/students/tasks/{taskId}")
+    suspend fun getMenuTask(@Path("taskId") taskId : Int): MenuTask
+
+    @POST("tasks/update")
+    suspend fun postTaskInfo(@Body taskInfo: TaskInfo): TaskInfo
+
 
     @Headers("Authorized")
     @GET("auth/students/tasks/{taskId}")
