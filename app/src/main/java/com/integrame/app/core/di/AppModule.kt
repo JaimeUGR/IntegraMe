@@ -12,6 +12,7 @@ import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -70,6 +71,14 @@ object AppModule {
     @Singleton
     fun provideGenericTaskRepositoryImpl(): GenericTaskRepositoryImpl {
         return GenericTaskRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMenuTaskRepositoryImpl(
+        api: IntegraMeApi
+    ): MenuTaskRepositoryImpl {
+        return MenuTaskRepositoryImpl(api)
     }
 
     @Provides

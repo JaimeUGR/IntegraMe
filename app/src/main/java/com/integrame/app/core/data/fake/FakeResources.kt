@@ -80,10 +80,10 @@ object FakeResources {
             i,
             "Tarea Menú $i",
             remoteImages[i % remoteImages.size],
-            List(minOf(4, i + 1)) { j ->
+            List(minOf(4, i + 5)) { j ->
                 ClassroomMenuTask(
                     j,
-                    List(j) { k ->
+                    List(j + 5){ k ->
                         MenuOption(
                             "Menú $j-$k",
                             remoteImages[k % remoteImages.size]

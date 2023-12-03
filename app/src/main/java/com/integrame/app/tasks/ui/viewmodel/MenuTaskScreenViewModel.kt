@@ -1,129 +1,88 @@
 package com.integrame.app.tasks.ui.viewmodel
 
-<<<<<<< HEAD
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.integrame.app.login.domain.repository.AuthRepository
-import com.integrame.app.tasks.data.model.MenuTask
-import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
+import com.integrame.app.tasks.data.model.MenuOption
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MenuTaskViewModel @Inject constructor(
-    private val menuTaskRepository : TaskRepositoryImpl
+class MenuTaskScreenViewModel @Inject constructor(
+    private val menuTaskRepository: MenuTaskRepository
+): ViewModel() {
+    private lateinit var menuTaskModel: MenuTaskModel
+    var uiStateClassroomList: ClassroomListUIState by mutableStateOf(ClassroomListUIState.Loading)
+        private set
 
-) : ViewModel() {
-    //Estado del ViewModel
-    private val _menutaskState = mutableStateOf(MenuTaskUIState.Loading)
-    val menutaskState: State<MenuTaskUIState> get() = _menutaskState
+    var uiStateSelectMenu: SelectMenuUIState by mutableStateOf(SelectMenuUIState.Loading)
+        private set
 
-    //Datos de la tarea de comedor
-    private var menuTask: MenuTask? = null
+    var selectClassroom: Int = 0
 
-    //Índice actual de la comida seleccionada
-    private var selectedFoodIndex = 0
+    var rememberAmount: Int by mutableIntStateOf(0)
 
+    var numMenu: Int = 0
 
-    //Inicialización del ViewModel
-    init{
+    fun updateSelectClassroom(idClassroom: Int){
+        selectClassroom = idClassroom
+    }
+
+    fun updateRememberAmount(amount: Int){
+        rememberAmount = amount
+    }
+
+    fun updateRequestedAmount(numMenu: Int, amount: Int){
+
+        if(uiStateSelectMenu is SelectMenuUIState.ListLoaded){
+            var classroomMenus = (uiStateSelectMenu as SelectMenuUIState.ListLoaded).classroomMenus
+            var menuSelect = classroomMenus[numMenu]
+
+            menuSelect.setRequestAmount(amount)
+        }
 
     }
 
-    //Carga de configuración inicial de la tarea
-    private fun loadInitialMenuTask(){
-        //Simular carga de datos iniciales
-    }
+    suspend fun loadClassroomsIds(menuTaskModel: MenuTaskModel) {
+        this.menuTaskModel = menuTaskModel
+        uiStateClassroomList = ClassroomListUIState.Loading
 
-    //Cargar tarea de comedor específica
-    suspend fun loadMenuTask(taskId: Int){
         viewModelScope.launch {
-            try {
-                val menuTask = menuTaskRepository.getMenuTask(taskId)
-                //onMenuTaskLoaded(menuTask)
-            }catch (e: Exception){
-                //_menutaskState.value = MenuTaskUIState.Error(e.message ?: "Error")
-
-            }
+            // Cargar la lista de aulas
+            val classroomsIds = menuTaskRepository.getClassroomIds(menuTaskModel.taskId)
+            // Cambiar el estado a ListLoaded cuando se cargan las aulas
+            uiStateClassroomList = ClassroomListUIState.ListLoaded(classroomsIds)
         }
     }
 
-    //Acción cuando se carga una tarea de comedor
-    private suspend fun onMenuTaskLoaded(menuTask: MenuTask){
-        this.menuTask = menuTask
-        //Actualizar el estado del ViewModel con los datos de la tarea del comedor
-        //_menutaskState.value = MenuTaskUIState.Loaded(menuTask)
-    }
+    suspend fun loadClassroomsMenus(menuTaskModel: MenuTaskModel) {
+        this.menuTaskModel = menuTaskModel
+        uiStateSelectMenu = SelectMenuUIState.Loading
 
-    //Acciones para cambiar la comida seleccionada
-    fun nextFood(){
-        selectedFoodIndex = (selectedFoodIndex + 1) % (menuTask?.classroomMenus?.get(0)?.menuOptions?.size ?: 1)
-        //updateComedorState
-    }
-
-    fun previousFood(){
-        selectedFoodIndex = if (selectedFoodIndex > 0) selectedFoodIndex -1 else menuTask?.classroomMenus?.get(0)?.menuOptions?.size?.minus(1) ?: 0
-        //updateComedorState
-    }
-
-    // Acción para cambiar la cantidad de comida seleccionada
-    fun changeFoodQuantity(quantity : Int){
-
-    }
-
-    // Actualizar el esstado del ViewModel después de cambiar la comida seleccionada
-    private fun updateMenuTaskState(){
-        // Actualizar el estao del ViewModel con los nuevos datos
-        //_menutaskState.value = MenuTaskUIState.Loaded(menuTask, selectedFoodIndex)
-    }
-
-
-}
-
-
-// Estado del UI del MenuTaskViewModel
-sealed class MenuTaskUIState {
-    object Loading : MenuTaskUIState()
-    data class Loaded(val menuTask: MenuTask, val selectedFoodIndex: Int = 0) : MenuTaskUIState()
-    data class Error(val errorMessage: String) : MenuTaskUIState()
-}
-
-
-
-=======
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.integrame.app.tasks.data.model.MenuTask
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-/*
-
-class MenuViewModel : ViewModel() {
-
-    private val _menuDayState = MutableStateFlow<MenuTask?>(null)
-    val menuDayState: StateFlow<MenuTask?> get() = _menuDayState
-
-    fun loadMenuDay(date: String) {
-
+        viewModelScope.launch {
+            // Cargar la lista de aulas
+            val classroomMenus = menuTaskRepository.getMenuOptions(menuTaskModel.taskId, selectClassroom )
+            // Cambiar el estado a ListLoaded cuando se cargan las aulas
+            uiStateSelectMenu = SelectMenuUIState.ListLoaded(classroomMenus)
         }
     }
 
-    private fun getMenuDayFromRepository(date: String): MenuTask {
-        // Aquí obtendrías los datos del menú del día desde una fuente de datos (puede ser una base de datos, una API, etc.)
-        // Este es un ejemplo simulado
-        //return MenuTask;
-        TODO("Por implementar")
-
-    }
 }
 
- */
->>>>>>> adced9643fedba8407d43913dde986ee9eaf5a7f
+sealed interface ClassroomListUIState {
+    object Loading : ClassroomListUIState
+    data class ListLoaded(val classroomsIds: List<Int>) : ClassroomListUIState
+
+}
+
+sealed interface SelectMenuUIState{
+    object Loading : SelectMenuUIState
+    data class ListLoaded(val classroomMenus: List<MenuOption>) : SelectMenuUIState
+
+}
