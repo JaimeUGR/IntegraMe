@@ -56,9 +56,21 @@ object FakeResources {
 
     val taskCards: List<TaskCard>
 
+    val networkImages: List<NetworkImageContent> = listOf(
+        NetworkImageContent(0, "ASD"),
+        NetworkImageContent(1, "BSD"),
+        NetworkImageContent(2, "BSD"),
+        NetworkImageContent(3, "BSD")
+    )
+
     val contentProfiles = List(NUM_STUDENTS) { i ->
         NetworkContentProfile(
-            contentAdaptationFormats = listOf(ContentAdaptationFormats.Text, ContentAdaptationFormats.Audio, ContentAdaptationFormats.Video, ContentAdaptationFormats.Image),
+            contentAdaptationFormats = listOf(
+                ContentAdaptationFormats.Text,
+                ContentAdaptationFormats.Audio,
+                ContentAdaptationFormats.Video,
+                ContentAdaptationFormats.Image
+            ),
             interactionMethods = listOf(InteractionMethods.Default)
         )
     }
@@ -193,3 +205,5 @@ object FakeResources {
             ImageAuthMethod(steps = 3, List(4) { j -> remoteImages[j % remoteImages.size] })
     }
 }
+
+

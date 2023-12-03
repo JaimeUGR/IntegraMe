@@ -25,7 +25,7 @@ data class MenuTaskModel(
 data class MenuTask(
     override val taskId: Int,
     override val displayName: String,
-    override val displayImage: ImageContent,
+    override val displayImage: RemoteImage,
     val classroomMenus: List<ClassroomMenuTask>
 ): Task()
 
