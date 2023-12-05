@@ -11,8 +11,11 @@ import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.login.domain.repository.AuthRepository
 import com.integrame.app.login.domain.repository.IdentityCardRepository
 import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
-import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.MaterialTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
+import com.integrame.app.tasks.domain.repository.GenericTaskRepository
+import com.integrame.app.tasks.domain.repository.MaterialTaskRepository
+import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
 import com.integrame.app.tasks.domain.repository.GenericTaskRepository
 import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import com.integrame.app.tasks.domain.repository.TaskRepository
@@ -48,6 +51,12 @@ abstract class RepositoryModule {
     abstract fun bindMenuTaskRepository(
         menuTaskRepositoryImpl: MenuTaskRepositoryImpl
     ): MenuTaskRepository
+  
+    @Binds
+    @Singleton
+    abstract fun bindMaterialTaskRepository(
+        materialTaskRepositoryImpl: MaterialTaskRepositoryImpl
+    ): MaterialTaskRepository
 
     @Binds
     @Singleton

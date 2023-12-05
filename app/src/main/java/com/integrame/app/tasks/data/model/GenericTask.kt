@@ -30,9 +30,8 @@ data class GenericTask(
     override val taskId: Int,
     override val displayName: String,
     override val displayImage: RemoteImage,
-    val steps: List<GenericTaskStep>,
-    val reward: DynamicContent,
-    var isCompleted: Boolean
+    override val reward: DynamicContent,
+    val steps: List<GenericTaskStep>
 ): Task()
 
 @Serializable

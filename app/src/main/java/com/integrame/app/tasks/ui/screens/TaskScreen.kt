@@ -102,7 +102,14 @@ fun TaskScreen(
                     )
                 }
                 is MaterialTaskModel -> {
-                    Text(text = "Material Task")
+                    MaterialTaskScreen(
+                        taskModel = taskModel,
+                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        onNavigateBack = onNavigateBack,
+                        onPressHome = { /*TODO*/ },
+                        onPressChat = { /*TODO*/ },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }
