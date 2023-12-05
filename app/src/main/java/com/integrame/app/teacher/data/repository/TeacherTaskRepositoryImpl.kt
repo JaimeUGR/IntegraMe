@@ -85,8 +85,8 @@ class TeacherTaskRepositoryImpl (
     fun updateMenuTask(displayName: String, displayImage: RemoteImage) {
         if (_taskInfoFlow.value.task is MenuTask) {
             val menuTask = _taskInfoFlow.value.task as MenuTask
-            menuTask.setDisplayName(displayName)
-            menuTask.setDisplayImage(displayImage)
+            menuTask.displayName = displayName
+            menuTask.displayImage = displayImage
 
             // Actualizar el flujo con la nueva tarea
             _taskInfoFlow.value = _taskInfoFlow.value.copy(task = menuTask)

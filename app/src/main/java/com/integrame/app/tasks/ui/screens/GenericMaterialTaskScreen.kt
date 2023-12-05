@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.ui.components.DynamicImage
-import com.integrame.app.core.ui.components.PaginatedBottomAppBar
+import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
 import com.integrame.app.ui.theme.IntegraMeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
