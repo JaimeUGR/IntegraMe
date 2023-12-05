@@ -15,6 +15,9 @@ import com.integrame.app.tasks.data.repository.MaterialTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
 import com.integrame.app.tasks.domain.repository.GenericTaskRepository
 import com.integrame.app.tasks.domain.repository.MaterialTaskRepository
+import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
+import com.integrame.app.tasks.domain.repository.GenericTaskRepository
+import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import com.integrame.app.tasks.domain.repository.TaskRepository
 import dagger.Binds
 import dagger.Module
@@ -43,6 +46,12 @@ abstract class RepositoryModule {
         genericTaskRepositoryImpl: GenericTaskRepositoryImpl
     ): GenericTaskRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindMenuTaskRepository(
+        menuTaskRepositoryImpl: MenuTaskRepositoryImpl
+    ): MenuTaskRepository
+  
     @Binds
     @Singleton
     abstract fun bindMaterialTaskRepository(

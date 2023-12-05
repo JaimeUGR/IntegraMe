@@ -2,6 +2,7 @@ package com.integrame.app.tasks.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -91,7 +92,14 @@ fun TaskScreen(
                     )
                 }
                 is MenuTaskModel -> {
-                    Text(text = "Menu Task")
+                    MenuTaskScreen(
+                        taskModel = taskModel,
+                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        onNavigateBack = onNavigateBack,
+                        onPressHome = { /*TODO*/ },
+                        onPressChat = { /*TODO*/ },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
                 is MaterialTaskModel -> {
                     MaterialTaskScreen(

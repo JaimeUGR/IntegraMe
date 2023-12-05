@@ -15,7 +15,6 @@ import com.integrame.app.tasks.data.model.MaterialTaskModel
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.TaskModel
 
-
 class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
     // TODO: Incorporar api
     override suspend fun getPendingTaskCards(): AuthRequestResult<List<TaskCard>> {

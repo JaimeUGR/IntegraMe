@@ -1,30 +1,88 @@
 package com.integrame.app.tasks.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.integrame.app.tasks.data.model.MenuTask
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.integrame.app.tasks.data.model.MenuOption
+import com.integrame.app.tasks.data.model.MenuTaskModel
+import com.integrame.app.tasks.domain.repository.MenuTaskRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-/*
+import javax.inject.Inject
 
-class MenuViewModel : ViewModel() {
+@HiltViewModel
+class MenuTaskScreenViewModel @Inject constructor(
+    private val menuTaskRepository: MenuTaskRepository
+): ViewModel() {
+    private lateinit var menuTaskModel: MenuTaskModel
+    var uiStateClassroomList: ClassroomListUIState by mutableStateOf(ClassroomListUIState.Loading)
+        private set
 
-    private val _menuDayState = MutableStateFlow<MenuTask?>(null)
-    val menuDayState: StateFlow<MenuTask?> get() = _menuDayState
+    var uiStateSelectMenu: SelectMenuUIState by mutableStateOf(SelectMenuUIState.Loading)
+        private set
 
-    fun loadMenuDay(date: String) {
+    var selectClassroom: Int = 0
 
+    var rememberAmount: Int by mutableIntStateOf(0)
+
+    var numMenu: Int = 0
+
+    fun updateSelectClassroom(idClassroom: Int){
+        selectClassroom = idClassroom
+    }
+
+    fun updateRememberAmount(amount: Int){
+        rememberAmount = amount
+    }
+
+    fun updateRequestedAmount(numMenu: Int, amount: Int){
+
+        if(uiStateSelectMenu is SelectMenuUIState.ListLoaded){
+            var classroomMenus = (uiStateSelectMenu as SelectMenuUIState.ListLoaded).classroomMenus
+            var menuSelect = classroomMenus[numMenu]
+
+            menuSelect.setRequestAmount(amount)
+        }
+
+    }
+
+    suspend fun loadClassroomsIds(menuTaskModel: MenuTaskModel) {
+        this.menuTaskModel = menuTaskModel
+        uiStateClassroomList = ClassroomListUIState.Loading
+
+        viewModelScope.launch {
+            // Cargar la lista de aulas
+            val classroomsIds = menuTaskRepository.getClassroomIds(menuTaskModel.taskId)
+            // Cambiar el estado a ListLoaded cuando se cargan las aulas
+            uiStateClassroomList = ClassroomListUIState.ListLoaded(classroomsIds)
         }
     }
 
-    private fun getMenuDayFromRepository(date: String): MenuTask {
-        // Aquí obtendrías los datos del menú del día desde una fuente de datos (puede ser una base de datos, una API, etc.)
-        // Este es un ejemplo simulado
-        //return MenuTask;
-        TODO("Por implementar")
+    suspend fun loadClassroomsMenus(menuTaskModel: MenuTaskModel) {
+        this.menuTaskModel = menuTaskModel
+        uiStateSelectMenu = SelectMenuUIState.Loading
 
+        viewModelScope.launch {
+            // Cargar la lista de aulas
+            val classroomMenus = menuTaskRepository.getMenuOptions(menuTaskModel.taskId, selectClassroom )
+            // Cambiar el estado a ListLoaded cuando se cargan las aulas
+            uiStateSelectMenu = SelectMenuUIState.ListLoaded(classroomMenus)
+        }
     }
+
 }
 
- */
+sealed interface ClassroomListUIState {
+    object Loading : ClassroomListUIState
+    data class ListLoaded(val classroomsIds: List<Int>) : ClassroomListUIState
+
+}
+
+sealed interface SelectMenuUIState{
+    object Loading : SelectMenuUIState
+    data class ListLoaded(val classroomMenus: List<MenuOption>) : SelectMenuUIState
+
+}
