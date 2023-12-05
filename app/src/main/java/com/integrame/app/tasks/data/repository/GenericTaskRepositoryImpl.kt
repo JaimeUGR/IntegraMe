@@ -13,18 +13,18 @@ class GenericTaskRepositoryImpl(
     override fun getTaskModel(taskId: Int): GenericTaskModel {
         return GenericTaskModel(
             taskId = taskId,
-            displayName = FakeResources.genericTasks[4].displayName,
-            displayImage = FakeResources.genericTasks[4].displayImage,
-            steps = FakeResources.genericTasks[4].steps.size
+            displayName = FakeResources.genericTasks[taskId].displayName,
+            displayImage = FakeResources.genericTasks[taskId].displayImage,
+            steps = FakeResources.genericTasks[taskId].steps.size
         )
     }
 
     override fun getNumSteps(taskId: Int): Int {
-        return FakeResources.genericTasks[4].steps.size
+        return FakeResources.genericTasks[taskId].steps.size
     }
 
     override fun getStep(taskId: Int, stepNumber: Int): GenericTaskStep {
-        return FakeResources.genericTasks[4].steps[stepNumber]
+        return FakeResources.genericTasks[taskId].steps[stepNumber]
     }
 
     override fun toggleStepCompleted(taskId: Int, stepNumber: Int): Boolean {
@@ -34,6 +34,6 @@ class GenericTaskRepositoryImpl(
     }
 
     override fun getReward(taskId: Int): DynamicContent {
-        return FakeResources.genericTasks[4].reward
+        return FakeResources.genericTasks[taskId].reward
     }
 }

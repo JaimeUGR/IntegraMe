@@ -18,6 +18,7 @@ import com.integrame.app.tasks.data.model.ClassroomMenuTask
 import com.integrame.app.tasks.data.model.GenericTask
 import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.Material
+import com.integrame.app.tasks.data.model.MaterialProperty
 import com.integrame.app.tasks.data.model.MaterialRequest
 import com.integrame.app.tasks.data.model.MaterialTask
 import com.integrame.app.tasks.data.model.MenuOption
@@ -68,6 +69,7 @@ object FakeResources {
             i,
             "Tarea Menú $i",
             remoteImages[i % remoteImages.size],
+            reward = remoteImages[0],
             List(minOf(4, i + 1)) { j ->
                 ClassroomMenuTask(
                     j,
@@ -87,6 +89,7 @@ object FakeResources {
             i,
             "Tarea Genérica $i",
             remoteImages[i % remoteImages.size],
+            reward = remoteImages[0],
             List(minOf(4, i + 1)) { j ->
                 GenericTaskStep(
                     "Paso $j",
@@ -98,9 +101,7 @@ object FakeResources {
                         AudioContent("", -1)
                     )
                 )
-            },
-            remoteImages[i % remoteImages.size],
-            false
+            }
         )
     }
 
@@ -109,11 +110,13 @@ object FakeResources {
             i,
             "Tarea Material $i",
             remoteImages[i % remoteImages.size],
+            reward = remoteImages[0],
             List(minOf(4, i + 1)) { j ->
                 MaterialRequest(
                     Material(
+                        TextContent("Material $j"),
                         remoteImages[j % remoteImages.size],
-                        properties = emptyList()
+                        property = if (j % 2 == 0) null else MaterialProperty(TextContent("Propiedad $j"), remoteImages[j % remoteImages.size])
                     ),
                     j,
                     remoteImages[j % remoteImages.size],
@@ -139,38 +142,33 @@ object FakeResources {
         }
 
         tasks = listOf(
-            genericTasks[4],
+            genericTasks[0],
+            genericTasks[1],
+            genericTasks[2],
+            genericTasks[3],
             menuTasks[0],
+            menuTasks[1],
+            menuTasks[2],
+            menuTasks[3],
             materialTasks[0],
-            materialTasks[1]
+            materialTasks[1],
+            materialTasks[2],
+            materialTasks[3]
         )
 
-        taskCards = List(NUM_TASKS) { i ->
-            if (i % 3 == 0) {
-                TaskCard(
-                    i,
-                    TaskState.Failed,
-                    "Hacer la cama",
-                    remoteImages[0],
-                    TaskType.GenericTask
-                )
-            } else if (i % 3 == 1) {
-                TaskCard(
-                    i,
-                    TaskState.Pending,
-                    "Menú comedor pero tiene un nombre extremadamente largo",
-                    remoteImages[1],
-                    TaskType.MenuTask
-                )
-            } else {
-                TaskCard(
-                    i,
-                    TaskState.Completed,
-                    "Petición almacén",
-                    remoteImages[2],
-                    TaskType.MaterialTask
-                )
-            }
+        taskCards = List(tasks.size) { i ->
+            TaskCard(
+                i,
+                if (i % 3 == 0) TaskState.Pending else if (i % 3 == 1) TaskState.Completed else TaskState.Failed,
+                tasks[i].displayName,
+                tasks[i].displayImage,
+                taskType = when(tasks[i]) {
+                    is MaterialTask -> TaskType.MaterialTask
+                    is GenericTask -> TaskType.GenericTask
+                    is MenuTask -> TaskType.MenuTask
+                    else -> TaskType.GenericTask
+                }
+            )
         }
     }
 

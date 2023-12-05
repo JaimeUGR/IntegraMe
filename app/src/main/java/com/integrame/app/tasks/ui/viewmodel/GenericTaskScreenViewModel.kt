@@ -53,7 +53,7 @@ class GenericTaskScreenViewModel @Inject constructor(
         val nextStepNumber = (genericTaskUIState as GenericTaskUIState.InStep).stepNumber + 1
 
         // Es la recompensa
-        if (nextStepNumber == taskModel.steps) {
+        if (nextStepNumber >= taskModel.steps) {
             genericTaskUIState = GenericTaskUIState.InReward
             return
         }

@@ -52,7 +52,8 @@ class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
                             MaterialTaskModel(
                                 task.taskId,
                                 task.displayName,
-                                task.displayImage
+                                task.displayImage,
+                                task.request.size
                             )
                         }
                         else -> {

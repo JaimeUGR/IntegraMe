@@ -1,5 +1,6 @@
 package com.integrame.app.tasks.data.model
 
+import com.integrame.app.core.data.model.content.DynamicContent
 import com.integrame.app.core.data.model.content.ImageContent
 import kotlinx.serialization.Serializable
 
@@ -31,6 +32,7 @@ abstract class Task {
     abstract val taskId: Int
     abstract val displayName: String
     abstract val displayImage: ImageContent
+    abstract val reward: DynamicContent
 }
 
 abstract class TaskModel {

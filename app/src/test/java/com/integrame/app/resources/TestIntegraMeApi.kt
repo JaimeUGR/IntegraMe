@@ -12,13 +12,14 @@ import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.Task
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 
-object TestIntegraMeApi : IntegraMeApi {
+object TestIntegraMeApi: IntegraMeApi {
     override suspend fun getStudentsIdentityCards(): List<NetworkIdentityCard> {
         delay(1000)
         return FakeResources.identityCardList
@@ -80,5 +81,9 @@ object TestIntegraMeApi : IntegraMeApi {
     override suspend fun getStudentProfile(userId: Int): StudentProfile {
         delay(1000)
         return FakeResources.studentProfiles[0]
+    }
+
+    override suspend fun getTask(taskId: Int): Task {
+        TODO("Not yet implemented")
     }
 }
