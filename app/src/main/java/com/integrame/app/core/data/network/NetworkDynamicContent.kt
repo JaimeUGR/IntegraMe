@@ -4,6 +4,7 @@ import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
 import kotlinx.serialization.Serializable
 
+// TODO: Reemplazado por @Serializable ImageContent
 @Serializable
 class NetworkImageContent(
     val id: Int,

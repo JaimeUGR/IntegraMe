@@ -82,8 +82,8 @@ fun PreviewStudentTopAppBar() {
         avatar = RemoteImage("https://imgs.search.brave.com/nPvo3y2Adg-zq-UJjMmuz8edYP140xQI84q0UYb3a3s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvY29v/bC1wcm9maWxlLXBp/Y3R1cmUtcWVqN2oy/ZWt1b3I5M3NzNy5q/cGc"
             , 1, ""),
         contentProfile = ContentProfile(
-            UserInteractionMethods(true, true, true, true, true, true),
-            UserContentAdaptationFormats(true, true, true, true)
+            contentAdaptationFormats = UserContentAdaptationFormats(true, true, true, true),
+            interactionMethods = UserInteractionMethods(true, true, true, true, true, true)
         )
     )
 

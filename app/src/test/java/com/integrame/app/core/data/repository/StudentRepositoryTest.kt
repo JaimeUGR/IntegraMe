@@ -1,8 +1,7 @@
 package com.integrame.app.core.data.repository
 
 import com.integrame.app.core.data.model.content.RemoteImage
-import com.integrame.app.core.data.repository.StudentRespositoryImpl
-import com.integrame.app.resources.TestIntegraMeApi
+import com.integrame.app.core.data.network.api.FakeIntegraMeApi
 import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.ImageAuthMethod
 import com.integrame.app.login.data.network.NetworkTextAuthMethod
@@ -12,7 +11,7 @@ import org.junit.Assert.*
 
 class StudentRepositoryTest {
 
-    val studentRepositoryImpl = StudentRespositoryImpl(TestIntegraMeApi)
+    val studentRepositoryImpl = StudentRespositoryImpl(FakeIntegraMeApi)
 
     @Test
     fun TestGetTextAuthMethod() = runTest {
