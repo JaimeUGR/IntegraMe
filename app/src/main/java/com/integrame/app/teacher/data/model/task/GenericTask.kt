@@ -8,7 +8,7 @@ data class GenericTask(
     override val displayName: String,
     override val displayImage: ImageContent,
     val steps: List<GenericTaskStep>,
-): Task(){
+): Task() {
 
     // Métodos para realizar las actualizaciones en GenericTask
     fun setDisplayName(newDisplayName: String): GenericTask {

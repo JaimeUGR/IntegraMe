@@ -44,7 +44,8 @@ class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
                             MenuTaskModel(
                                 task.taskId,
                                 task.displayName,
-                                task.displayImage
+                                task.displayImage,
+                                task.reward
                             )
                         }
                         is MaterialTask -> {
@@ -52,6 +53,7 @@ class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
                                 task.taskId,
                                 task.displayName,
                                 task.displayImage,
+                                task.reward,
                                 task.request.size
                             )
                         }

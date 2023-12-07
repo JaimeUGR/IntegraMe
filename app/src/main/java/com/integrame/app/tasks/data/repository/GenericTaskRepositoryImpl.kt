@@ -15,6 +15,7 @@ class GenericTaskRepositoryImpl(
             taskId = taskId,
             displayName = FakeResources.genericTasks[taskId].displayName,
             displayImage = FakeResources.genericTasks[taskId].displayImage,
+            reward = FakeResources.genericTasks[taskId].reward,
             steps = FakeResources.genericTasks[taskId].steps.size
         )
     }

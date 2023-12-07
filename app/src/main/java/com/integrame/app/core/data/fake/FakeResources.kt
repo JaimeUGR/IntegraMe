@@ -130,7 +130,6 @@ object FakeResources {
                         remoteImages[j % remoteImages.size],
                         property = if (j % 2 == 0) null else MaterialProperty(TextContent("Propiedad $j"), remoteImages[j % remoteImages.size])
                     ),
-                    j,
                     remoteImages[j % remoteImages.size],
                     false
                 )

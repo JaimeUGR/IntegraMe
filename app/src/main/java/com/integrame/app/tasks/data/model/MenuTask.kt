@@ -5,10 +5,17 @@ import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
 import kotlinx.serialization.Serializable
 
+/**
+ * Clase que representa la información básica de una tarea de menú comedor.
+ *
+ * Se utiliza principalmente para la visualización.
+ */
+@Serializable
 data class MenuTaskModel(
     override val taskId: Int,
     override val displayName: String,
-    override val displayImage: ImageContent
+    override val displayImage: ImageContent,
+    override val reward: DynamicContent
 ): TaskModel(){
     companion object {
         fun fromMenuTask(task: MenuTask): MenuTaskModel {
@@ -16,11 +23,13 @@ data class MenuTaskModel(
                 taskId = task.taskId,
                 displayName = task.displayName,
                 displayImage = task.displayImage,
+                reward = task.reward
             )
         }
     }
 }
 
+// TODO: Revisar y ajustar todas las clases por debajo
 @Serializable
 data class MenuTask(
     override val taskId: Int,
@@ -44,7 +53,7 @@ data class MenuOption(
     var requestedAmount: Int = 0 // Cantidad de comida escogida
         private set
 
-    fun setRequestAmount(amount: Int){
+    fun setRequestAmount(amount: Int) {
         requestedAmount = amount
     }
 }

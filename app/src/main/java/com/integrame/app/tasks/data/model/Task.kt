@@ -35,8 +35,10 @@ abstract class Task {
     abstract val reward: DynamicContent
 }
 
+@Serializable
 abstract class TaskModel {
     abstract val taskId: Int
     abstract val displayName: String
     abstract val displayImage: ImageContent
+    abstract val reward: DynamicContent
 }

@@ -8,7 +8,7 @@ data class MenuTask(
     override var displayName: String,
     override var displayImage: RemoteImage,
     val classroomMenus: List<ClassroomMenuTask>
-): Task(){
+): Task() {
     // Método para actualizar ClassroomMenuTask
     fun updateClassroomMenu(classroomId: Int, newMenuOptions: List<MenuOption>): MenuTask {
         val updatedClassroomMenus = classroomMenus.map {

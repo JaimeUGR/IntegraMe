@@ -1,12 +1,15 @@
 package com.integrame.app.teacher.data.model.task
 
 import com.integrame.app.core.data.model.content.ImageContent
+import com.integrame.app.core.data.model.content.TextContent
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class MaterialTask(
     override val displayName: String,
     override val displayImage: ImageContent,
     val request: List<MaterialRequest>
-): Task(){
+): Task() {
     // Métodos para realizar las actualizaciones en MaterialTask
     fun setDisplayName(newDisplayName: String): MaterialTask {
         return copy(displayName = newDisplayName)
@@ -21,12 +24,20 @@ data class MaterialTask(
     }
 }
 
+@Serializable
 data class MaterialRequest(
     val material: Material,
     val amount: Int,
 )
 
+@Serializable
 data class Material(
     val displayImage: ImageContent,
-    val properties: List<Int> // TODO: Similar al DynamicContent, para representar contenido o tamaño
+    val property: MaterialProperty
+)
+
+@Serializable
+data class MaterialProperty(
+    val displayName: TextContent,
+    val displayImage: ImageContent
 )
