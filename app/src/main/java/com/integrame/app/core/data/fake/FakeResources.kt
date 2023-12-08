@@ -201,6 +201,8 @@ object FakeResources {
         else
             ImageAuthMethod(steps = 3, List(4) { j -> remoteImages[j % remoteImages.size] })
     }
+
+
 }
 
 

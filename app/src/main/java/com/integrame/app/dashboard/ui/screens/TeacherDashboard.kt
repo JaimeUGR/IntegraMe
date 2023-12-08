@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +49,8 @@ import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.data.model.user.TeacherProfile
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.dashboard.ui.navigation.TeacherDashboardNavGraph
+import com.integrame.app.teacher.data.model.task.TaskInfo
+import com.integrame.app.teacher.ui.screens.AsignTaskScreen
 
 @Composable
 fun TeacherDashboard(
@@ -94,6 +97,19 @@ fun TeacherDashboard(
                 onPressProfile = {},
                 modifier = Modifier.fillMaxSize()
             )
+        }
+
+        composable(route = TeacherDashboardNavGraph.Students.route) {
+            AsignTaskScreen(
+                onNavigateBack = {
+                                 navController.popBackStack()
+                },
+                onPressHome = { },
+                modifier = Modifier.fillMaxSize(),
+
+            )
+
+
         }
 
         composable(route = TeacherDashboardNavGraph.Profile.route) {

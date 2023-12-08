@@ -59,6 +59,7 @@ fun MenuTaskScreen(
     onPressChat: () -> Unit,
     modifier: Modifier = Modifier,
     menuTaskViewModel: MenuTaskScreenViewModel = hiltViewModel()
+
 ) {
     val navController = rememberNavController()
 

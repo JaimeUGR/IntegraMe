@@ -9,18 +9,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.onConsumedWindowInsetsChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -28,22 +39,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.integrame.app.core.ui.components.ErrorCard
+import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
+import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.screens.IdentityCardGrid
-import com.integrame.app.login.ui.screens.StudentLoginScreen
+import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
+import com.integrame.app.login.ui.viewmodel.StudentLoginViewModel
 import com.integrame.app.teacher.data.model.task.TaskInfo
+import com.integrame.app.teacher.ui.viewmodel.AsignTaskScreenViewModel
+import com.integrame.app.teacher.ui.viewmodel.SelectStudentUIState
 import com.integrame.app.ui.theme.IntegraMeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AsignTaskScreen(
-    taskInfo: TaskInfo,
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 
 ) {
     val navController = rememberNavController()
@@ -52,30 +69,137 @@ fun AsignTaskScreen(
         navController = navController,
         startDestination = "asignTask",
         modifier = modifier
-        ){
-        composable(route = "asignTask"){
+        ) {
+
+        // Usar la pantalla ya hecha?
+        // Crear FakeResources de plantillas ?
+        composable(route = "asignTask") {
             SelectStudentScreen(
-                onPressHome = { /*TODO*/ },
+                onIdentitySelected = {
+                    navController.navigate(
+                        route = "selectTaskModel"
+                    )
+                },
+                onPressHome = { },
                 onNavigateBack = {
-                navController.popBackStack()
-            },
+                    navController.popBackStack()
+                },
                 modifier = Modifier.fillMaxSize()
             )
         }
-    }
+        composable(route = "selectTaskModel") {
+            SelectTaskModelScreen(
+                onPressHome = { /*TODO*/ },
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onCustomModelSelect = {
+                    navController.navigate("setTaskInfo")
+                },
+                onTaskModelSelect = {
+                    navController.navigate("setTaskInfo")
+                },
+                asignTaskScreenViewModel = asignTaskScreenViewModel
+            )
 
+        }
+
+        composable(route = "setTaskInfo") {
+            SetTaskInfoScreen(
+                onPressHome = { /*TODO*/ },
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onContinue = {
+                     navController.navigate("setDateAndRewardInfo")
+                },
+                asignTaskScreenViewModel = asignTaskScreenViewModel
+            )
+
+        }
+
+        composable(route = "setDateAndRewardInfo"){
+            SetDateAndRewardTaskInfoScreen(
+                onPressHome = { /*TODO*/ },
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onStudentListReturn = {
+                     navController.navigate("asignTask")
+                },
+                asignTaskScreenViewModel = asignTaskScreenViewModel
+            )
+        }
+
+    }
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectStudentScreen(
+    onIdentitySelected: (Int) -> Unit,
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-){
+    modifier: Modifier = Modifier,
+    asignTaskScreenViewModel: AsignTaskScreenViewModel = hiltViewModel()
+
+) {
+
+    val selectUIState = asignTaskScreenViewModel.selectStudentUIState
+
     Text(text = "Estas en la primera pantalla de asignar tarea")
-    //IdentityCardGrid(identityCardList = emptyList(), onIdentityCardClick = {}, modifier = Modifier)
+    Scaffold(
+            topBar = {
+                StudentTaskTopAppBar(
+                    title = "Selección de Alumnos",
+                    onNavigateBack = onNavigateBack,
+                    onPressHome = { /*TODO*/ },
+                    onPressChat = { /*TODO*/ }
+                )
+            },
+        modifier = modifier
+    ) { innerPadding ->
+        when (selectUIState) {
+            is SelectStudentUIState.IdentitiesReady -> {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)) {
+                    IdentityCardGrid(
+                        asignTaskScreenViewModel.getIdentityCardsPage(),
+                        onIdentityCardClick = onIdentitySelected,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                }
+
+            }
+            is SelectStudentUIState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(80.dp))
+                }
+            }
+            is SelectStudentUIState.Error -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    ErrorCard(
+                        errorDescription = selectUIState.error,
+                        errorButtonText = "Cerrar",
+                        errorButtonImage = {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Cerrar",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        },
+                        onPressContinue = { asignTaskScreenViewModel.reloadIdentityCards() },
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+        }
+    }
 
 }
 
@@ -84,10 +208,14 @@ private fun SelectStudentScreen(
 private fun SelectTaskModelScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    onTaskModelSelect: () -> Unit,
+    onCustomModelSelect: () -> Unit,
+    modifier: Modifier = Modifier,
+    asignTaskScreenViewModel: AsignTaskScreenViewModel
 
-){
+) {
     LaunchedEffect(Unit){
+        asignTaskScreenViewModel.loadTaskModels()
         
     }
     
@@ -118,7 +246,7 @@ private fun SelectTaskModelScreen(
 
             Button(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { /*TODO*/ },
+                onClick = { onCustomModelSelect },
             ) {
                 Text(text = "Personalizar",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
@@ -143,6 +271,7 @@ private fun SelectTaskModelScreen(
                         .requiredSize(150.dp)
                         .background(Color.Gray)
                         .clickable {
+                            onTaskModelSelect
                         }
                     ) {
 
@@ -172,9 +301,11 @@ private fun SelectTaskModelScreen(
 private fun SetTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    onContinue: () -> Unit,
+    asignTaskScreenViewModel: AsignTaskScreenViewModel,
+    modifier: Modifier = Modifier,
 
-){
+) {
     LaunchedEffect(Unit){
 
     }
@@ -249,7 +380,7 @@ private fun SetTaskInfoScreen(
             }
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ },
+                onClick = { onContinue },
             ) {
                 Text(text = "Continuar",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
@@ -263,9 +394,11 @@ private fun SetTaskInfoScreen(
 private fun SetDateAndRewardTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
+    onStudentListReturn: () -> Unit,
+    asignTaskScreenViewModel: AsignTaskScreenViewModel,
     modifier: Modifier = Modifier
 
-){
+) {
     LaunchedEffect(Unit){
 
     }
@@ -316,7 +449,7 @@ private fun SetDateAndRewardTaskInfoScreen(
             )
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ },
+                onClick = { onStudentListReturn },
             ) {
                 Text(text = "Guardar",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))

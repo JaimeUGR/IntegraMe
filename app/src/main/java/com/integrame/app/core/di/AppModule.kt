@@ -15,6 +15,7 @@ import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.MaterialTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
+import com.integrame.app.teacher.data.repository.TeacherTaskRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -91,6 +92,14 @@ object AppModule {
     fun provideTeacherRepositoryImpl(api: IntegraMeApi): TeacherRepositoryImpl {
         return TeacherRepositoryImpl()
     }
+
+    @Provides
+    @Singleton
+    fun provideTeacherTaskRepositoryImpl(api: IntegraMeApi, identityCardRepositoryImpl: IdentityCardRepositoryImpl): TeacherTaskRepositoryImpl {
+        return TeacherTaskRepositoryImpl(api, identityCardRepositoryImpl)
+    }
+
+
 
     @Provides
     @Singleton
