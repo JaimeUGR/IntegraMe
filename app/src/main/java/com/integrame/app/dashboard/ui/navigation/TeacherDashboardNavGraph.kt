@@ -7,6 +7,7 @@ object TeacherDashboardNavGraph: IntegraMeNavGraph {
     // NOTE: Es el menú principal del profesor (no en DashboardScreen)
     override val route: String = "dashboard"
 
+
     object Profile: IntegraMeScreen {
         override val route = TeacherDashboardNavGraph.getSubRoute("profile")
     }
@@ -14,4 +15,9 @@ object TeacherDashboardNavGraph: IntegraMeNavGraph {
     object Notifications: IntegraMeScreen {
         override val route = TeacherDashboardNavGraph.getSubRoute("notifications")
     }
+
+    object Students: IntegraMeScreen{
+        override val route = TeacherDashboardNavGraph.getSubRoute("asignTask")
+    }
+
 }

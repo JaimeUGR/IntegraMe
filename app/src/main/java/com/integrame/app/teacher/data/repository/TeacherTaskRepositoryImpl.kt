@@ -4,6 +4,9 @@ import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.core.util.AuthRequestResult
+import com.integrame.app.core.util.RequestResult
+import com.integrame.app.login.data.model.IdentityCard
+import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.teacher.data.model.task.Task
 import com.integrame.app.teacher.data.model.task.GenericTask
 import com.integrame.app.teacher.data.model.task.GenericTaskStep
@@ -20,7 +23,8 @@ import retrofit2.HttpException
 
 // TODO: LifeCycle de ViewModel para Dagger
 class TeacherTaskRepositoryImpl (
-    private val api: IntegraMeApi
+    private val api: IntegraMeApi,
+    private val identityCardRepositoryImpl: IdentityCardRepositoryImpl
 ): TeacherTaskRepository {
 
     private val _taskInfoFlow = MutableStateFlow(getDefaultTaskInfo())
@@ -48,41 +52,39 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Métodos set para cada atributo
-    fun setAssignedStudentId(assignedStudentId: Int) {
+    override fun setAssignedStudentId(assignedStudentId: Int) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(assignedStudentId = assignedStudentId)
     }
 
-    fun setAssignedTeachersIds(assignedTeachersIds: List<Int>) {
+    override fun setAssignedTeachersIds(assignedTeachersIds: List<Int>) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(assignedTeachersIds = assignedTeachersIds)
     }
 
-    fun setDescription(description: String) {
+    override fun setDescription(description: String) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(description = description)
     }
 
-    fun setStartDate(startDate: Long) {
+    override fun setStartDate(startDate: Long) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(startDate = startDate)
     }
 
-    fun setDueDate(dueDate: Long) {
+    override fun setDueDate(dueDate: Long) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(dueDate = dueDate)
     }
-    fun setTaskType(taskType: TaskType) {
+    override fun setTaskType(taskType: TaskType) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(taskType = taskType)
     }
 
-    fun setReward(reward: Int) {
+    override fun setReward(reward: Int) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(reward = reward)
     }
 
-    fun setTask(task: Task) {
+    override fun setTask(task: Task) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(task = task)
     }
 
-
-
     // Método en el repositorio para actualizar la información de la tarea de Menú
-    fun updateMenuTask(displayName: String, displayImage: RemoteImage) {
+    override fun updateMenuTask(displayName: String, displayImage: RemoteImage) {
         if (_taskInfoFlow.value.task is MenuTask) {
             val menuTask = _taskInfoFlow.value.task as MenuTask
             menuTask.displayName = displayName
@@ -93,7 +95,7 @@ class TeacherTaskRepositoryImpl (
         }
     }
 
-    fun updateClassroomMenuTask(classroomId: Int, newMenuOptions: List<MenuOption>) {
+    override fun updateClassroomMenuTask(classroomId: Int, newMenuOptions: List<MenuOption>) {
         if (_taskInfoFlow.value.task is MenuTask) {
             val menuTask = _taskInfoFlow.value.task as MenuTask
             val updatedMenuTask = menuTask.updateClassroomMenu(classroomId, newMenuOptions)
@@ -104,7 +106,7 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Método en el repositorio para actualizar la información de la tarea genérica
-    fun updateGenericTask(displayName: String, displayImage: ImageContent) {
+    override fun updateGenericTask(displayName: String, displayImage: ImageContent) {
         if (_taskInfoFlow.value.task is GenericTask) {
             val genericTask = _taskInfoFlow.value.task as GenericTask
             val updatedGenericTask = genericTask
@@ -116,7 +118,7 @@ class TeacherTaskRepositoryImpl (
         }
     }
 
-    fun updateGenericTaskSteps(newSteps: List<GenericTaskStep>) {
+    override fun updateGenericTaskSteps(newSteps: List<GenericTaskStep>) {
         if (_taskInfoFlow.value.task is GenericTask) {
             val genericTask = _taskInfoFlow.value.task as GenericTask
             val updatedGenericTask = genericTask.updateSteps(newSteps)
@@ -127,7 +129,7 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Método en el repositorio para actualizar la información de la tarea de material
-    fun updateMaterialTask(displayName: String, displayImage: ImageContent) {
+    override fun updateMaterialTask(displayName: String, displayImage: ImageContent) {
         if (_taskInfoFlow.value.task is MaterialTask) {
             val materialTask = _taskInfoFlow.value.task as MaterialTask
             val updatedMaterialTask = materialTask
@@ -139,7 +141,7 @@ class TeacherTaskRepositoryImpl (
         }
     }
 
-    fun updateMaterialTaskRequests(newRequests: List<MaterialRequest>) {
+    override fun updateMaterialTaskRequests(newRequests: List<MaterialRequest>) {
         if (_taskInfoFlow.value.task is MaterialTask) {
             val materialTask = _taskInfoFlow.value.task as MaterialTask
             val updatedMaterialTask = materialTask.updateMaterialRequests(newRequests)
@@ -150,7 +152,7 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Método final para realizar el post
-    suspend fun postTaskInfo(): AuthRequestResult<Unit> {
+    override suspend fun postTaskInfo(): AuthRequestResult<Unit> {
         return try {
             val response = api.postTaskInfo(_taskInfoFlow.value)
             if (response.isSuccessful) {
@@ -164,6 +166,10 @@ class TeacherTaskRepositoryImpl (
         } catch (e: Exception) {
             AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
         }
+    }
+
+    override suspend fun uploadStudentsCards(): RequestResult<List<IdentityCard>> {
+        return identityCardRepositoryImpl.getStudentsIdentityCards()
     }
 
 

@@ -66,10 +66,10 @@ fun TeacherDashboard(
         composable(route = TeacherDashboardNavGraph.route) {
             val menuActions = listOf(
                 MenuAction(
-                    displayName = "Alumnos",
+                    displayName = "Students",
                     displayImage = null,
                     onClick = {
-                        navController.navigate("")
+                        navController.navigate(TeacherDashboardNavGraph.Students.route)
                     }
                 ),
                 MenuAction(
