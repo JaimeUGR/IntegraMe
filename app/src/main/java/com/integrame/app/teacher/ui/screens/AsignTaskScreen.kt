@@ -61,6 +61,7 @@ fun AsignTaskScreen(
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
     modifier: Modifier = Modifier,
+    asignTaskScreenViewModel: AsignTaskScreenViewModel
 
 ) {
     val navController = rememberNavController()
