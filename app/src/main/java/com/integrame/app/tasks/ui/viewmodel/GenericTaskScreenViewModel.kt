@@ -58,8 +58,12 @@ class GenericTaskScreenViewModel @Inject constructor(
             return
         }
 
-        val step = genericTaskRepository.getStep(taskModel.taskId, nextStepNumber)
-        genericTaskUIState = GenericTaskUIState.InStep(step, nextStepNumber)
+        genericTaskUIState = GenericTaskUIState.Loading
+
+        viewModelScope.launch {
+            val step = genericTaskRepository.getStep(taskModel.taskId, nextStepNumber)
+            genericTaskUIState = GenericTaskUIState.InStep(step, nextStepNumber)
+        }
     }
 
     fun previousStep() {
@@ -69,8 +73,12 @@ class GenericTaskScreenViewModel @Inject constructor(
             is GenericTaskUIState.Loading -> return
         }
 
-        val step = genericTaskRepository.getStep(taskModel.taskId, previousStepNumber)
-        genericTaskUIState = GenericTaskUIState.InStep(step, previousStepNumber)
+        genericTaskUIState = GenericTaskUIState.Loading
+
+        viewModelScope.launch {
+            val step = genericTaskRepository.getStep(taskModel.taskId, previousStepNumber)
+            genericTaskUIState = GenericTaskUIState.InStep(step, previousStepNumber)
+        }
     }
 }
 

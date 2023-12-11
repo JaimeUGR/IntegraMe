@@ -71,7 +71,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGenericTaskRepositoryImpl(api: IntegraMeApi): GenericTaskRepositoryImpl {
-        return GenericTaskRepositoryImpl()
+        return GenericTaskRepositoryImpl(api)
     }
     
     @Provides

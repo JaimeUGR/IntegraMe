@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -47,6 +48,7 @@ import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.ui.viewmodel.GenericTaskScreenViewModel
 import com.integrame.app.tasks.ui.viewmodel.GenericTaskUIState
+import com.integrame.app.tasks.ui.viewmodel.MaterialTaskUIState
 import com.integrame.app.ui.theme.IntegraMeTheme
 
 val contentSelectorCards = mapOf<ContentAdaptationFormats, @Composable (Modifier) -> Unit>(
@@ -99,12 +101,6 @@ fun GenericTaskScreen(
         genericTaskScreenViewModel.loadTaskModel(taskModel)
     }
 
-    if (genericTaskUIState == GenericTaskUIState.Loading)
-    {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-        return
-    }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -116,7 +112,7 @@ fun GenericTaskScreen(
             )
         },
         bottomBar = {
-            var isFirstPage = false
+            var isFirstPage = genericTaskUIState !is GenericTaskUIState.InReward
             var isLastPage = true
 
             if (genericTaskUIState is GenericTaskUIState.InStep) {
@@ -134,13 +130,23 @@ fun GenericTaskScreen(
             )
         }
     ) { innerPadding ->
+        if (genericTaskUIState is GenericTaskUIState.Loading) {
+            Box(
+                modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(80.dp))
+            }
+
+            return@Scaffold
+        }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-
             // Imagen de la tarea
             DynamicImage(
                 image = taskModel.displayImage,
@@ -151,7 +157,7 @@ fun GenericTaskScreen(
             )
             
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             if (genericTaskUIState is GenericTaskUIState.InStep) {
                 GenericTaskStepContent(
                     stepState = genericTaskUIState,
@@ -160,11 +166,12 @@ fun GenericTaskScreen(
                     onSelectAdaptationFormat = { i -> selectedAdaptationFormat = i},
                     onToggleStepCompleted = { genericTaskScreenViewModel.toggleStepCompleted() }
                 )
-            } else {
+            } else { // Recompensa
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
+                    // TODO: Añadir el DynamicContent con la reward
                     AsyncImage(model = "https://static.arasaac.org/pictograms/5397/5397_300.png", contentDescription = "Has terminado, ¡bien!")
                 }
             }

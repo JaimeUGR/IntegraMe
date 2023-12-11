@@ -6,11 +6,7 @@ import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
 
 interface GenericTaskRepository {
-    fun getTaskModel(taskId: Int): GenericTaskModel
-    fun getNumSteps(taskId: Int): Int
-
-    fun getStep(taskId: Int, stepNumber: Int): GenericTaskStep
-    fun toggleStepCompleted(taskId: Int, stepNumber: Int): Boolean
-
-    fun getReward(taskId: Int): DynamicContent
+    suspend fun getTaskModel(taskId: Int): GenericTaskModel
+    suspend fun getStep(taskId: Int, stepNumber: Int): GenericTaskStep
+    suspend fun toggleStepCompleted(taskId: Int, stepNumber: Int): Boolean
 }

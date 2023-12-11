@@ -1,6 +1,5 @@
 package com.integrame.app.tasks.data.repository
 
-import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.Task
@@ -16,9 +15,9 @@ import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.TaskModel
 
 class TaskRepositoryImpl(private val api: IntegraMeApi): TaskRepository {
-    // TODO: Incorporar api
-    override suspend fun getPendingTaskCards(): AuthRequestResult<List<TaskCard>> {
-        return AuthRequestResult.Authorized(FakeResources.taskCards)
+    // TODO: Incoporar AuthRequestResult
+    override suspend fun getTaskCards(): AuthRequestResult<List<TaskCard>> {
+        return AuthRequestResult.Authorized(api.getTaskCards())
     }
 
     override suspend fun getTask(taskId: Int): AuthRequestResult<Task> {

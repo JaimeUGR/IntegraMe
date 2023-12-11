@@ -9,7 +9,7 @@ import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskModel
 
 interface TaskRepository {
-    suspend fun getPendingTaskCards(): AuthRequestResult<List<TaskCard>>
+    suspend fun getTaskCards(): AuthRequestResult<List<TaskCard>>
     suspend fun getTaskModel(taskId: Int): AuthRequestResult<TaskModel>
     suspend fun getTask(taskId: Int): AuthRequestResult<Task>
     suspend fun getGenericTask(taskId: Int): AuthRequestResult<GenericTask>
