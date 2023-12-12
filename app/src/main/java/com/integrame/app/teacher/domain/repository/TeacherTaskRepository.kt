@@ -41,7 +41,7 @@ interface TeacherTaskRepository {
 
     fun updateMaterialTaskRequests(newRequests: List<MaterialRequest>)
 
-    suspend fun postTaskInfo(): AuthRequestResult<Unit>
+    suspend fun postTaskInfo(taskInfo: TaskInfo)
 
     suspend fun uploadStudentsCards(): RequestResult<List<IdentityCard>>
 

@@ -18,20 +18,22 @@ interface MenuTaskRepository {
      */
 
     // Para obtener el objeto del modelo de la tarea del menu
-    fun getMenuTaskModel(taskId: Int): MenuTaskModel
+    suspend fun getMenuTaskModel(taskId: Int): MenuTaskModel
 
     // Para sacar la lista de clases que tiene la tarea de menú asociada
-    fun getClassroomMenus(taskId: Int): List<ClassroomMenuTask>
+    // suspend fun getClassroomMenus(taskId: Int): List<ClassroomMenuTask>
 
     // Para sacar una lista con los ids de las aulas
-    fun getClassroomIds(taskId: Int): List<Int>
+    suspend fun getClassroomIds(): List<Int>
 
     // Para sacar la lista de menús de cada clase
-    fun getMenuOptions(taskId: Int, classroomId: Int): List<MenuOption>
+    suspend fun getMenuOptions(taskId: Int, classroomId: Int): List<MenuOption>
 
     // ¿Qué tengo que introducir en la base de datos?
     /*
         Para una clase determinada, una lista que contenga el menú seleccionado y la cantidad que se requiere del mismo
      */
-    fun setRequestedAmount(taskId: Int, classroomId: Int,name: String, requestedAmount: Int)
+    suspend fun setRequestedAmount(taskId: Int, classroomId: Int,name: String, requestedAmount: Int)
+
+
 }

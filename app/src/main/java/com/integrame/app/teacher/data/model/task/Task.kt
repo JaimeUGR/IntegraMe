@@ -21,8 +21,7 @@ data class TaskInfo(
     val taskType: TaskType?,
     val reward: Int?//TODO: se pondrá cuando este implementada la clase de las recompensas
 ) {
-    val code: String = ""
-    val isSuccessful: Boolean = false
+
 }
 
 @Serializable

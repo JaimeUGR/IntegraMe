@@ -152,29 +152,12 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Método final para realizar el post
-    override suspend fun postTaskInfo(): AuthRequestResult<Unit> {
-        return try {
-            val response = api.postTaskInfo(_taskInfoFlow.value)
-            if (response.isSuccessful) {
-                AuthRequestResult.Authorized(Unit)
-            } else {
-                AuthRequestResult.Error("Error code: ${response.code}")
-            }
-        } catch (e: HttpException) {
-            val statusCode = e.code()
-            AuthRequestResult.Error("Error code: $statusCode")
-        } catch (e: Exception) {
-            AuthRequestResult.Error("Error: ${e.message ?: " desconocido"}")
-        }
+    override suspend fun postTaskInfo(taskInfo: TaskInfo) {
+        api.postTaskInfo(_taskInfoFlow.value)
     }
-
 
     override suspend fun uploadStudentsCards(): RequestResult<List<IdentityCard>> {
         return identityCardRepositoryImpl.getStudentsIdentityCards()
     }
-
-
-
-
 
 }

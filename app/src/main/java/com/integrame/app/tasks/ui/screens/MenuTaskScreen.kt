@@ -127,7 +127,7 @@ private fun SelectClassroomScreen(
     val classroomListUIState = menuTaskViewModel.uiStateClassroomList
 
     LaunchedEffect(Unit) {
-        menuTaskViewModel.loadClassroomsIds(taskModel)
+        menuTaskViewModel.loadClassroomsIds()
     }
 
     if (classroomListUIState == ClassroomListUIState.Loading)
@@ -205,7 +205,7 @@ private fun SelectMenuScreen(
     val selectMenuUIState = menuTaskViewModel.uiStateSelectMenu
 
     LaunchedEffect(Unit) {
-        menuTaskViewModel.loadClassroomsIds(taskModel)
+        menuTaskViewModel.loadClassroomsIds()
         menuTaskViewModel.loadClassroomsMenus(taskModel)
     }
 

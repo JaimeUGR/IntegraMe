@@ -49,13 +49,12 @@ class MenuTaskScreenViewModel @Inject constructor(
 
     }
 
-    suspend fun loadClassroomsIds(menuTaskModel: MenuTaskModel) {
-        this.menuTaskModel = menuTaskModel
+    suspend fun loadClassroomsIds() {
         uiStateClassroomList = ClassroomListUIState.Loading
 
         viewModelScope.launch {
             // Cargar la lista de aulas
-            val classroomsIds = menuTaskRepository.getClassroomIds(menuTaskModel.taskId)
+            val classroomsIds = menuTaskRepository.getClassroomIds()
             // Cambiar el estado a ListLoaded cuando se cargan las aulas
             uiStateClassroomList = ClassroomListUIState.ListLoaded(classroomsIds)
         }

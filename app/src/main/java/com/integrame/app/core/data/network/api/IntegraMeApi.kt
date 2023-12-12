@@ -7,7 +7,10 @@ import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.ClassroomMenuTask
+import com.integrame.app.tasks.data.model.MenuOption
 import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import retrofit2.Response
@@ -42,13 +45,33 @@ interface IntegraMeApi {
 
     @Headers("Authorized")
     @GET("auth/students/tasks/{taskId}")
-    suspend fun getMenuTask(@Path("taskId") taskId : Int): MenuTask
+    suspend fun getMenuTask(@Path("taskId") taskId: Int): MenuTask
 
     @POST("tasks/update")
-    suspend fun postTaskInfo(@Body taskInfo: TaskInfo): TaskInfo
-
+    suspend fun postTaskInfo(@Body taskInfo: TaskInfo)
 
     @Headers("Authorized")
     @GET("auth/students/tasks/{taskId}")
-    suspend fun getTask(@Path("taskId") taskId : Int): Task
+    suspend fun getTask(@Path("taskId") taskId: Int): Task
+
+    // Endpoints para la tarea menú comedor del alumno
+    @Headers("Authorized")@GET("auth/students/menuTasks/{taskId}")
+    suspend fun getMenuTaskModel(@Path("taskId") taskId: Int): MenuTaskModel
+
+    /*
+    @Headers("Authorized")
+    @GET("auth/students/menuTasks/{taskId}/classroom")
+    suspend fun getClassroomMenus(@Path("taskId") taskId: Int): List<ClassroomMenuTask>
+
+     */
+
+    @Headers("Authorized")
+    @GET("auth/students/getClassrooms")
+    suspend fun getClassroomIds(): List<Int>
+
+    @Headers("Authorized")
+    @GET("auth/students/menuTask/{taskId}/classroom/{classroomId}")
+    suspend fun getMenuOptions(@Path("taskId") taskId: Int, @Path("classroomId") classroomId: Int): List<MenuOption>
+
+
 }

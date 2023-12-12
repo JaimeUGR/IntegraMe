@@ -72,8 +72,6 @@ fun AsignTaskScreen(
         modifier = modifier
         ) {
 
-        // Usar la pantalla ya hecha?
-        // Crear FakeResources de plantillas ?
         composable(route = "asignTask") {
             SelectStudentScreen(
                 onIdentitySelected = {
@@ -242,17 +240,6 @@ private fun SelectTaskModelScreen(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                modifier = Modifier.align(Alignment.End),
-                onClick = { onCustomModelSelect },
-            ) {
-                Text(text = "Personalizar",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Text("Elige plantilla ",
@@ -266,19 +253,37 @@ private fun SelectTaskModelScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 userScrollEnabled = false,
             ) {
-
                 items(numberList) {
-                    Box(modifier = Modifier
-                        .requiredSize(150.dp)
-                        .background(Color.Gray)
-                        .clickable {
-                            onTaskModelSelect
-                        }
-                    ) {
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .requiredSize(150.dp)
+                                .background(Color.Gray)
+                                .clickable {
 
+                                }
+                        ) {
+                            // Contenido del cuadrado (Plantillas de tareas)
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .height(40.dp),
+                            onClick = { /*TODO*/ },
+                        ) {
+                            Text(
+                                text = "Personalizar",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
                     }
                 }
-
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -287,8 +292,10 @@ private fun SelectTaskModelScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = { /*TODO*/ },
             ) {
-                Text(text = "Crear nueva tarea",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
+                Text(
+                    text = "Crear nueva tarea",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+                )
             }
         }
     }
