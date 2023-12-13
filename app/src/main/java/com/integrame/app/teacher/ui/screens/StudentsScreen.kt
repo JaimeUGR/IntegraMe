@@ -38,9 +38,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
+import com.integrame.app.core.ui.components.appbar.TeacherCenterAlignedTopAppBar
 import com.integrame.app.login.ui.screens.IdentityCardGrid
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentScreenViewModel
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentUIState
+import com.integrame.app.teacher.ui.viewmodel.SelectTaskModelScreenViewModel
+import com.integrame.app.ui.navigation.sharedHiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +74,11 @@ fun StudentsScreen(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        composable(route = "selectTaskModel") {
+        composable(route = "selectTaskModel") { navBackStackEntry ->
+            val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
+                navController = navController
+            )
+
             SelectTaskModelScreen(
                 onPressHome = { /*TODO*/ },
                 onNavigateBack = {
@@ -83,12 +90,26 @@ fun StudentsScreen(
                 onTaskModelSelect = {
                     navController.navigate("setTaskInfo")
                 },
-                // asignTaskScreenViewModel = asignTaskScreenViewModel
+                onCreateTask = {
+                    navController.navigate("makeTask")
+                },
+                selectTaskModelScreenViewModel = viewModel
             )
 
         }
 
-        composable(route = "setTaskInfo") {
+        composable(route = "makeTask"){
+            MakeTaskScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier.fillMaxSize() )
+        }
+
+        composable(route = "setTaskInfo") { navBackStackEntry ->
+            val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
+                navController = navController
+            )
             SetTaskInfoScreen(
                 onPressHome = { /*TODO*/ },
                 onNavigateBack = {
@@ -97,12 +118,17 @@ fun StudentsScreen(
                 onContinue = {
                      navController.navigate("setDateAndRewardInfo")
                 },
-                // asignTaskScreenViewModel = asignTaskScreenViewModel
+                selectTaskModelScreenViewModel = viewModel
+
             )
 
         }
 
-        composable(route = "setDateAndRewardInfo"){
+        composable(route = "setDateAndRewardInfo"){ navBackStackEntry ->
+            val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
+                navController = navController
+            )
+
             SetDateAndRewardTaskInfoScreen(
                 onPressHome = { /*TODO*/ },
                 onNavigateBack = {
@@ -111,7 +137,7 @@ fun StudentsScreen(
                 onStudentListReturn = {
                      navController.navigate("selectStudent")
                 },
-                // asignTaskScreenViewModel = asignTaskScreenViewModel
+                selectTaskModelScreenViewModel = viewModel
             )
         }
 
@@ -119,6 +145,7 @@ fun StudentsScreen(
 
 }
 
+// 1
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectStudentScreen(
@@ -135,11 +162,11 @@ private fun SelectStudentScreen(
     Text(text = "Estas en la primera pantalla de asignar tarea")
     Scaffold(
             topBar = {
-                StudentTaskTopAppBar(
+                // CenterAling
+                TeacherCenterAlignedTopAppBar(
                     title = "Selección de Alumnos",
                     onNavigateBack = onNavigateBack,
                     onPressHome = { /*TODO*/ },
-                    onPressChat = { /*TODO*/ }
                 )
             },
         modifier = modifier
@@ -187,6 +214,7 @@ private fun SelectStudentScreen(
 
 }
 
+// 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectTaskModelScreen(
@@ -194,7 +222,9 @@ private fun SelectTaskModelScreen(
     onNavigateBack: () -> Unit,
     onTaskModelSelect: () -> Unit,
     onCustomModelSelect: () -> Unit,
+    onCreateTask: () -> Unit,
     modifier: Modifier = Modifier,
+    selectTaskModelScreenViewModel: SelectTaskModelScreenViewModel
 
 ) {
     LaunchedEffect(Unit){
@@ -209,11 +239,10 @@ private fun SelectTaskModelScreen(
     Scaffold (
         modifier  = modifier,
         topBar = {
-            StudentTaskTopAppBar(
+            TeacherCenterAlignedTopAppBar(
                 title = "Selección o personalización de plantilla",
                 onNavigateBack = onNavigateBack,
                 onPressHome = { /*TODO*/ },
-                onPressChat = { /*TODO*/ }
             )
         },
     ){ innerPadding ->
@@ -257,7 +286,7 @@ private fun SelectTaskModelScreen(
                                 .fillMaxWidth()
                                 .padding(8.dp)
                                 .height(40.dp),
-                            onClick = { /*TODO*/ },
+                            onClick = onCustomModelSelect,
                         ) {
                             Text(
                                 text = "Personalizar",
@@ -274,7 +303,7 @@ private fun SelectTaskModelScreen(
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ },
+                onClick = onCreateTask,
             ) {
                 Text(
                     text = "Crear nueva tarea",
@@ -286,16 +315,15 @@ private fun SelectTaskModelScreen(
 
 }
 
-
-
+// 3
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
     onContinue: () -> Unit,
-    // asignTaskScreenViewModel: AsignTaskScreenViewModel,
     modifier: Modifier = Modifier,
+    selectTaskModelScreenViewModel: SelectTaskModelScreenViewModel
 
 ) {
     LaunchedEffect(Unit){
@@ -305,11 +333,10 @@ private fun SetTaskInfoScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            StudentTaskTopAppBar(
+            TeacherCenterAlignedTopAppBar(
                 title = "Personalizar plantilla",
                 onNavigateBack = onNavigateBack,
                 onPressHome = { /*TODO*/ },
-                onPressChat = { /*TODO*/ }
             )
         }
     ) { innerPadding ->
@@ -372,7 +399,7 @@ private fun SetTaskInfoScreen(
             }
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { onContinue },
+                onClick =  onContinue ,
             ) {
                 Text(text = "Continuar",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
@@ -381,14 +408,15 @@ private fun SetTaskInfoScreen(
     }
 }
 
+// 4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetDateAndRewardTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
     onStudentListReturn: () -> Unit,
-    // asignTaskScreenViewModel: AsignTaskScreenViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    selectTaskModelScreenViewModel: SelectTaskModelScreenViewModel
 
 ) {
     LaunchedEffect(Unit){
@@ -398,11 +426,11 @@ private fun SetDateAndRewardTaskInfoScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            StudentTaskTopAppBar(
+            TeacherCenterAlignedTopAppBar(
                 title = "Establecer fecha y recompensa de la tarea",
                 onNavigateBack = onNavigateBack,
                 onPressHome = { /*TODO*/ },
-                onPressChat = { /*TODO*/ })
+            )
         }
     ) { innerPadding ->
         Column(

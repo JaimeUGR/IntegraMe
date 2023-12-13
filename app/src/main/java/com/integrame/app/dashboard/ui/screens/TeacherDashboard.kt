@@ -80,7 +80,7 @@ fun TeacherDashboard(
                     displayName = "Tareas",
                     displayImage = null,
                     onClick = {
-                        navController.navigate(TeacherDashboardNavGraph.Task.route)
+                        navController.navigate("")
                     }
                 ),
                 MenuAction(
@@ -103,7 +103,7 @@ fun TeacherDashboard(
         composable(route = TeacherDashboardNavGraph.Students.route) {
             StudentsScreen(
                 onNavigateBack = {
-                                 navController.popBackStack()
+                    navController.popBackStack()
                 },
                 onPressHome = { },
                 modifier = Modifier.fillMaxSize(),
@@ -112,12 +112,17 @@ fun TeacherDashboard(
 
         }
 
+        /*
         composable(route = TeacherDashboardNavGraph.Task.route){
             MakeTaskScreen(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = {
+                    navController.popBackStack()
+                                 },
                 modifier = Modifier.fillMaxSize()
             )
         }
+
+         */
 
         composable(route = TeacherDashboardNavGraph.Profile.route) {
 

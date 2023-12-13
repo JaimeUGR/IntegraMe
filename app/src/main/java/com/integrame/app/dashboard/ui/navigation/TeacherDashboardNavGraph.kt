@@ -20,8 +20,5 @@ object TeacherDashboardNavGraph: IntegraMeNavGraph {
         override val route = TeacherDashboardNavGraph.getSubRoute("selectStudent")
     }
 
-    object Task: IntegraMeScreen{
-        override val route = TeacherDashboardNavGraph.getSubRoute("makeTask")
-    }
 
 }

@@ -22,8 +22,7 @@ class SelectStudentScreenViewModel @Inject constructor(
     var selectStudentUIState: SelectStudentUIState by mutableStateOf(SelectStudentUIState.Loading)
         private set
 
-    var tasKModelList: ListTaskModelUIState by mutableStateOf(ListTaskModelUIState.Loading)
-        private set
+
 
     init {
         viewModelScope.launch {
@@ -74,12 +73,3 @@ sealed interface SelectStudentUIState {
     ) : SelectStudentUIState
 }
 
-sealed interface ListTaskModelUIState {
-    object Loading : ListTaskModelUIState
-    data class ListTaskModelReady(
-        val listTaskModel: List<TaskInfo>
-    ) : ListTaskModelUIState
-    data class Error(
-        val error: String
-    ) : ListTaskModelUIState
-}
