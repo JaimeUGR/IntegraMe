@@ -50,7 +50,8 @@ import com.integrame.app.core.data.model.user.TeacherProfile
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.dashboard.ui.navigation.TeacherDashboardNavGraph
 import com.integrame.app.teacher.data.model.task.TaskInfo
-import com.integrame.app.teacher.ui.screens.AsignTaskScreen
+import com.integrame.app.teacher.ui.screens.MakeTaskScreen
+import com.integrame.app.teacher.ui.screens.StudentsScreen
 
 @Composable
 fun TeacherDashboard(
@@ -79,7 +80,7 @@ fun TeacherDashboard(
                     displayName = "Tareas",
                     displayImage = null,
                     onClick = {
-                        navController.navigate("")
+                        navController.navigate(TeacherDashboardNavGraph.Task.route)
                     }
                 ),
                 MenuAction(
@@ -100,8 +101,7 @@ fun TeacherDashboard(
         }
 
         composable(route = TeacherDashboardNavGraph.Students.route) {
-            /*
-            AsignTaskScreen(
+            StudentsScreen(
                 onNavigateBack = {
                                  navController.popBackStack()
                 },
@@ -110,9 +110,13 @@ fun TeacherDashboard(
 
             )
 
-             */
+        }
 
-
+        composable(route = TeacherDashboardNavGraph.Task.route){
+            MakeTaskScreen(
+                onNavigateBack = { navController.popBackStack() },
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
         composable(route = TeacherDashboardNavGraph.Profile.route) {

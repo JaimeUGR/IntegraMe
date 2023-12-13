@@ -25,9 +25,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,12 +41,40 @@ fun MakeTaskScreen(
 ){
     val navController = rememberNavController()
 
+    NavHost(
+        navController = navController,
+        startDestination = "makeTask",
+        modifier = modifier
+
+    ){
+        composable(route = "makeTask"){
+            NewTaskScreen(modifier =  Modifier.fillMaxSize(),
+                onNewStep = {
+                    navController.navigate("newStep")
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = "newStep"){
+            NewStepTaskScreen(
+                modifier = Modifier.fillMaxSize()
+            )
+
+        }
+
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NewTaskScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    onNewStep: () -> Unit,
+    onNavigateBack: () -> Unit
 ){
     LaunchedEffect(Unit) {
 
@@ -54,10 +86,12 @@ private fun NewTaskScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            Surface(
-                modifier = Modifier.height(80.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {}
+            StudentTaskTopAppBar(
+                title = "Creación de tarea",
+                onNavigateBack = { onNavigateBack },
+                onPressHome = { /*TODO*/ },
+                onPressChat = { /*TODO*/ })
+
         }
     ) { innerPadding ->
         Column(
@@ -98,7 +132,7 @@ private fun NewTaskScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             Button(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { /*TODO*/ },
+                onClick = { onNewStep },
             ) {
                 Text(text = "+",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
@@ -137,7 +171,7 @@ private fun NewTaskScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NewStepTaskScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ){
     LaunchedEffect(Unit) {
 
@@ -171,7 +205,9 @@ private fun NewStepTaskScreen(
             Text("Descripción: ",
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth().size(width = 20.dp, height = 200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(width = 20.dp, height = 200.dp),
                 value = "",
                 onValueChange = {  },
             )
@@ -207,7 +243,7 @@ private fun NewStepTaskScreen(
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ },
+                onClick = { },
             ) {
                 Text(text = "Añadir Paso",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))

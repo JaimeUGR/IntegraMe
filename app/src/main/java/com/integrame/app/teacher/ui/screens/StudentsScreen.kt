@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.onConsumedWindowInsetsChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -17,21 +16,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -44,35 +37,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.integrame.app.core.ui.components.ErrorCard
-import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
-import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.screens.IdentityCardGrid
-import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
-import com.integrame.app.login.ui.viewmodel.StudentLoginViewModel
-import com.integrame.app.teacher.data.model.task.TaskInfo
-import com.integrame.app.teacher.ui.viewmodel.AsignTaskScreenViewModel
+import com.integrame.app.teacher.ui.viewmodel.SelectStudentScreenViewModel
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentUIState
-import com.integrame.app.ui.theme.IntegraMeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AsignTaskScreen(
+fun StudentsScreen(
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
     modifier: Modifier = Modifier,
-    asignTaskScreenViewModel: AsignTaskScreenViewModel
 
 ) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = "asignTask",
+        startDestination = "selectStudent",
         modifier = modifier
+
         ) {
 
-        composable(route = "asignTask") {
+        composable(route = "selectStudent") {
             SelectStudentScreen(
                 onIdentitySelected = {
                     navController.navigate(
@@ -80,9 +67,7 @@ fun AsignTaskScreen(
                     )
                 },
                 onPressHome = { },
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
+                onNavigateBack = onNavigateBack,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -98,7 +83,7 @@ fun AsignTaskScreen(
                 onTaskModelSelect = {
                     navController.navigate("setTaskInfo")
                 },
-                asignTaskScreenViewModel = asignTaskScreenViewModel
+                // asignTaskScreenViewModel = asignTaskScreenViewModel
             )
 
         }
@@ -112,7 +97,7 @@ fun AsignTaskScreen(
                 onContinue = {
                      navController.navigate("setDateAndRewardInfo")
                 },
-                asignTaskScreenViewModel = asignTaskScreenViewModel
+                // asignTaskScreenViewModel = asignTaskScreenViewModel
             )
 
         }
@@ -124,9 +109,9 @@ fun AsignTaskScreen(
                     navController.popBackStack()
                 },
                 onStudentListReturn = {
-                     navController.navigate("asignTask")
+                     navController.navigate("selectStudent")
                 },
-                asignTaskScreenViewModel = asignTaskScreenViewModel
+                // asignTaskScreenViewModel = asignTaskScreenViewModel
             )
         }
 
@@ -141,11 +126,11 @@ private fun SelectStudentScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    asignTaskScreenViewModel: AsignTaskScreenViewModel = hiltViewModel()
+    selectStudentScreenViewModel: SelectStudentScreenViewModel = hiltViewModel()
 
 ) {
 
-    val selectUIState = asignTaskScreenViewModel.selectStudentUIState
+    val selectUIState = selectStudentScreenViewModel.selectStudentUIState
 
     Text(text = "Estas en la primera pantalla de asignar tarea")
     Scaffold(
@@ -165,7 +150,7 @@ private fun SelectStudentScreen(
                     .fillMaxSize()
                     .padding(innerPadding)) {
                     IdentityCardGrid(
-                        asignTaskScreenViewModel.getIdentityCardsPage(),
+                        selectStudentScreenViewModel.getIdentityCardsPage(),
                         onIdentityCardClick = onIdentitySelected,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -192,7 +177,7 @@ private fun SelectStudentScreen(
                                 tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         },
-                        onPressContinue = { asignTaskScreenViewModel.reloadIdentityCards() },
+                        onPressContinue = { selectStudentScreenViewModel.reloadIdentityCards() },
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -210,11 +195,10 @@ private fun SelectTaskModelScreen(
     onTaskModelSelect: () -> Unit,
     onCustomModelSelect: () -> Unit,
     modifier: Modifier = Modifier,
-    asignTaskScreenViewModel: AsignTaskScreenViewModel
 
 ) {
     LaunchedEffect(Unit){
-        asignTaskScreenViewModel.loadTaskModels()
+        // asignTaskScreenViewModel.loadTaskModels()
         
     }
     
@@ -310,7 +294,7 @@ private fun SetTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
     onContinue: () -> Unit,
-    asignTaskScreenViewModel: AsignTaskScreenViewModel,
+    // asignTaskScreenViewModel: AsignTaskScreenViewModel,
     modifier: Modifier = Modifier,
 
 ) {
@@ -403,7 +387,7 @@ private fun SetDateAndRewardTaskInfoScreen(
     onPressHome: () -> Unit,
     onNavigateBack: () -> Unit,
     onStudentListReturn: () -> Unit,
-    asignTaskScreenViewModel: AsignTaskScreenViewModel,
+    // asignTaskScreenViewModel: AsignTaskScreenViewModel,
     modifier: Modifier = Modifier
 
 ) {

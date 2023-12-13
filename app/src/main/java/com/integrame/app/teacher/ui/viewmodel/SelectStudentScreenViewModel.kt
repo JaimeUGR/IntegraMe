@@ -8,15 +8,13 @@ import com.integrame.app.teacher.domain.repository.TeacherTaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AsignTaskScreenViewModel @Inject constructor(
+class SelectStudentScreenViewModel @Inject constructor(
     private val teacherTaskRepository: TeacherTaskRepository
 ): ViewModel(){
     private lateinit var taskInfo: TaskInfo
