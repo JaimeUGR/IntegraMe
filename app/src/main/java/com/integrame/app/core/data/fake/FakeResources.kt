@@ -148,7 +148,7 @@ object FakeResources {
                 surnames = "S. G.",
                 nickname = "Nick_$i",
                 avatar = remoteImages[i % remoteImages.size],
-                contentProfiles[i].toContentProfile()
+                contentProfile = contentProfiles[i].toContentProfile()
             )
         }
 

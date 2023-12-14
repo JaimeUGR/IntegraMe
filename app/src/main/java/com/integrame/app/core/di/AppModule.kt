@@ -41,11 +41,12 @@ object AppModule {
     @Singleton
     fun provideIntegraMeApi(sessionRepository: SessionRepository): IntegraMeApi {
         // TODO: Integrar API
-        return FakeIntegraMeApi
-        
+        //return FakeIntegraMeApi
+        val json = Json { ignoreUnknownKeys = true}
+
         return Retrofit.Builder()
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl("http://35.210.189.6:6969/api/v1/")
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .baseUrl("http://34.175.9.11:6969/api/v1/")
             .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor(sessionRepository)).build())
             .build()
             .create(IntegraMeApi::class.java)

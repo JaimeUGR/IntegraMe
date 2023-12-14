@@ -12,9 +12,7 @@ class IdentityCardRepositoryImpl(
 ): IdentityCardRepository {
     override suspend fun getStudentsIdentityCards(): RequestResult<List<IdentityCard>> {
         return try {
-            RequestResult.Success(api.getStudentsIdentityCards().map { networkIdentityCard ->
-                networkIdentityCard.toIdentityCard()
-            })
+            RequestResult.Success(api.getStudentsIdentityCards())
         } catch (e: HttpException) {
             val statusCode = e.code()
             RequestResult.Error("Error code: $statusCode")
@@ -25,7 +23,7 @@ class IdentityCardRepositoryImpl(
 
     override suspend fun getIdentityCard(userId: Int) : RequestResult<IdentityCard> {
         return try {
-            RequestResult.Success(api.getStudentIdentityCard(userId).toIdentityCard())
+            RequestResult.Success(api.getStudentIdentityCard(userId))
         } catch (e: HttpException) {
             val statusCode = e.code()
             RequestResult.Error("Error code: $statusCode")

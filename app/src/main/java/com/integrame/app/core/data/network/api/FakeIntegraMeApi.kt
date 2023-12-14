@@ -1,46 +1,49 @@
 package com.integrame.app.core.data.network.api
 
 import com.integrame.app.core.data.fake.FakeResources
+import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.model.session.Session
 import com.integrame.app.core.data.model.user.StudentProfile
-import com.integrame.app.core.data.network.NetworkContentProfile
 import com.integrame.app.core.data.network.NetworkSession
+import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.login.data.model.AuthMethod
+import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.model.TextPassword
-import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.login.data.network.toIdentityCard
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.MaterialRequest
 import com.integrame.app.tasks.data.model.MaterialTaskModel
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
-import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.tasks.data.model.TaskCard
+import com.integrame.app.tasks.data.model.TaskModel
+import com.integrame.app.tasks.data.model.TaskType
+import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
-import retrofit2.http.Path
 
 object FakeIntegraMeApi : IntegraMeApi {
-    override suspend fun getStudentsIdentityCards(): List<NetworkIdentityCard> {
+    override suspend fun getStudentsIdentityCards(): List<IdentityCard> {
         delay(500)
-        return FakeResources.identityCardList
+        return FakeResources.identityCardList.map { it.toIdentityCard() }
     }
 
-    override suspend fun getStudentIdentityCard(userId: Int): NetworkIdentityCard {
+    override suspend fun getStudentIdentityCard(userId: Int): IdentityCard {
         delay(500)
-        return FakeResources.identityCardList[userId]
+        return FakeResources.identityCardList[userId].toIdentityCard()
     }
 
-    override suspend fun getStudentContentProfile(userId: Int): NetworkContentProfile {
+    override suspend fun getStudentContentProfile(userId: Int): ContentProfile {
         delay(500)
-        return FakeResources.contentProfiles[userId]
+        return FakeResources.contentProfiles[userId].toContentProfile()
     }
 
     override suspend fun getStudentAuthMethod(userId: Int): AuthMethod {
@@ -98,9 +101,13 @@ object FakeIntegraMeApi : IntegraMeApi {
         return FakeResources.taskCards
     }
 
-    override suspend fun getTask(taskId : Int): Task {
+    override suspend fun getTaskModel(taskId : Int): TaskModel {
         delay(500)
-        return FakeResources.tasks[taskId]
+        return when (FakeResources.taskCards[taskId].taskType) {
+            TaskType.GenericTask -> GenericTaskModel.fromGenericTask(FakeResources.genericTasks[taskId])
+            TaskType.MenuTask -> MenuTaskModel.fromMenuTask(FakeResources.menuTasks[taskId])
+            TaskType.MaterialTask -> MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[taskId])
+        }
     }
 
     override suspend fun getGenericTaskModel(taskId: Int): GenericTaskModel {
@@ -116,10 +123,10 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun toggleGenericTaskStepCompleted(
         taskId: Int,
         stepId: Int,
-        isCompleted: Boolean
+        stepState: NetworkPostGenericTaskStepState
     ) {
         delay(500)
-        FakeResources.genericTasks[taskId].steps[stepId].isCompleted = isCompleted
+        FakeResources.genericTasks[taskId].steps[stepId].isCompleted = stepState.isCompleted
     }
 
     override suspend fun getMenuTaskModel(taskId: Int): MenuTaskModel {

@@ -6,6 +6,7 @@ import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.tasks.data.model.GenericTask
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
+import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
 import com.integrame.app.tasks.domain.repository.GenericTaskRepository
 
 class GenericTaskRepositoryImpl(
@@ -24,7 +25,7 @@ class GenericTaskRepositoryImpl(
         val step = getStep(taskId, stepNumber)
         step.isCompleted = !step.isCompleted
 
-        api.toggleGenericTaskStepCompleted(taskId, stepNumber, step.isCompleted)
+        api.toggleGenericTaskStepCompleted(taskId, stepNumber, NetworkPostGenericTaskStepState(step.isCompleted))
 
         return step.isCompleted
     }

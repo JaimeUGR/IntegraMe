@@ -3,6 +3,7 @@ package com.integrame.app.tasks.data.model
 import com.integrame.app.core.data.model.content.DynamicContent
 import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,6 +12,7 @@ import kotlinx.serialization.Serializable
  * Se utiliza principalmente para la visualización.
  */
 @Serializable
+@SerialName("MenuTaskModel")
 data class MenuTaskModel(
     override val taskId: Int,
     override val displayName: String,
