@@ -5,9 +5,13 @@ import androidx.navigation.navArgument
 import com.integrame.app.ui.navigation.IntegraMeNavGraph
 import com.integrame.app.ui.navigation.IntegraMeScreen
 
-object StudentDashboardNavGraph : IntegraMeNavGraph {
+object StudentDashboardNavGraph: IntegraMeNavGraph {
     // NOTE: Es el menú principal del estudiante (no en DashboardScreen)
     override val route: String = "dashboard"
+
+    object StudentProfile: IntegraMeScreen {
+        override val route: String = StudentDashboardNavGraph.getSubRoute("profile")
+    }
 
     object StudentTask: IntegraMeScreen {
         override val route: String = StudentDashboardNavGraph.getSubRoute("task")
@@ -17,7 +21,7 @@ object StudentDashboardNavGraph : IntegraMeNavGraph {
             navArgument(taskIdArg) { type = NavType.IntType }
         )
 
-        fun buildRouteWithArgs(taskId: Int) : String {
+        fun buildRouteWithArgs(taskId: Int): String {
             return "${route}/${taskId}"
         }
     }
