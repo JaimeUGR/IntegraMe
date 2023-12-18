@@ -23,6 +23,7 @@ import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.data.model.TaskType
 import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
+import com.integrame.app.tasks.data.network.NetworkPostMaterialRequestDelivered
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -147,9 +148,9 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun toggleMaterialRequestDelivered(
         taskId: Int,
         requestId: Int,
-        isDelivered: Boolean
+        isDelivered: NetworkPostMaterialRequestDelivered
     ) {
         delay(500)
-        FakeResources.materialTasks[taskId].request[requestId].isDelivered = isDelivered
+        FakeResources.materialTasks[taskId].request[requestId].isDelivered = isDelivered.isDelivered
     }
 }

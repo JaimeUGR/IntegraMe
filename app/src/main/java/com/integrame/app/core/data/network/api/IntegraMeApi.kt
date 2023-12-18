@@ -19,6 +19,7 @@ import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
+import com.integrame.app.tasks.data.network.NetworkPostMaterialRequestDelivered
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import retrofit2.Response
 import retrofit2.http.Body
@@ -122,6 +123,6 @@ interface IntegraMeApi {
     suspend fun toggleMaterialRequestDelivered(
         @Path("taskId") taskId: Int,
         @Path("requestId") requestId: Int,
-        @Body isDelivered: Boolean
+        @Body isDelivered: NetworkPostMaterialRequestDelivered
     )
 }
