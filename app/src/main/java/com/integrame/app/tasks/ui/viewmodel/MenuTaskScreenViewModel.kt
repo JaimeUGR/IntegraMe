@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.integrame.app.tasks.data.model.MenuOption
+import com.integrame.app.tasks.data.model.ClassroomMenu
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,71 +17,73 @@ import javax.inject.Inject
 class MenuTaskScreenViewModel @Inject constructor(
     private val menuTaskRepository: MenuTaskRepository
 ): ViewModel() {
-    private lateinit var menuTaskModel: MenuTaskModel
-    var uiStateClassroomList: ClassroomListUIState by mutableStateOf(ClassroomListUIState.Loading)
+    private lateinit var taskModel: MenuTaskModel
+    var uiStateClassroomList: MenuTaskUIState by mutableStateOf(MenuTaskUIState.Loading)
         private set
 
-    var uiStateSelectMenu: SelectMenuUIState by mutableStateOf(SelectMenuUIState.Loading)
-        private set
-
-    var selectClassroom: Int = 0
-
-    var rememberAmount: Int by mutableIntStateOf(0)
-
-    var numMenu: Int = 0
-
-    fun updateSelectClassroom(idClassroom: Int){
-        selectClassroom = idClassroom
+    suspend fun loadTaskModel(menuTaskModel: MenuTaskModel) {
+        uiStateClassroomList = MenuTaskUIState.Loading
+        taskModel = menuTaskModel
+        displayClassroomList()
     }
 
-    fun updateRememberAmount(amount: Int){
-        rememberAmount = amount
+    fun displayClassroomList() {
+        uiStateClassroomList = MenuTaskUIState.SelectClassroom
     }
 
-    fun updateRequestedAmount(numMenu: Int, amount: Int){
-
-        if(uiStateSelectMenu is SelectMenuUIState.ListLoaded){
-            var classroomMenus = (uiStateSelectMenu as SelectMenuUIState.ListLoaded).classroomMenus
-            var menuSelect = classroomMenus[numMenu]
-
-            menuSelect.setRequestAmount(amount)
-        }
-
-    }
-
-    suspend fun loadClassroomsIds() {
-        uiStateClassroomList = ClassroomListUIState.Loading
+    fun selectClassroom(classroomId: Int) {
+        uiStateClassroomList = MenuTaskUIState.Loading
 
         viewModelScope.launch {
-            // Cargar la lista de aulas
-            val classroomsIds = menuTaskRepository.getClassroomIds()
-            // Cambiar el estado a ListLoaded cuando se cargan las aulas
-            uiStateClassroomList = ClassroomListUIState.ListLoaded(classroomsIds)
+            // TODO: control de erorres
+            val classroomMenu = menuTaskRepository.getClassroomMenu(taskId = taskModel.taskId, classroomId = classroomId)
+            uiStateClassroomList = MenuTaskUIState.SelectMenus(classroomMenu)
         }
     }
 
-    suspend fun loadClassroomsMenus(menuTaskModel: MenuTaskModel) {
-        this.menuTaskModel = menuTaskModel
-        uiStateSelectMenu = SelectMenuUIState.Loading
+    fun updateMenuAmount(menuOptionIndex: Int, amount: Int) {
+        if (uiStateClassroomList !is MenuTaskUIState.SelectMenus)
+            return
+
+        val selectMenusUIState = (uiStateClassroomList as MenuTaskUIState.SelectMenus)
 
         viewModelScope.launch {
-            // Cargar la lista de aulas
-            val classroomMenus = menuTaskRepository.getMenuOptions(menuTaskModel.taskId, selectClassroom )
-            // Cambiar el estado a ListLoaded cuando se cargan las aulas
-            uiStateSelectMenu = SelectMenuUIState.ListLoaded(classroomMenus)
+            val menuOption = selectMenusUIState.classroomMenu.menuOptions[menuOptionIndex]
+
+            menuTaskRepository.setMenuAmount(
+                taskId = taskModel.taskId,
+                classroomId = selectMenusUIState.classroomMenu.classroom.classroomId,
+                menuOptionId = menuOption.menuOptionId,
+                amount = amount
+            )
+
+            selectMenusUIState.setMenuOptionAmount(menuOptionIndex, amount)
         }
     }
-
 }
 
-sealed interface ClassroomListUIState {
-    object Loading : ClassroomListUIState
-    data class ListLoaded(val classroomsIds: List<Int>) : ClassroomListUIState
+sealed interface MenuTaskUIState {
+    object Loading: MenuTaskUIState
+    object SelectClassroom: MenuTaskUIState
+    data class SelectMenus(val classroomMenu: ClassroomMenu): MenuTaskUIState {
+        var selectedMenuIndex by mutableIntStateOf(0)
+            private set
+        var selectedMenuAmount by mutableIntStateOf(classroomMenu.menuOptions[0].requestedAmount)
+            private set
 
-}
+        fun setMenuOptionAmount(menuIndex: Int, amount: Int) {
+            if (selectedMenuIndex == menuIndex)
+                selectedMenuAmount = amount
+        }
 
-sealed interface SelectMenuUIState{
-    object Loading : SelectMenuUIState
-    data class ListLoaded(val classroomMenus: List<MenuOption>) : SelectMenuUIState
+        fun nextMenuOption() {
+            selectedMenuIndex++
+            selectedMenuAmount = classroomMenu.menuOptions[selectedMenuIndex].requestedAmount
+        }
 
+        fun previousMenuOption() {
+            selectedMenuIndex--
+            selectedMenuAmount = classroomMenu.menuOptions[selectedMenuIndex].requestedAmount
+        }
+    }
 }

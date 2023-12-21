@@ -2,39 +2,31 @@ package com.integrame.app.tasks.data.repository
 
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.data.model.content.DynamicContent
+import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.tasks.data.model.GenericTask
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
+import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
 import com.integrame.app.tasks.domain.repository.GenericTaskRepository
 
 class GenericTaskRepositoryImpl(
-
+    private val api: IntegraMeApi
 ): GenericTaskRepository {
-    override fun getTaskModel(taskId: Int): GenericTaskModel {
-        return GenericTaskModel(
-            taskId = taskId,
-            displayName = FakeResources.genericTasks[taskId].displayName,
-            displayImage = FakeResources.genericTasks[taskId].displayImage,
-            reward = FakeResources.genericTasks[taskId].reward,
-            steps = FakeResources.genericTasks[taskId].steps.size
-        )
+    // TODO: Incoporar AuthRequestResult
+    override suspend fun getTaskModel(taskId: Int): GenericTaskModel {
+        return api.getGenericTaskModel(taskId)
     }
 
-    override fun getNumSteps(taskId: Int): Int {
-        return FakeResources.genericTasks[taskId].steps.size
+    override suspend fun getStep(taskId: Int, stepNumber: Int): GenericTaskStep {
+        return api.getGenericTaskStep(taskId, stepNumber)
     }
 
-    override fun getStep(taskId: Int, stepNumber: Int): GenericTaskStep {
-        return FakeResources.genericTasks[taskId].steps[stepNumber]
-    }
-
-    override fun toggleStepCompleted(taskId: Int, stepNumber: Int): Boolean {
+    override suspend fun toggleStepCompleted(taskId: Int, stepNumber: Int): Boolean {
         val step = getStep(taskId, stepNumber)
         step.isCompleted = !step.isCompleted
-        return step.isCompleted
-    }
 
-    override fun getReward(taskId: Int): DynamicContent {
-        return FakeResources.genericTasks[taskId].reward
+        api.toggleGenericTaskStepCompleted(taskId, stepNumber, NetworkPostGenericTaskStepState(step.isCompleted))
+
+        return step.isCompleted
     }
 }

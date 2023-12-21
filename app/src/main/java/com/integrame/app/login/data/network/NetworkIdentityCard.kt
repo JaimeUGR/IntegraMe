@@ -12,7 +12,7 @@ data class NetworkIdentityCard(
     val avatar: NetworkImageContent
 )
 
-fun NetworkIdentityCard.toIdentityCard() : IdentityCard {
+fun NetworkIdentityCard.toIdentityCard(): IdentityCard {
     return IdentityCard(
         userId = userId,
         nickname = nickname,

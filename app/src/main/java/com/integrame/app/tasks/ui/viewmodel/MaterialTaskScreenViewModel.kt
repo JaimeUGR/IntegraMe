@@ -56,8 +56,12 @@ class MaterialTaskScreenViewModel @Inject constructor(
             return
         }
 
-        val nextRequest = materialTaskRepository.getMaterialRequest(taskModel.taskId, nextRequestNumber)
-        materialTaskUIState = MaterialTaskUIState.InRequest(nextRequest, nextRequestNumber)
+        materialTaskUIState = MaterialTaskUIState.Loading
+
+        viewModelScope.launch {
+            val nextRequest = materialTaskRepository.getMaterialRequest(taskModel.taskId, nextRequestNumber)
+            materialTaskUIState = MaterialTaskUIState.InRequest(nextRequest, nextRequestNumber)
+        }
     }
 
     fun previousRequest() {
@@ -67,8 +71,12 @@ class MaterialTaskScreenViewModel @Inject constructor(
             is MaterialTaskUIState.Loading -> return
         }
 
-        val previousRequest = materialTaskRepository.getMaterialRequest(taskModel.taskId, previousRequestNumber)
-        materialTaskUIState = MaterialTaskUIState.InRequest(previousRequest, previousRequestNumber)
+        materialTaskUIState = MaterialTaskUIState.Loading
+
+        viewModelScope.launch {
+            val previousRequest = materialTaskRepository.getMaterialRequest(taskModel.taskId, previousRequestNumber)
+            materialTaskUIState = MaterialTaskUIState.InRequest(previousRequest, previousRequestNumber)
+        }
     }
 }
 

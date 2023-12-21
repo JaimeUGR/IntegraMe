@@ -5,32 +5,27 @@ import com.integrame.app.core.data.model.content.DynamicContent
 import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.tasks.data.model.MaterialRequest
 import com.integrame.app.tasks.data.model.MaterialTaskModel
+import com.integrame.app.tasks.data.network.NetworkPostMaterialRequestDelivered
 import com.integrame.app.tasks.domain.repository.MaterialTaskRepository
 import javax.inject.Inject
 
 class MaterialTaskRepositoryImpl @Inject constructor(
     private val api: IntegraMeApi
 ): MaterialTaskRepository {
-    override fun getTaskModel(taskId: Int): MaterialTaskModel {
-        return MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[taskId])
+    // TODO: incoporar AuthRequestResult
+    override suspend fun getTaskModel(taskId: Int): MaterialTaskModel {
+        return api.getMaterialTaskModel(taskId)
     }
 
-    override fun getNumRequests(taskId: Int): Int {
-        return getTaskModel(taskId).requests
+    override suspend fun getMaterialRequest(taskId: Int, requestId: Int): MaterialRequest {
+        return api.getMaterialTaskRequest(taskId, requestId)
     }
 
-    override fun getMaterialRequest(taskId: Int, requestId: Int): MaterialRequest {
-        return FakeResources.materialTasks[taskId].request[requestId]
-    }
+    override suspend fun toggleRequestDelivered(taskId: Int, requestId: Int): Boolean {
+        val currentState = api.getMaterialTaskRequest(taskId, requestId).isDelivered
 
-    override fun toggleRequestDelivered(taskId: Int, requestId: Int): Boolean {
-        val currentState = FakeResources.materialTasks[taskId].request[requestId].isDelivered
-        FakeResources.materialTasks[taskId].request[requestId].isDelivered = !currentState
+        api.toggleMaterialRequestDelivered(taskId, requestId, NetworkPostMaterialRequestDelivered(isDelivered = !currentState))
 
         return !currentState
-    }
-
-    override fun getReward(taskId: Int): DynamicContent {
-        return FakeResources.materialTasks[taskId].reward
     }
 }

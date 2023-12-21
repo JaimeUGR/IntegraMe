@@ -24,6 +24,9 @@ fun StudentDashboard(
         startDestination = StudentDashboardNavGraph.route,
         modifier = modifier.fillMaxSize()
     ) {
+        /**
+         * Agenda
+         */
         composable(route = StudentDashboardNavGraph.route) {
             TaskScheduleScreen(
                 studentProfile = studentProfile,
@@ -32,7 +35,7 @@ fun StudentDashboard(
                     // TODO: Navegar a pantalla de notificaciones
                 },
                 onPressProfile = {
-                     // TODO: Navegar a pantalla de gestión perfil
+                     navController.navigate(StudentDashboardNavGraph.StudentProfile.route)
                 },
                 onSelectTask = { taskId ->
                     navController.navigate(StudentDashboardNavGraph.StudentTask.buildRouteWithArgs(taskId))
@@ -41,6 +44,20 @@ fun StudentDashboard(
             )
         }
 
+        /**
+         * Perfil
+         */
+        composable(StudentDashboardNavGraph.StudentProfile.route) {
+            StudentProfileScreen(
+                studentProfile = studentProfile,
+                onNavigateBack = { navController.popBackStack() },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        /**
+         * Tarea
+         */
         composable(
             route = StudentDashboardNavGraph.StudentTask.routeWithArgs,
             arguments = StudentDashboardNavGraph.StudentTask.arguments
@@ -54,6 +71,12 @@ fun StudentDashboard(
                     taskId = taskId,
                     onNavigateBack = {
                         navController.popBackStack()
+                    },
+                    onPressHome = {
+                        navController.popBackStack(
+                            route = StudentDashboardNavGraph.route,
+                            inclusive = false
+                        )
                     },
                     modifier = Modifier.fillMaxSize()
                 )

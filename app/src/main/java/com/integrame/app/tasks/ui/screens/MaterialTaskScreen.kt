@@ -96,7 +96,12 @@ fun MaterialTaskScreen(
 
         when (materialTaskUIState) {
             is MaterialTaskUIState.Loading -> {
-                CircularProgressIndicator(modifier = baseModifier)
+                Box(
+                    modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(80.dp))
+                }
             }
             is MaterialTaskUIState.InRequest -> {
                 MaterialTaskRequest(
@@ -115,6 +120,7 @@ fun MaterialTaskScreen(
                             .align(Alignment.TopCenter)
                     )
 
+                    // TODO: DynamicContent con la reward
                     AsyncImage(
                         model = "https://static.arasaac.org/pictograms/5397/5397_300.png",
                         contentDescription = "Has terminado, ¡bien!",
@@ -251,7 +257,7 @@ private fun MaterialTaskRequest(
 fun MaterialTaskScreenPreview() {
     IntegraMeTheme {
         MaterialTaskScreen(
-            taskModel = MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[0]),
+            taskModel = FakeResources.materialTaskModels[0],
             contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
             onNavigateBack = {},
             onPressHome = {},

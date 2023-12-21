@@ -3,6 +3,7 @@ package com.integrame.app.core.di
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.data.repository.StudentRespositoryImpl
 import com.integrame.app.core.data.repository.TeacherRepositoryImpl
+import com.integrame.app.core.data.repository.ThemeRepository
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.domain.repository.StudentRepository
 import com.integrame.app.core.domain.repository.TeacherRepository

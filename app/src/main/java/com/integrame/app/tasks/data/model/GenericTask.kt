@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
  * Se utiliza para la visualización de la tarea.
  */
 @Serializable
+@SerialName("GenericTaskModel")
 data class GenericTaskModel(
     override val taskId: Int,
     override val displayName: String,
