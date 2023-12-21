@@ -87,6 +87,7 @@ object FakeResources {
                     j,
                     List(j + 5){ k ->
                         MenuOption(
+                            0,
                             "Menú $j-$k",
                             remoteImages[k % remoteImages.size]
                         )

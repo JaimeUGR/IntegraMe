@@ -47,6 +47,7 @@ data class ClassroomMenuTask(
 
 @Serializable
 data class MenuOption(
+    val menuOptionId: Int,
     val name: String, // Nombre de la comida
     val image: ImageContent // Imagen asociada a la comida
 ) {

@@ -12,6 +12,8 @@ import com.integrame.app.tasks.data.model.MenuOption
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.tasks.data.model.TaskModel
+import com.integrame.app.teacher.data.model.task.TaskCard
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import retrofit2.Response
 import retrofit2.http.Body
@@ -72,6 +74,13 @@ interface IntegraMeApi {
     @Headers("Authorized")
     @GET("auth/students/menuTask/{taskId}/classroom/{classroomId}")
     suspend fun getMenuOptions(@Path("taskId") taskId: Int, @Path("classroomId") classroomId: Int): List<MenuOption>
+
+    @POST("tasks/update")
+    suspend fun postMenuTaskInfo(@Body taskInfo: TaskInfo)
+
+    @Headers("Authorized")
+    @GET
+    suspend fun getListTaskCard(): List<TaskCard>
 
 
 }

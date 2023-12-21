@@ -22,8 +22,6 @@ class SelectStudentScreenViewModel @Inject constructor(
     var selectStudentUIState: SelectStudentUIState by mutableStateOf(SelectStudentUIState.Loading)
         private set
 
-
-
     init {
         viewModelScope.launch {
             loadIdentityCards()

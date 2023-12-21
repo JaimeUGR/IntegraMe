@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,9 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,15 +36,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.integrame.app.core.data.model.content.ImageContent
+import com.integrame.app.core.data.model.content.RemoteImage
+import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.core.ui.components.appbar.TeacherCenterAlignedTopAppBar
+import com.integrame.app.dashboard.ui.navigation.TeacherDashboardNavGraph
+import com.integrame.app.login.ui.components.IdentityCard
+import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.screens.IdentityCardGrid
+import com.integrame.app.tasks.ui.viewmodel.SelectMenuUIState
+import com.integrame.app.teacher.ui.viewmodel.ListTaskModelUIState
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentScreenViewModel
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentUIState
 import com.integrame.app.teacher.ui.viewmodel.SelectTaskModelScreenViewModel
@@ -64,9 +81,10 @@ fun StudentsScreen(
 
         composable(route = "selectStudent") {
             SelectStudentScreen(
-                onIdentitySelected = {
+                onIdentitySelected = { userId ->
                     navController.navigate(
-                        route = "selectTaskModel"
+                        route = "selectActionStudent/${userId}",
+
                     )
                 },
                 onPressHome = { },
@@ -74,7 +92,37 @@ fun StudentsScreen(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        composable(route = "selectTaskModel") { navBackStackEntry ->
+
+        composable(
+            route = "selectActionStudent/{userId}",
+            arguments = listOf(navArgument("userId") {type = NavType.IntType})
+        ) { navBackStackEntry ->
+            val userId = navBackStackEntry.arguments?.getInt("userId")!!
+
+            val menuActions = listOf(
+                MenuActionStudent(
+                    displayName = "Asignar tarea a alumno",
+                    displayImage = null,
+                    onClick = {
+                        navController.navigate("selectTaskModel")
+                    }
+                ),
+            )
+
+            SelectStudentActionScreen(
+                onPressHome = { /*TODO*/ },
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                menuActions = menuActions,
+                userId = userId
+            )
+
+        }
+
+        composable(
+            route = "selectTaskModel") { navBackStackEntry ->
+
             val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
                 navController = navController
             )
@@ -88,17 +136,18 @@ fun StudentsScreen(
                     navController.navigate("setTaskInfo")
                 },
                 onTaskModelSelect = {
-                    navController.navigate("setTaskInfo")
+                    navController.navigate("setDateAndRewardInfo")
                 },
                 onCreateTask = {
-                    navController.navigate("makeTask")
+                    navController.navigate("selectTaskType")
                 },
-                selectTaskModelScreenViewModel = viewModel
+                selectTaskModelScreenViewModel = viewModel,
+
             )
 
         }
 
-        composable(route = "makeTask"){
+        composable(route = "selectTaskType"){
             MakeTaskScreen(
                 onNavigateBack = {
                     navController.popBackStack()
@@ -214,7 +263,96 @@ private fun SelectStudentScreen(
 
 }
 
+private data class MenuActionStudent(
+    val displayName: String,
+    val displayImage: ImageContent?,
+    val onClick: () -> Unit
+)
+
 // 2
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SelectStudentActionScreen(
+    onPressHome: () -> Unit,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    menuActions: List<MenuActionStudent>,
+    userId: Int,
+    selectStudentScreenViewModel: SelectStudentScreenViewModel = hiltViewModel()
+
+) {
+
+
+    Scaffold(
+        topBar = {
+            // CenterAling
+            TeacherCenterAlignedTopAppBar(
+                title = "Selección de Acción del estudiante ${userId}",
+                onNavigateBack = onNavigateBack,
+                onPressHome = { /*TODO*/ },
+            )
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            // TODO: Si únicamente estarán las acciones seleccionables, quitar la column
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(menuActions) { menuAction ->
+                    Button(
+                        onClick = menuAction.onClick,
+                        modifier = Modifier.height(176.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    ) {
+                        val hasDisplayImage = menuAction.displayImage != null
+
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            if (hasDisplayImage) {
+                                DynamicImage(
+                                    image = menuAction.displayImage!!,
+                                    modifier = Modifier
+                                        .padding(bottom = 12.dp)
+                                        .weight(1f)
+                                )
+                            }
+
+                            Text(
+                                text = menuAction.displayName,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.titleMedium
+                                    .copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp
+                                    )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+
+
+// 3
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectTaskModelScreen(
@@ -227,10 +365,24 @@ private fun SelectTaskModelScreen(
     selectTaskModelScreenViewModel: SelectTaskModelScreenViewModel
 
 ) {
+
+    val taskModelListUIState = selectTaskModelScreenViewModel.uiStateTasKModelList
+
     LaunchedEffect(Unit){
-        // asignTaskScreenViewModel.loadTaskModels()
+       // selectTaskModelScreenViewModel.loadTaskModels()
         
     }
+
+/*
+    if (taskModelListUIState == ListTaskModelUIState.Loading)
+    {
+        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        return
+    }
+
+ */
+
+
     
     val numberList = List(4){
         0
@@ -240,7 +392,7 @@ private fun SelectTaskModelScreen(
         modifier  = modifier,
         topBar = {
             TeacherCenterAlignedTopAppBar(
-                title = "Selección o personalización de plantilla",
+                title = "Personalización de plantilla del alumno",
                 onNavigateBack = onNavigateBack,
                 onPressHome = { /*TODO*/ },
             )
@@ -266,15 +418,24 @@ private fun SelectTaskModelScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 userScrollEnabled = false,
             ) {
-                items(numberList) {
-                    Column {
+                /*itemsIndexed(
+                    (taskModelListUIState as ListTaskModelUIState.ListTaskModelIdsReady).listTaskModelIds)
+
+                 */
+                items(numberList)
+                {/*index, item ->*/
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally, // Alineación horizontal centrada
+                        verticalArrangement = Arrangement.Center, // Alineación vertical centrada
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                    ) {
                         Box(
                             modifier = Modifier
                                 .requiredSize(150.dp)
                                 .background(Color.Gray)
-                                .clickable {
-
-                                }
+                                .clickable(onClick = onTaskModelSelect)
                         ) {
                             // Contenido del cuadrado (Plantillas de tareas)
                         }
@@ -282,11 +443,11 @@ private fun SelectTaskModelScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(40.dp),
-                            onClick = onCustomModelSelect,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            onClick = {
+                                //selectTaskModelScreenViewModel.updateSelectTaskModel(index)
+                                onCustomModelSelect()
+                            },
                         ) {
                             Text(
                                 text = "Personalizar",
@@ -296,7 +457,9 @@ private fun SelectTaskModelScreen(
                             )
                         }
                     }
+
                 }
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -315,7 +478,7 @@ private fun SelectTaskModelScreen(
 
 }
 
-// 3
+// 4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetTaskInfoScreen(
@@ -408,7 +571,7 @@ private fun SetTaskInfoScreen(
     }
 }
 
-// 4
+// 5
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetDateAndRewardTaskInfoScreen(

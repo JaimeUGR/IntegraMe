@@ -15,6 +15,8 @@ import com.integrame.app.tasks.data.model.MenuOption
 import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.tasks.data.model.TaskModel
+import com.integrame.app.teacher.data.model.task.TaskCard
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -104,4 +106,14 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getMenuOptions(taskId: Int, classroomId: Int): List<MenuOption> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun postMenuTaskInfo(taskInfo: TaskInfo) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getListTaskCard(): List<TaskCard> {
+        TODO("Not yet implemented")
+    }
+
+
 }

@@ -7,6 +7,7 @@ import com.integrame.app.core.util.AuthRequestResult
 import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
+import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.teacher.data.model.task.Task
 import com.integrame.app.teacher.data.model.task.GenericTask
 import com.integrame.app.teacher.data.model.task.GenericTaskStep
@@ -14,6 +15,7 @@ import com.integrame.app.teacher.data.model.task.MaterialRequest
 import com.integrame.app.teacher.data.model.task.MaterialTask
 import com.integrame.app.teacher.data.model.task.MenuOption
 import com.integrame.app.teacher.data.model.task.MenuTask
+import com.integrame.app.teacher.data.model.task.TaskCard
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import com.integrame.app.teacher.data.model.task.TaskType
 import com.integrame.app.teacher.domain.repository.TeacherTaskRepository
@@ -38,11 +40,11 @@ class TeacherTaskRepositoryImpl (
             assignedStudentId = null,
             assignedTeachersIds = emptyList(),
             description = "",
-            startDate = null,
-            dueDate = null,
+            startDate = "",
+            dueDate = "",
             task = null,
             taskType = null,
-            reward = null
+            reward = null,
         )
     }
 
@@ -64,11 +66,11 @@ class TeacherTaskRepositoryImpl (
         _taskInfoFlow.value = _taskInfoFlow.value.copy(description = description)
     }
 
-    override fun setStartDate(startDate: Long) {
+    override fun setStartDate(startDate: String) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(startDate = startDate)
     }
 
-    override fun setDueDate(dueDate: Long) {
+    override fun setDueDate(dueDate: String) {
         _taskInfoFlow.value = _taskInfoFlow.value.copy(dueDate = dueDate)
     }
     override fun setTaskType(taskType: TaskType) {
@@ -159,5 +161,10 @@ class TeacherTaskRepositoryImpl (
     override suspend fun uploadStudentsCards(): RequestResult<List<IdentityCard>> {
         return identityCardRepositoryImpl.getStudentsIdentityCards()
     }
+
+    override suspend fun getListTaskCard(): List<TaskCard> {
+        return api.getListTaskCard()
+    }
+
 
 }

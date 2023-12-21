@@ -14,7 +14,11 @@ import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.MenuOption
+import com.integrame.app.tasks.data.model.MenuTask
+import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
@@ -96,4 +100,25 @@ object TestIntegraMeApi : IntegraMeApi {
     override suspend fun getTask(taskId: Int): Task {
         return FakeResources.tasks[taskId]
     }
+
+    override suspend fun getMenuTask(taskId: Int): MenuTask {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getClassroomIds(): List<Int> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getMenuOptions(taskId: Int, classroomId: Int): List<MenuOption> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getMenuTaskModel(taskId: Int): MenuTaskModel {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun postTaskInfo(taskInfo: TaskInfo) {
+        TODO("Not yet implemented")
+    }
+
 }

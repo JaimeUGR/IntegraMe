@@ -59,11 +59,13 @@ class MenuTaskRepositoryImpl(
         Para una clase determinada, una lista que contenga el menú seleccionado y la cantidad que se requiere del mismo
      */
     override suspend fun setRequestedAmount(taskId: Int, classroomId: Int, name: String, requestedAmount: Int) {
-        val taskMenuOption = FakeResources.menuTasks[taskId].classroomMenus[classroomId].menuOptions
+        //val taskMenuOption = FakeResources.menuTasks[taskId].classroomMenus[classroomId].menuOptions
 
-        if(taskMenuOption.isNotEmpty()){
+        val taskMenuOptionAPI = api.getMenuOptions(taskId, classroomId)
+
+        if(taskMenuOptionAPI.isNotEmpty()){
             // Encuentra la opción de menú específica por el nombre de la comida
-            val menuOption = taskMenuOption.find { it.name == name  }
+            val menuOption = taskMenuOptionAPI.find { it.name == name  }
 
             // Actualiza la cantidad si se encontró la opción de menú
             menuOption?.setRequestAmount(requestedAmount)
