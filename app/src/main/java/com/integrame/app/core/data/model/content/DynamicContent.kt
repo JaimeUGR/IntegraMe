@@ -25,29 +25,32 @@ data class TextContent(val text: String): DynamicContent
  * Representa contenido de imágenes con un id asociado
  */
 @Serializable
-sealed class ImageContent: DynamicContent { abstract val id: Int }
+sealed class ImageContent: DynamicContent {
+    abstract val id: Int
+    abstract val altDescription: String
+}
 
 /**
  * Representa imágenes locales (res)
  */
-data class LocalImage(@DrawableRes override val id: Int, @StringRes val altDescription: Int): ImageContent()
+data class LocalImage(@DrawableRes override val id: Int, override val altDescription: String): ImageContent()
 
 /**
  * Representa imágenes en formato BitMap
  */
-data class BitMapImage(val bitmap: Bitmap, override val id: Int, val altDescription: String): ImageContent()
+data class BitMapImage(val bitmap: Bitmap, override val id: Int, override val altDescription: String): ImageContent()
 
 /**
  * Representa imágenes vectoriales
  */
-data class VectorImage(val vectorImage: ImageVector, override val id: Int, val altDescription: String): ImageContent()
+data class VectorImage(val vectorImage: ImageVector, override val id: Int, override val altDescription: String): ImageContent()
 
 /**
  * Representa imágenes cargadas desde red (url)
  */
 @Serializable
 @SerialName("RemoteImage")
-data class RemoteImage(val imageUrl: String, override val id: Int, val altDescription: String): ImageContent()
+data class RemoteImage(val imageUrl: String, override val id: Int, override val altDescription: String): ImageContent()
 
 /**
  * Representa vídeos cargados desde red (url)

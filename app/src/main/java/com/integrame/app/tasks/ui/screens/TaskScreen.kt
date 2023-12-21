@@ -30,6 +30,7 @@ import com.integrame.app.tasks.ui.viewmodel.TaskScreenViewModel
 fun TaskScreen(
     taskId: Int,
     onNavigateBack: () -> Unit,
+    onPressHome: () -> Unit,
     modifier: Modifier = Modifier,
     taskScreenViewModel: TaskScreenViewModel = hiltViewModel()
 ) {
@@ -86,7 +87,7 @@ fun TaskScreen(
                         taskModel = taskModel,
                         contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
                         onNavigateBack = onNavigateBack,
-                        onPressHome = { /*TODO*/ },
+                        onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
                         modifier = Modifier.fillMaxSize()
                     )
@@ -96,7 +97,7 @@ fun TaskScreen(
                         taskModel = taskModel,
                         contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
                         onNavigateBack = onNavigateBack,
-                        onPressHome = { /*TODO*/ },
+                        onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
                         modifier = Modifier.fillMaxSize()
                     )
@@ -106,7 +107,7 @@ fun TaskScreen(
                         taskModel = taskModel,
                         contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
                         onNavigateBack = onNavigateBack,
-                        onPressHome = { /*TODO*/ },
+                        onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
                         modifier = Modifier.fillMaxSize()
                     )

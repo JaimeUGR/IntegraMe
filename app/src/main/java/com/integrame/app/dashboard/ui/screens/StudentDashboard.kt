@@ -48,7 +48,7 @@ fun StudentDashboard(
          * Perfil
          */
         composable(StudentDashboardNavGraph.StudentProfile.route) {
-            com.integrame.app.dashboard.ui.screens.StudentProfileScreen(
+            StudentProfileScreen(
                 studentProfile = studentProfile,
                 onNavigateBack = { navController.popBackStack() },
                 modifier = Modifier.fillMaxSize()
@@ -71,6 +71,12 @@ fun StudentDashboard(
                     taskId = taskId,
                     onNavigateBack = {
                         navController.popBackStack()
+                    },
+                    onPressHome = {
+                        navController.popBackStack(
+                            route = StudentDashboardNavGraph.route,
+                            inclusive = false
+                        )
                     },
                     modifier = Modifier.fillMaxSize()
                 )

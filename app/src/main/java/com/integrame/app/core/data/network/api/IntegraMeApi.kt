@@ -2,26 +2,23 @@ package com.integrame.app.core.data.network.api
 
 import com.integrame.app.core.data.model.content.ContentProfile
 import com.integrame.app.core.data.model.user.StudentProfile
-import com.integrame.app.core.data.network.NetworkContentProfile
 import com.integrame.app.core.data.network.NetworkSession
 import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.model.IdentityCard
-import com.integrame.app.login.data.network.NetworkIdentityCard
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
+import com.integrame.app.tasks.data.model.ClassroomMenu
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.MaterialRequest
 import com.integrame.app.tasks.data.model.MaterialTaskModel
-import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
-import com.integrame.app.tasks.data.model.Task
 import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
 import com.integrame.app.tasks.data.network.NetworkPostMaterialRequestDelivered
+import com.integrame.app.tasks.data.network.NetworkPostMenuOptionAmount
 import com.integrame.app.teacher.data.model.task.TaskInfo
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -51,10 +48,6 @@ interface IntegraMeApi {
     @GET("auth/students/{userId}/profile")
     suspend fun getStudentProfile(@Path("userId") userId: Int): StudentProfile
 
-    @Headers("Authorized: true")
-    @GET("auth/students/tasks/{taskId}")
-    suspend fun getMenuTask(@Path("taskId") taskId : Int): MenuTask
-
     @POST("tasks/update")
     suspend fun postTaskInfo(@Body taskInfo: TaskInfo): TaskInfo
 
@@ -64,11 +57,6 @@ interface IntegraMeApi {
     @Headers("Authorized: true")
     @GET("auth/students/taskCards")
     suspend fun getTaskCards(): List<TaskCard>
-
-    // TODO: Eliminar endpoint porque ha sido reemplazado por los modelos de tareas
-    //@Headers("Authorized: true")
-    //@GET("auth/students/tasks/{taskId}")
-    //suspend fun getTask(@Path("taskId") taskId : Int): Task
 
     @Headers("Authorized: true")
     @GET("auth/students/tasks/{taskId}")
@@ -102,7 +90,26 @@ interface IntegraMeApi {
     @Headers("Authorized: true")
     @GET("auth/students/tasks/menu/{taskId}")
     suspend fun getMenuTaskModel(@Path("taskId") taskId: Int): MenuTaskModel
-    // TODO: Continuar aquí abajo los del menú
+
+    @Headers("Authorized: true")
+    @GET("auth/students/tasks/menu/{taskId}/classrooms/menus")
+    suspend fun getMenuTaskClassroomMenus(@Path("taskId") taskId: Int): List<ClassroomMenu>
+
+    @Headers("Authorized: true")
+    @GET("auth/students/tasks/menu/{taskId}/{classroomId}/menu")
+    suspend fun getMenuTaskClassroomMenu(
+        @Path("taskId") taskId: Int,
+        @Path("classroomId") classroomId: Int
+    ): ClassroomMenu
+
+    @Headers("Authorized: true")
+    @POST("auth/students/tasks/menu/{taskId}/{classroomId}/{menuOptionId}")
+    suspend fun setClassroomMenuOptionAmount(
+        @Path("taskId") taskId: Int,
+        @Path("classroomId") classroomId: Int,
+        @Path("menuOptionId") menuOptionId: Int,
+        @Body amount: NetworkPostMenuOptionAmount
+    )
 
     //
     // Material Task
