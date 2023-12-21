@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
+import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.ui.components.IdentityCard
 import com.integrame.app.login.ui.viewmodel.StudentLoginUIState

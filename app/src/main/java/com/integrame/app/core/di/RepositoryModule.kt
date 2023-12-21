@@ -19,6 +19,8 @@ import com.integrame.app.tasks.domain.repository.MaterialTaskRepository
 import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
 import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import com.integrame.app.tasks.domain.repository.TaskRepository
+import com.integrame.app.teacher.data.repository.TeacherTaskRepositoryImpl
+import com.integrame.app.teacher.domain.repository.TeacherTaskRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -63,6 +65,12 @@ abstract class RepositoryModule {
     abstract fun bindTeacherRepository(
         teacherRepositoryImpl: TeacherRepositoryImpl
     ): TeacherRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTeacherTaskRepository(
+        teacherTaskRepositoryImpl: TeacherTaskRepositoryImpl
+    ): TeacherTaskRepository
 
     @Binds
     @Singleton

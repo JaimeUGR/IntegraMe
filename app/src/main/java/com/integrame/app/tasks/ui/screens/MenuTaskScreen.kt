@@ -63,6 +63,7 @@ fun MenuTaskScreen(
     onPressChat: () -> Unit,
     modifier: Modifier = Modifier,
     menuTaskViewModel: MenuTaskScreenViewModel = hiltViewModel()
+
 ) {
     // Observar los cambios en el estado del ViewModel
     val classroomListUIState = menuTaskViewModel.uiStateClassroomList

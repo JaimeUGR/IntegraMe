@@ -32,6 +32,7 @@ data class MaterialRequest(
 
 @Serializable
 data class Material(
+    val displayName: String,
     val displayImage: ImageContent,
     val property: MaterialProperty
 )

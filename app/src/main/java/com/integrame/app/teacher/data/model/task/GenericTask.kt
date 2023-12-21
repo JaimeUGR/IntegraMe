@@ -3,10 +3,11 @@ package com.integrame.app.teacher.data.model.task
 import com.integrame.app.core.data.model.content.ContentPack
 import com.integrame.app.core.data.model.content.DynamicContent
 import com.integrame.app.core.data.model.content.ImageContent
+import com.integrame.app.core.data.model.content.RemoteImage
 
 data class GenericTask(
     override val displayName: String,
-    override val displayImage: ImageContent,
+    override val displayImage: RemoteImage,
     val steps: List<GenericTaskStep>,
 ): Task() {
 
@@ -15,7 +16,7 @@ data class GenericTask(
         return copy(displayName = newDisplayName)
     }
 
-    fun setDisplayImage(newDisplayImage: ImageContent): GenericTask {
+    fun setDisplayImage(newDisplayImage: RemoteImage): GenericTask {
         return copy(displayImage = newDisplayImage)
     }
 
@@ -25,6 +26,7 @@ data class GenericTask(
 }
 
 data class GenericTaskStep(
-    val name: String,
+    val tittle: String,
+    val description: String,
     val content: ContentPack
 )
