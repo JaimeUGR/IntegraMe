@@ -108,7 +108,7 @@ class TeacherTaskRepositoryImpl (
     }
 
     // Método en el repositorio para actualizar la información de la tarea genérica
-    override fun updateGenericTask(displayName: String, displayImage: ImageContent) {
+    override fun updateGenericTask(displayName: String, displayImage: RemoteImage) {
         if (_taskInfoFlow.value.task is GenericTask) {
             val genericTask = _taskInfoFlow.value.task as GenericTask
             val updatedGenericTask = genericTask

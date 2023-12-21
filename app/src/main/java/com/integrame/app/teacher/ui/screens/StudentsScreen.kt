@@ -104,7 +104,7 @@ fun StudentsScreen(
                     displayName = "Asignar tarea a alumno",
                     displayImage = null,
                     onClick = {
-                        navController.navigate("selectTaskModel")
+                        navController.navigate("selectTaskModel/${userId}")
                     }
                 ),
             )
@@ -120,8 +120,10 @@ fun StudentsScreen(
 
         }
 
-        composable(
-            route = "selectTaskModel") { navBackStackEntry ->
+        composable(route = "selectTaskModel/{userId}",
+            arguments = listOf(navArgument("userId") {type = NavType.IntType})
+        ) { navBackStackEntry ->
+            val userId = navBackStackEntry.arguments?.getInt("userId")!!
 
             val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
                 navController = navController
@@ -139,7 +141,7 @@ fun StudentsScreen(
                     navController.navigate("setDateAndRewardInfo")
                 },
                 onCreateTask = {
-                    navController.navigate("selectTaskType")
+                    navController.navigate("selectTaskType/${userId}")
                 },
                 selectTaskModelScreenViewModel = viewModel,
 
@@ -147,12 +149,18 @@ fun StudentsScreen(
 
         }
 
-        composable(route = "selectTaskType"){
+        composable(route = "selectTaskType/{userId}",
+            arguments = listOf(navArgument("userId") {type = NavType.IntType})
+        ){ navBackStackEntry ->
+
+            val userId = navBackStackEntry.arguments?.getInt("userId")!!
             MakeTaskScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                modifier = Modifier.fillMaxSize() )
+                modifier = Modifier.fillMaxSize(),
+                userId = userId
+            )
         }
 
         composable(route = "setTaskInfo") { navBackStackEntry ->
@@ -173,7 +181,7 @@ fun StudentsScreen(
 
         }
 
-        composable(route = "setDateAndRewardInfo"){ navBackStackEntry ->
+        composable(route = "setDateAndRewardInfo") { navBackStackEntry ->
             val viewModel: SelectTaskModelScreenViewModel = navBackStackEntry.sharedHiltViewModel(
                 navController = navController
             )
@@ -382,8 +390,6 @@ private fun SelectTaskModelScreen(
 
  */
 
-
-    
     val numberList = List(4){
         0
     }
@@ -489,7 +495,7 @@ private fun SetTaskInfoScreen(
     selectTaskModelScreenViewModel: SelectTaskModelScreenViewModel
 
 ) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
 
     }
 
@@ -515,8 +521,10 @@ private fun SetTaskInfoScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {  },
+                value = selectTaskModelScreenViewModel.tittle,
+                onValueChange = {
+                        selectTaskModelScreenViewModel.onTittleChange(it)
+                },
                 singleLine = true
             )
             Text("Descripción: ",
@@ -525,8 +533,10 @@ private fun SetTaskInfoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(width = 20.dp, height = 100.dp),
-                value = "",
-                onValueChange = {  },
+                value = selectTaskModelScreenViewModel.description,
+                onValueChange = {
+                        selectTaskModelScreenViewModel.onDescriptionChange(it)
+                },
             )
             Text("Pasos: ",
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
@@ -608,8 +618,10 @@ private fun SetDateAndRewardTaskInfoScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {  },
+                value = selectTaskModelScreenViewModel.startDate,
+                onValueChange = {
+                        selectTaskModelScreenViewModel.onStartDateChange(it)
+                },
                 singleLine = true
             )
 
@@ -617,8 +629,10 @@ private fun SetDateAndRewardTaskInfoScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {  },
+                value = selectTaskModelScreenViewModel.dueDate,
+                onValueChange = {
+                        selectTaskModelScreenViewModel.onDueDateChange(it)
+                },
                 singleLine = true
             )
 
@@ -626,8 +640,10 @@ private fun SetDateAndRewardTaskInfoScreen(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {  },
+                value = selectTaskModelScreenViewModel.reward.toString(),
+                onValueChange = {
+                        selectTaskModelScreenViewModel.onRewardChange(it.toInt())
+                },
                 singleLine = true
             )
             Button(

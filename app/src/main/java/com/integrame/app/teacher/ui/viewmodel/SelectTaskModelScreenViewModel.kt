@@ -1,6 +1,7 @@
 package com.integrame.app.teacher.ui.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -22,9 +23,45 @@ class SelectTaskModelScreenViewModel @Inject constructor(
     var uiStateTaskModelListIds: ListTaskModelUIState by mutableStateOf(ListTaskModelUIState.Loading)
         private set
 
-    var userId: Int by mutableStateOf(0)
+    var userId by mutableIntStateOf(0)
 
     var selectTaskModel: Int = 0
+
+    var tittle: String by mutableStateOf("")
+        private set
+
+    var description: String by mutableStateOf("")
+        private set
+
+    var startDate: String by mutableStateOf("")
+        private set
+
+    var dueDate: String by mutableStateOf("")
+        private set
+
+    var reward: Int by mutableIntStateOf(0)
+        private set
+
+
+    fun onTittleChange(tittle: String) {
+        this.tittle = tittle
+    }
+
+    fun onDescriptionChange(description: String) {
+        this.description = description
+    }
+
+    fun onStartDateChange(startDate: String) {
+        this.startDate = startDate
+    }
+
+    fun onDueDateChange(dueDate: String) {
+        this.dueDate = dueDate
+    }
+
+    fun onRewardChange(reward: Int) {
+        this.reward = reward
+    }
 
     fun updateSelectTaskModel(idTaskModel: Int){
         selectTaskModel = idTaskModel

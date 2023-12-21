@@ -35,7 +35,7 @@ interface TeacherTaskRepository {
 
     fun updateClassroomMenuTask(classroomId: Int, newMenuOptions: List<MenuOption>)
 
-    fun updateGenericTask(displayName: String, displayImage: ImageContent)
+    fun updateGenericTask(displayName: String, displayImage: RemoteImage)
 
     fun updateGenericTaskSteps(newSteps: List<GenericTaskStep>)
 
