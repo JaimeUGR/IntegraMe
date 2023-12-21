@@ -33,7 +33,7 @@ fun DynamicImage(
 ) {
     val imageData: Pair<Painter, String> = when (image) {
         is LocalImage -> {
-            Pair(painterResource(id = image.id), stringResource(id = image.altDescription))
+            Pair(painterResource(id = image.id), image.altDescription)
         }
         is BitMapImage -> {
             Pair(BitmapPainter(image.bitmap.asImageBitmap()), image.altDescription)

@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +47,6 @@ import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.ui.viewmodel.GenericTaskScreenViewModel
 import com.integrame.app.tasks.ui.viewmodel.GenericTaskUIState
-import com.integrame.app.tasks.ui.viewmodel.MaterialTaskUIState
 import com.integrame.app.ui.theme.IntegraMeTheme
 
 val contentSelectorCards = mapOf<ContentAdaptationFormats, @Composable (Modifier) -> Unit>(
@@ -290,7 +288,7 @@ fun GenericTaskStepContent(
 fun GenericTaskScreenPreview() {
     IntegraMeTheme {
         GenericTaskScreen(
-            taskModel = GenericTaskModel.fromGenericTask(FakeResources.genericTasks[0]),
+            taskModel = FakeResources.genericTaskModels[0],
             contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
             onNavigateBack = { /*TODO*/ },
             onPressHome = { /*TODO*/ },

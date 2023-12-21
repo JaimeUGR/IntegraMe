@@ -2,7 +2,7 @@ package com.integrame.app.tasks.data.model
 
 import com.integrame.app.core.data.model.content.DynamicContent
 import com.integrame.app.core.data.model.content.ImageContent
-import com.integrame.app.core.data.model.content.RemoteImage
+import com.integrame.app.core.data.model.content.TextContent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,51 +11,34 @@ import kotlinx.serialization.Serializable
  *
  * Se utiliza principalmente para la visualización.
  */
+// TODO: Quizás sería conveniente eliminar la integración con la List<Classrooms>
 @Serializable
 @SerialName("MenuTaskModel")
 data class MenuTaskModel(
     override val taskId: Int,
     override val displayName: String,
     override val displayImage: ImageContent,
-    override val reward: DynamicContent
-): TaskModel(){
-    companion object {
-        fun fromMenuTask(task: MenuTask): MenuTaskModel {
-            return MenuTaskModel(
-                taskId = task.taskId,
-                displayName = task.displayName,
-                displayImage = task.displayImage,
-                reward = task.reward
-            )
-        }
-    }
-}
-
-// TODO: Revisar y ajustar todas las clases por debajo
-@Serializable
-data class MenuTask(
-    override val taskId: Int,
-    override val displayName: String,
-    override val displayImage: ImageContent,
     override val reward: DynamicContent,
-    val classroomMenus: List<ClassroomMenuTask>
-): Task()
+    val classrooms: List<Classroom>
+): TaskModel()
 
 @Serializable
-data class ClassroomMenuTask(
-    val classroomId: Int, // Letra de la clase
-    val menuOptions: List<MenuOption> // Lista de comida
+data class Classroom(
+    val classroomId: Int,
+    val displayText: TextContent,
+    val displayImage: ImageContent,
+)
+
+@Serializable
+data class ClassroomMenu(
+    val classroom: Classroom,
+    val menuOptions: List<MenuOption>
 )
 
 @Serializable
 data class MenuOption(
-    val name: String, // Nombre de la comida
-    val image: ImageContent // Imagen asociada a la comida
-) {
-    var requestedAmount: Int = 0 // Cantidad de comida escogida
-        private set
-
-    fun setRequestAmount(amount: Int) {
-        requestedAmount = amount
-    }
-}
+    val menuOptionId: Int,
+    val displayName: TextContent, // Nombre de la comida
+    val displayImage: ImageContent, // Imagen asociada a la comida
+    var requestedAmount: Int
+)

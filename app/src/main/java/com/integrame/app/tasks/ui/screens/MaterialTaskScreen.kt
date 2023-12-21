@@ -257,7 +257,7 @@ private fun MaterialTaskRequest(
 fun MaterialTaskScreenPreview() {
     IntegraMeTheme {
         MaterialTaskScreen(
-            taskModel = MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[0]),
+            taskModel = FakeResources.materialTaskModels[0],
             contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
             onNavigateBack = {},
             onPressHome = {},

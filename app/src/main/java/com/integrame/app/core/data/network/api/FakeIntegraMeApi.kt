@@ -13,17 +13,18 @@ import com.integrame.app.login.data.model.TextPassword
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.login.data.network.toIdentityCard
+import com.integrame.app.tasks.data.model.ClassroomMenu
 import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.MaterialRequest
 import com.integrame.app.tasks.data.model.MaterialTaskModel
-import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.TaskCard
 import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.data.model.TaskType
 import com.integrame.app.tasks.data.network.NetworkPostGenericTaskStepState
 import com.integrame.app.tasks.data.network.NetworkPostMaterialRequestDelivered
+import com.integrame.app.tasks.data.network.NetworkPostMenuOptionAmount
 import com.integrame.app.teacher.data.model.task.TaskInfo
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -88,12 +89,6 @@ object FakeIntegraMeApi : IntegraMeApi {
         return FakeResources.studentProfiles[0]
     }
 
-
-    override suspend fun getMenuTask(taskId : Int): MenuTask{
-        delay(500)
-        return FakeResources.menuTasks[taskId]
-    }
-
     override suspend fun postTaskInfo(value: TaskInfo): TaskInfo {
         TODO("Not yet implemented")
     }
@@ -105,20 +100,20 @@ object FakeIntegraMeApi : IntegraMeApi {
     override suspend fun getTaskModel(taskId : Int): TaskModel {
         delay(500)
         return when (FakeResources.taskCards[taskId].taskType) {
-            TaskType.GenericTask -> GenericTaskModel.fromGenericTask(FakeResources.genericTasks[taskId])
-            TaskType.MenuTask -> MenuTaskModel.fromMenuTask(FakeResources.menuTasks[taskId])
-            TaskType.MaterialTask -> MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[taskId])
+            TaskType.GenericTask -> FakeResources.genericTaskModels[taskId]
+            TaskType.MenuTask -> FakeResources.menuTaskModels[taskId]
+            TaskType.MaterialTask -> FakeResources.materialTaskModels[taskId]
         }
     }
 
     override suspend fun getGenericTaskModel(taskId: Int): GenericTaskModel {
         delay(500)
-        return GenericTaskModel.fromGenericTask(FakeResources.genericTasks[taskId])
+        return FakeResources.genericTaskModels[taskId]
     }
 
     override suspend fun getGenericTaskStep(taskId: Int, stepId: Int): GenericTaskStep {
         delay(500)
-        return FakeResources.genericTasks[taskId].steps[stepId]
+        return FakeResources.genericTaskSteps[taskId][stepId]
     }
 
     override suspend fun toggleGenericTaskStepCompleted(
@@ -127,22 +122,41 @@ object FakeIntegraMeApi : IntegraMeApi {
         stepState: NetworkPostGenericTaskStepState
     ) {
         delay(500)
-        FakeResources.genericTasks[taskId].steps[stepId].isCompleted = stepState.isCompleted
+        FakeResources.genericTaskSteps[taskId][stepId].isCompleted = stepState.isCompleted
     }
 
     override suspend fun getMenuTaskModel(taskId: Int): MenuTaskModel {
         delay(500)
-        return MenuTaskModel.fromMenuTask(FakeResources.menuTasks[taskId])
+        return FakeResources.menuTaskModels[taskId]
+    }
+
+    override suspend fun getMenuTaskClassroomMenus(taskId: Int): List<ClassroomMenu> {
+        delay(500)
+        return FakeResources.menuTaskClassroomMenus[taskId]
+    }
+
+    override suspend fun getMenuTaskClassroomMenu(taskId: Int, classroomId: Int): ClassroomMenu {
+        delay(500)
+        return FakeResources.menuTaskClassroomMenus[taskId][classroomId]
+    }
+
+    override suspend fun setClassroomMenuOptionAmount(
+        taskId: Int,
+        classroomId: Int,
+        menuOptionId: Int,
+        amount: NetworkPostMenuOptionAmount
+    ) {
+        FakeResources.menuTaskClassroomMenus[taskId][classroomId].menuOptions[menuOptionId].requestedAmount = amount.amount
     }
 
     override suspend fun getMaterialTaskModel(taskId: Int): MaterialTaskModel {
         delay(500)
-        return MaterialTaskModel.fromMaterialTask(FakeResources.materialTasks[taskId])
+        return FakeResources.materialTaskModels[taskId]
     }
 
     override suspend fun getMaterialTaskRequest(taskId: Int, requestId: Int): MaterialRequest {
         delay(500)
-        return FakeResources.materialTasks[taskId].request[requestId]
+        return FakeResources.materialTaskRequests[taskId][requestId]
     }
 
     override suspend fun toggleMaterialRequestDelivered(
@@ -151,6 +165,6 @@ object FakeIntegraMeApi : IntegraMeApi {
         isDelivered: NetworkPostMaterialRequestDelivered
     ) {
         delay(500)
-        FakeResources.materialTasks[taskId].request[requestId].isDelivered = isDelivered.isDelivered
+        FakeResources.materialTaskRequests[taskId][requestId].isDelivered = isDelivered.isDelivered
     }
 }
