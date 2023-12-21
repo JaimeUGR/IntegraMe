@@ -8,6 +8,7 @@ import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.data.repository.StudentRespositoryImpl
 import com.integrame.app.core.data.repository.TeacherRepositoryImpl
+import com.integrame.app.core.data.repository.ThemeRepository
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
@@ -50,6 +51,14 @@ object AppModule {
             .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor(sessionRepository)).build())
             .build()
             .create(IntegraMeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideThemeRepositoryImpl(
+        @ApplicationContext appContext: Context
+    ): ThemeRepository {
+        return ThemeRepository(appContext)
     }
 
     @Provides
