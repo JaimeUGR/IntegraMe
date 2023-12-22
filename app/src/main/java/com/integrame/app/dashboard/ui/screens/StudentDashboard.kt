@@ -68,6 +68,7 @@ fun StudentDashboard(
                 navController.popBackStack()
             else
                 TaskScreen(
+                    studentProfile = studentProfile,
                     taskId = taskId,
                     onNavigateBack = {
                         navController.popBackStack()

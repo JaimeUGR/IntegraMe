@@ -43,7 +43,7 @@ object AppModule {
     @Singleton
     fun provideIntegraMeApi(sessionRepository: SessionRepository): IntegraMeApi {
         // TODO: Integrar API
-        return FakeIntegraMeApi
+        //return FakeIntegraMeApi
         val json = Json { ignoreUnknownKeys = true}
 
         return Retrofit.Builder()

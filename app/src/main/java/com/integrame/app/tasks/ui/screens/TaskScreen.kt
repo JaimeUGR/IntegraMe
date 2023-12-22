@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.data.fake.FakeResources
+import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.tasks.data.model.GenericTaskModel
@@ -28,6 +29,7 @@ import com.integrame.app.tasks.ui.viewmodel.TaskScreenViewModel
 
 @Composable
 fun TaskScreen(
+    studentProfile: StudentProfile,
     taskId: Int,
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
@@ -85,7 +87,7 @@ fun TaskScreen(
                 is GenericTaskModel -> {
                     GenericTaskScreen(
                         taskModel = taskModel,
-                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        contentProfile = studentProfile.contentProfile,
                         onNavigateBack = onNavigateBack,
                         onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
@@ -95,7 +97,7 @@ fun TaskScreen(
                 is MenuTaskModel -> {
                     MenuTaskScreen(
                         taskModel = taskModel,
-                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        contentProfile = studentProfile.contentProfile,
                         onNavigateBack = onNavigateBack,
                         onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
@@ -105,7 +107,7 @@ fun TaskScreen(
                 is MaterialTaskModel -> {
                     MaterialTaskScreen(
                         taskModel = taskModel,
-                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        contentProfile = studentProfile.contentProfile,
                         onNavigateBack = onNavigateBack,
                         onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },

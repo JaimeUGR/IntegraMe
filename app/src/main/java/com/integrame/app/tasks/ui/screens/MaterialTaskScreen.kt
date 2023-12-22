@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.data.model.content.ContentProfile
+import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
@@ -193,7 +194,8 @@ private fun MaterialTaskRequest(
                     )
 
                     DynamicImage(
-                        image = requestState.displayAmount,
+                        // TODO: Agregar la imagen del requestState
+                        image = RemoteImage("https://static.arasaac.org/pictograms/7283/7283_300.png", -1, "Tres"),
                         modifier = Modifier
                             .padding(16.dp)
                             .size(width = 120.dp, height = 120.dp)
