@@ -1,5 +1,6 @@
 package com.integrame.app.teacher.data.repository
 
+import com.integrame.app.core.data.fake.FakeResources
 import com.integrame.app.core.data.model.content.ImageContent
 import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.data.network.api.IntegraMeApi
@@ -163,8 +164,6 @@ class TeacherTaskRepositoryImpl (
     }
 
     override suspend fun getListTaskCard(): List<TaskCard> {
-        return api.getListTaskCard()
+        TODO("NOT YET IMPLEMENTED")
     }
-
-
 }

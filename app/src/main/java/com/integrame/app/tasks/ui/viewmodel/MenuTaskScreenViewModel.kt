@@ -74,6 +74,8 @@ sealed interface MenuTaskUIState {
         fun setMenuOptionAmount(menuIndex: Int, amount: Int) {
             if (selectedMenuIndex == menuIndex)
                 selectedMenuAmount = amount
+
+            classroomMenu.menuOptions[menuIndex].requestedAmount = amount
         }
 
         fun nextMenuOption() {

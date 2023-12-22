@@ -5,6 +5,7 @@ import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.data.network.NetworkSession
 import com.integrame.app.login.data.model.AuthMethod
 import com.integrame.app.login.data.model.IdentityCard
+import com.integrame.app.login.data.model.ImagePassword
 import com.integrame.app.login.data.network.SignInStudentRequest
 import com.integrame.app.login.data.network.SignInTeacherRequest
 import com.integrame.app.tasks.data.model.ClassroomMenu
@@ -37,6 +38,9 @@ interface IntegraMeApi {
 
     @GET("students/{userId}/authMethod")
     suspend fun getStudentAuthMethod(@Path("userId") userId: Int): AuthMethod
+
+    @POST("students/{userId}/checkImagePassword")
+    suspend fun checkImagePassword(@Path("userId") userId: Int, @Body imagePassword: ImagePassword)
 
     @POST("students/signIn")
     suspend fun signInStudent(@Body signInRequest: SignInStudentRequest): NetworkSession

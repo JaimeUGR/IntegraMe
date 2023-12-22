@@ -51,9 +51,30 @@ class StudentAuthViewModel @Inject constructor(
         textPassword = newTextPassword
     }
 
-    fun onAddImage(imageId: Int, imageIndex: Int): Int {
+    fun onAddImage(sizeToSignIn: Int, userId: Int, imageId: Int, imageIndex: Int): Int {
+        if (authProcessUIState == AuthProcessUIState.Requesting)
+            return imagePassword.size
+
         imagePassword = imagePassword.toMutableList().apply {
             add(Pair(imageId, imageIndex))
+        }
+
+        if (imagePassword.size == sizeToSignIn) {
+           imageAuthSignIn(userId)
+           return imagePassword.size
+        }
+
+        // Poner el estado a autenticando
+        authProcessUIState = AuthProcessUIState.Requesting
+
+        val currentImagePassword = ImagePassword(imagePassword.map { id_idx -> id_idx.first })
+
+        viewModelScope.launch {
+            authProcessUIState = when (val requestResult = authRepository.checkImagePassword(userId, currentImagePassword)) {
+                is AuthRequestResult.Authorized -> AuthProcessUIState.Pending
+                is AuthRequestResult.Unauthorized -> AuthProcessUIState.Unauthorized
+                is AuthRequestResult.Error -> AuthProcessUIState.Error(requestResult.error)
+            }
         }
 
         return imagePassword.size

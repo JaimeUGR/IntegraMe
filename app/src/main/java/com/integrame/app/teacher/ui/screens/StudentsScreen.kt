@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -46,29 +45,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.integrame.app.core.data.model.content.ImageContent
-import com.integrame.app.core.data.model.content.RemoteImage
 import com.integrame.app.core.ui.components.DynamicImage
 import com.integrame.app.core.ui.components.ErrorCard
-import com.integrame.app.core.ui.components.appbar.StudentTaskTopAppBar
 import com.integrame.app.core.ui.components.appbar.TeacherCenterAlignedTopAppBar
-import com.integrame.app.dashboard.ui.navigation.TeacherDashboardNavGraph
-import com.integrame.app.login.ui.components.IdentityCard
-import com.integrame.app.login.ui.navigation.LoginNavGraph
 import com.integrame.app.login.ui.screens.IdentityCardGrid
-import com.integrame.app.tasks.ui.viewmodel.SelectMenuUIState
-import com.integrame.app.teacher.ui.viewmodel.ListTaskModelUIState
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentScreenViewModel
 import com.integrame.app.teacher.ui.viewmodel.SelectStudentUIState
 import com.integrame.app.teacher.ui.viewmodel.SelectTaskModelScreenViewModel
 import com.integrame.app.ui.navigation.sharedHiltViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentsScreen(
     onNavigateBack: () -> Unit,
     onPressHome: () -> Unit,
     modifier: Modifier = Modifier,
-
 ) {
     val navController = rememberNavController()
 
@@ -76,9 +66,7 @@ fun StudentsScreen(
         navController = navController,
         startDestination = "selectStudent",
         modifier = modifier
-
-        ) {
-
+    ) {
         composable(route = "selectStudent") {
             SelectStudentScreen(
                 onIdentitySelected = { userId ->
@@ -236,8 +224,7 @@ private fun SelectStudentScreen(
                     IdentityCardGrid(
                         selectStudentScreenViewModel.getIdentityCardsPage(),
                         onIdentityCardClick = onIdentitySelected,
-                        modifier = Modifier
-                            .align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
@@ -268,7 +255,6 @@ private fun SelectStudentScreen(
             }
         }
     }
-
 }
 
 private data class MenuActionStudent(
@@ -293,7 +279,6 @@ private fun SelectStudentActionScreen(
 
     Scaffold(
         topBar = {
-            // CenterAling
             TeacherCenterAlignedTopAppBar(
                 title = "Selección de Acción del estudiante ${userId}",
                 onNavigateBack = onNavigateBack,
@@ -648,7 +633,7 @@ private fun SetDateAndRewardTaskInfoScreen(
             )
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { onStudentListReturn },
+                onClick = onStudentListReturn,
             ) {
                 Text(text = "Guardar",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium))

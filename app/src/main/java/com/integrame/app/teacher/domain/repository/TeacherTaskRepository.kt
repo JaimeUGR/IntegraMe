@@ -48,7 +48,4 @@ interface TeacherTaskRepository {
     suspend fun uploadStudentsCards(): RequestResult<List<IdentityCard>>
 
     suspend fun getListTaskCard(): List<TaskCard>
-
-
-
 }

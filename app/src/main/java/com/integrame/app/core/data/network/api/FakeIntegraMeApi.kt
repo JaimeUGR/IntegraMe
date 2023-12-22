@@ -53,6 +53,23 @@ object FakeIntegraMeApi : IntegraMeApi {
         return FakeResources.authMethodList[userId]
     }
 
+    override suspend fun checkImagePassword(userId: Int, imagePassword: ImagePassword) {
+        delay(500)
+
+        imagePassword.password.forEach { i ->
+            if (i != 0) {
+                throw retrofit2.HttpException(
+                    retrofit2.Response.error<Unit>(
+                        401, okhttp3.ResponseBody.create(
+                            "application/json".toMediaTypeOrNull(),
+                            "{\"error\":[\"Error de autenticación\"]}"
+                        )
+                    )
+                )
+            }
+        }
+    }
+
     override suspend fun signInStudent(signInRequest: SignInStudentRequest): NetworkSession {
         delay(500)
 
