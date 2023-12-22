@@ -1,5 +1,6 @@
 package com.integrame.app.tasks.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,8 @@ class GenericTaskScreenViewModel @Inject constructor(
     suspend fun loadTaskModel(taskModel: GenericTaskModel) {
         this.taskModel = taskModel
 
+        Log.i("ASD", "HE LLEGAO")
+
         viewModelScope.launch {
             // Cargar el paso inicial
             val step = genericTaskRepository.getStep(taskModel.taskId, 0)
@@ -53,13 +56,17 @@ class GenericTaskScreenViewModel @Inject constructor(
         val nextStepNumber = (genericTaskUIState as GenericTaskUIState.InStep).stepNumber + 1
 
         // Es la recompensa
-        if (nextStepNumber == taskModel.steps) {
+        if (nextStepNumber >= taskModel.steps) {
             genericTaskUIState = GenericTaskUIState.InReward
             return
         }
 
-        val step = genericTaskRepository.getStep(taskModel.taskId, nextStepNumber)
-        genericTaskUIState = GenericTaskUIState.InStep(step, nextStepNumber)
+        genericTaskUIState = GenericTaskUIState.Loading
+
+        viewModelScope.launch {
+            val step = genericTaskRepository.getStep(taskModel.taskId, nextStepNumber)
+            genericTaskUIState = GenericTaskUIState.InStep(step, nextStepNumber)
+        }
     }
 
     fun previousStep() {
@@ -69,8 +76,12 @@ class GenericTaskScreenViewModel @Inject constructor(
             is GenericTaskUIState.Loading -> return
         }
 
-        val step = genericTaskRepository.getStep(taskModel.taskId, previousStepNumber)
-        genericTaskUIState = GenericTaskUIState.InStep(step, previousStepNumber)
+        genericTaskUIState = GenericTaskUIState.Loading
+
+        viewModelScope.launch {
+            val step = genericTaskRepository.getStep(taskModel.taskId, previousStepNumber)
+            genericTaskUIState = GenericTaskUIState.InStep(step, previousStepNumber)
+        }
     }
 }
 

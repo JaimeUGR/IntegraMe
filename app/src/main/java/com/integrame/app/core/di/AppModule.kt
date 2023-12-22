@@ -8,11 +8,15 @@ import com.integrame.app.core.data.network.api.IntegraMeApi
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.data.repository.StudentRespositoryImpl
 import com.integrame.app.core.data.repository.TeacherRepositoryImpl
+import com.integrame.app.core.data.repository.ThemeRepository
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.login.data.repository.AuthRepositoryImpl
 import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.MaterialTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
+import com.integrame.app.teacher.data.repository.TeacherTaskRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -39,14 +43,23 @@ object AppModule {
     @Singleton
     fun provideIntegraMeApi(sessionRepository: SessionRepository): IntegraMeApi {
         // TODO: Integrar API
-        return FakeIntegraMeApi
-        
+        //return FakeIntegraMeApi
+        val json = Json { ignoreUnknownKeys = true}
+
         return Retrofit.Builder()
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl("http://35.210.189.6:6969/api/v1/")
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .baseUrl("http://34.175.9.11:6969/api/v1/")
             .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor(sessionRepository)).build())
             .build()
             .create(IntegraMeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideThemeRepositoryImpl(
+        @ApplicationContext appContext: Context
+    ): ThemeRepository {
+        return ThemeRepository(appContext)
     }
 
     @Provides
@@ -68,15 +81,35 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGenericTaskRepositoryImpl(): GenericTaskRepositoryImpl {
-        return GenericTaskRepositoryImpl()
+    fun provideGenericTaskRepositoryImpl(api: IntegraMeApi): GenericTaskRepositoryImpl {
+        return GenericTaskRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideMenuTaskRepositoryImpl(api: IntegraMeApi): MenuTaskRepositoryImpl {
+        return MenuTaskRepositoryImpl(api)
     }
 
     @Provides
     @Singleton
-    fun provideTeacherRepositoryImpl(): TeacherRepositoryImpl {
+    fun provideMaterialTaskRepositoryImpl(api: IntegraMeApi): MaterialTaskRepositoryImpl {
+        return MaterialTaskRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeacherRepositoryImpl(api: IntegraMeApi): TeacherRepositoryImpl {
         return TeacherRepositoryImpl()
     }
+
+    @Provides
+    @Singleton
+    fun provideTeacherTaskRepositoryImpl(api: IntegraMeApi, identityCardRepositoryImpl: IdentityCardRepositoryImpl): TeacherTaskRepositoryImpl {
+        return TeacherTaskRepositoryImpl(api, identityCardRepositoryImpl)
+    }
+
+
 
     @Provides
     @Singleton

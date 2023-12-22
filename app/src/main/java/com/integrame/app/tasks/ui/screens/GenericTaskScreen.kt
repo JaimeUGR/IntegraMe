@@ -5,12 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -30,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,12 +99,6 @@ fun GenericTaskScreen(
         genericTaskScreenViewModel.loadTaskModel(taskModel)
     }
 
-    if (genericTaskUIState == GenericTaskUIState.Loading)
-    {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-        return
-    }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -115,7 +110,7 @@ fun GenericTaskScreen(
             )
         },
         bottomBar = {
-            var isFirstPage = false
+            var isFirstPage = genericTaskUIState !is GenericTaskUIState.InReward
             var isLastPage = true
 
             if (genericTaskUIState is GenericTaskUIState.InStep) {
@@ -133,13 +128,23 @@ fun GenericTaskScreen(
             )
         }
     ) { innerPadding ->
+        if (genericTaskUIState is GenericTaskUIState.Loading) {
+            Box(
+                modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(80.dp))
+            }
+
+            return@Scaffold
+        }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
-
             // Imagen de la tarea
             DynamicImage(
                 image = taskModel.displayImage,
@@ -150,7 +155,7 @@ fun GenericTaskScreen(
             )
             
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             if (genericTaskUIState is GenericTaskUIState.InStep) {
                 GenericTaskStepContent(
                     stepState = genericTaskUIState,
@@ -159,11 +164,12 @@ fun GenericTaskScreen(
                     onSelectAdaptationFormat = { i -> selectedAdaptationFormat = i},
                     onToggleStepCompleted = { genericTaskScreenViewModel.toggleStepCompleted() }
                 )
-            } else {
+            } else { // Recompensa
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
+                    // TODO: Añadir el DynamicContent con la reward
                     AsyncImage(model = "https://static.arasaac.org/pictograms/5397/5397_300.png", contentDescription = "Has terminado, ¡bien!")
                 }
             }
@@ -259,9 +265,9 @@ fun GenericTaskStepContent(
             onClick = { onToggleStepCompleted() },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
                 .height(64.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            contentPadding = PaddingValues(16.dp)
         ) {
             Text(
                 text = "Completado",
@@ -282,7 +288,7 @@ fun GenericTaskStepContent(
 fun GenericTaskScreenPreview() {
     IntegraMeTheme {
         GenericTaskScreen(
-            taskModel = GenericTaskModel.fromGenericTask(FakeResources.genericTasks[0]),
+            taskModel = FakeResources.genericTaskModels[0],
             contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
             onNavigateBack = { /*TODO*/ },
             onPressHome = { /*TODO*/ },

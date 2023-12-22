@@ -1,7 +1,7 @@
 package com.integrame.app.login.data.repository
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.integrame.app.resources.TestIntegraMeApi
+import com.integrame.app.core.data.network.api.FakeIntegraMeApi
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.util.AuthRequestResult
@@ -18,7 +18,7 @@ class AuthRepositoryTest {
 
     init {
         sessionRepository = SessionRepositoryImpl(InstrumentationRegistry.getInstrumentation().targetContext)
-        authRepository = AuthRepositoryImpl(sessionRepository, TestIntegraMeApi)
+        authRepository = AuthRepositoryImpl(sessionRepository, FakeIntegraMeApi)
     }
 
 

@@ -221,13 +221,14 @@ fun StudentAuthScreen(
                             )
                         }
                         is ImageAuthMethod -> {
+                            val steps = authProfile.authMethod.steps
+
                             ImageAuth(
-                                steps = authProfile.authMethod.steps,
+                                steps = steps,
                                 images = authProfile.authMethod.imageList,
                                 contentProfile = authProfile.contentProfile,
-                                onSelectImage = { idx -> studentAuthViewModel.onAddImage(authProfile.authMethod.imageList[idx].id, idx) },
+                                onSelectImage = { idx -> studentAuthViewModel.onAddImage(steps, userId, authProfile.authMethod.imageList[idx].id, idx) },
                                 onRemoveImage = { studentAuthViewModel.onRemoveImage() },
-                                onSignIn = { studentAuthViewModel.imageAuthSignIn(userId) },
                                 studentAuthViewModel = studentAuthViewModel
                             )
                         }
@@ -321,18 +322,11 @@ private fun ImageAuth(
     contentProfile: ContentProfile,
     onSelectImage: (Int) -> Unit,
     onRemoveImage: () -> Unit,
-    onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
     studentAuthViewModel: StudentAuthViewModel = hiltViewModel()
 ) {
     val imagePassword = studentAuthViewModel.imagePassword
     val passwordLength = imagePassword.size
-
-
-    LaunchedEffect(imagePassword) {
-        if (passwordLength >= steps)
-            onSignIn()
-    }
 
     Column(
         modifier = modifier,

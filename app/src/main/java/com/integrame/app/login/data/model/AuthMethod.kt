@@ -8,12 +8,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface AuthMethod
 
+@Serializable
 @SerialName("TextAuth")
-object TextAuthMethod : AuthMethod
+object TextAuthMethod: AuthMethod
 
 @Serializable
 @SerialName("ImageAuth")
 data class ImageAuthMethod(
     val steps: Int,
     val imageList: List<ImageContent>
-) : AuthMethod
+): AuthMethod

@@ -3,6 +3,7 @@ package com.integrame.app.core.di
 import com.integrame.app.core.data.repository.SessionRepositoryImpl
 import com.integrame.app.core.data.repository.StudentRespositoryImpl
 import com.integrame.app.core.data.repository.TeacherRepositoryImpl
+import com.integrame.app.core.data.repository.ThemeRepository
 import com.integrame.app.core.domain.repository.SessionRepository
 import com.integrame.app.core.domain.repository.StudentRepository
 import com.integrame.app.core.domain.repository.TeacherRepository
@@ -11,9 +12,15 @@ import com.integrame.app.login.data.repository.IdentityCardRepositoryImpl
 import com.integrame.app.login.domain.repository.AuthRepository
 import com.integrame.app.login.domain.repository.IdentityCardRepository
 import com.integrame.app.tasks.data.repository.GenericTaskRepositoryImpl
+import com.integrame.app.tasks.data.repository.MaterialTaskRepositoryImpl
 import com.integrame.app.tasks.data.repository.TaskRepositoryImpl
 import com.integrame.app.tasks.domain.repository.GenericTaskRepository
+import com.integrame.app.tasks.domain.repository.MaterialTaskRepository
+import com.integrame.app.tasks.data.repository.MenuTaskRepositoryImpl
+import com.integrame.app.tasks.domain.repository.MenuTaskRepository
 import com.integrame.app.tasks.domain.repository.TaskRepository
+import com.integrame.app.teacher.data.repository.TeacherTaskRepositoryImpl
+import com.integrame.app.teacher.domain.repository.TeacherTaskRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -43,9 +50,27 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
+    abstract fun bindMenuTaskRepository(
+        menuTaskRepositoryImpl: MenuTaskRepositoryImpl
+    ): MenuTaskRepository
+  
+    @Binds
+    @Singleton
+    abstract fun bindMaterialTaskRepository(
+        materialTaskRepositoryImpl: MaterialTaskRepositoryImpl
+    ): MaterialTaskRepository
+
+    @Binds
+    @Singleton
     abstract fun bindTeacherRepository(
         teacherRepositoryImpl: TeacherRepositoryImpl
     ): TeacherRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTeacherTaskRepository(
+        teacherTaskRepositoryImpl: TeacherTaskRepositoryImpl
+    ): TeacherTaskRepository
 
     @Binds
     @Singleton

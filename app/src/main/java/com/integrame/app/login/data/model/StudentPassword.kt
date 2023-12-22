@@ -10,10 +10,10 @@ sealed interface StudentPassword
 @SerialName("TextPassword")
 data class TextPassword(
     val password: String
-) : StudentPassword
+): StudentPassword
 
 @Serializable
 @SerialName("ImagePassword")
 data class ImagePassword(
     val password: List<Int>
-) : StudentPassword
+): StudentPassword

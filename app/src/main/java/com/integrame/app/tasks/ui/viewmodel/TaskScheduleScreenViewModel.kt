@@ -1,6 +1,5 @@
 package com.integrame.app.tasks.ui.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +56,7 @@ class TaskScheduleScreenViewModel @Inject constructor(
     // NOTE: Si necesitamos datos del estudiante no se podría hacer directamente así
     private fun loadPendingTasks() {
         viewModelScope.launch {
-            taskScheduleUIState = when (val requestResult = taskRepository.getPendingTaskCards()) {
+            taskScheduleUIState = when (val requestResult = taskRepository.getTaskCards()) {
                 is AuthRequestResult.Authorized -> {
                     taskCards = requestResult.data
                     TaskScheduleUIState.DisplayTasks

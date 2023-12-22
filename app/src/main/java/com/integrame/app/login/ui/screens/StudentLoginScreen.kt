@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.ui.components.ErrorCard
 import com.integrame.app.core.ui.components.appbar.PaginatedBottomAppBar
+import com.integrame.app.core.util.RequestResult
 import com.integrame.app.login.data.model.IdentityCard
 import com.integrame.app.login.ui.components.IdentityCard
 import com.integrame.app.login.ui.viewmodel.StudentLoginUIState
@@ -114,7 +115,8 @@ fun StudentLoginScreen(
                         studentLoginViewModel.getIdentityCardsPage(),
                         onIdentityCardClick = onIdentitySelected,
                         modifier = Modifier
-                            .align(Alignment.Center)
+                            .align(Alignment.Center),
+                        userScrollEnabled = false
                     )
                 }
 
@@ -151,14 +153,16 @@ fun StudentLoginScreen(
 fun IdentityCardGrid(
     identityCardList: List<IdentityCard>,
     onIdentityCardClick: (Int) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    userScrollEnabled: Boolean = true
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(24.dp),
         modifier = modifier,
-        userScrollEnabled = false
+        userScrollEnabled = userScrollEnabled
     ) {
         items(identityCardList, key = { identityCard ->
             identityCard.userId

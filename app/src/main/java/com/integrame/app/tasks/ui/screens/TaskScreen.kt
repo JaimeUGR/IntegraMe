@@ -2,6 +2,7 @@ package com.integrame.app.tasks.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,21 +18,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.integrame.app.core.data.fake.FakeResources
+import com.integrame.app.core.data.model.user.StudentProfile
 import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.core.ui.components.ErrorCard
-import com.integrame.app.tasks.data.model.GenericTask
 import com.integrame.app.tasks.data.model.GenericTaskModel
-import com.integrame.app.tasks.data.model.MaterialTask
 import com.integrame.app.tasks.data.model.MaterialTaskModel
-import com.integrame.app.tasks.data.model.MenuTask
 import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.ui.viewmodel.TaskScreenUIState
 import com.integrame.app.tasks.ui.viewmodel.TaskScreenViewModel
 
 @Composable
 fun TaskScreen(
+    studentProfile: StudentProfile,
     taskId: Int,
     onNavigateBack: () -> Unit,
+    onPressHome: () -> Unit,
     modifier: Modifier = Modifier,
     taskScreenViewModel: TaskScreenViewModel = hiltViewModel()
 ) {
@@ -86,18 +87,32 @@ fun TaskScreen(
                 is GenericTaskModel -> {
                     GenericTaskScreen(
                         taskModel = taskModel,
-                        contentProfile = FakeResources.contentProfiles[0].toContentProfile(),
+                        contentProfile = studentProfile.contentProfile,
                         onNavigateBack = onNavigateBack,
-                        onPressHome = { /*TODO*/ },
+                        onPressHome = onPressHome,
                         onPressChat = { /*TODO*/ },
                         modifier = Modifier.fillMaxSize()
                     )
                 }
                 is MenuTaskModel -> {
-                    Text(text = "Menu Task")
+                    MenuTaskScreen(
+                        taskModel = taskModel,
+                        contentProfile = studentProfile.contentProfile,
+                        onNavigateBack = onNavigateBack,
+                        onPressHome = onPressHome,
+                        onPressChat = { /*TODO*/ },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
                 is MaterialTaskModel -> {
-                    Text(text = "Material Task")
+                    MaterialTaskScreen(
+                        taskModel = taskModel,
+                        contentProfile = studentProfile.contentProfile,
+                        onNavigateBack = onNavigateBack,
+                        onPressHome = onPressHome,
+                        onPressChat = { /*TODO*/ },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }

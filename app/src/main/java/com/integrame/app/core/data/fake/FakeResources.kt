@@ -14,16 +14,18 @@ import com.integrame.app.core.data.network.toContentProfile
 import com.integrame.app.login.data.model.ImageAuthMethod
 import com.integrame.app.login.data.model.TextAuthMethod
 import com.integrame.app.login.data.network.NetworkIdentityCard
-import com.integrame.app.tasks.data.model.ClassroomMenuTask
-import com.integrame.app.tasks.data.model.GenericTask
+import com.integrame.app.tasks.data.model.Classroom
+import com.integrame.app.tasks.data.model.ClassroomMenu
+import com.integrame.app.tasks.data.model.GenericTaskModel
 import com.integrame.app.tasks.data.model.GenericTaskStep
 import com.integrame.app.tasks.data.model.Material
+import com.integrame.app.tasks.data.model.MaterialProperty
 import com.integrame.app.tasks.data.model.MaterialRequest
-import com.integrame.app.tasks.data.model.MaterialTask
+import com.integrame.app.tasks.data.model.MaterialTaskModel
 import com.integrame.app.tasks.data.model.MenuOption
-import com.integrame.app.tasks.data.model.MenuTask
-import com.integrame.app.tasks.data.model.Task
+import com.integrame.app.tasks.data.model.MenuTaskModel
 import com.integrame.app.tasks.data.model.TaskCard
+import com.integrame.app.tasks.data.model.TaskModel
 import com.integrame.app.tasks.data.model.TaskState
 import com.integrame.app.tasks.data.model.TaskType
 
@@ -56,75 +58,104 @@ object FakeResources {
 
     val taskCards: List<TaskCard>
 
+    val networkImages: List<NetworkImageContent> = listOf(
+        NetworkImageContent(0, "ASD"),
+        NetworkImageContent(1, "BSD"),
+        NetworkImageContent(2, "BSD"),
+        NetworkImageContent(3, "BSD")
+    )
+
     val contentProfiles = List(NUM_STUDENTS) { i ->
         NetworkContentProfile(
-            contentAdaptationFormats = listOf(ContentAdaptationFormats.Text, ContentAdaptationFormats.Audio, ContentAdaptationFormats.Video, ContentAdaptationFormats.Image),
+            contentAdaptationFormats = listOf(
+                ContentAdaptationFormats.Text,
+                ContentAdaptationFormats.Audio,
+                ContentAdaptationFormats.Video,
+                ContentAdaptationFormats.Image
+            ),
             interactionMethods = listOf(InteractionMethods.Default)
         )
     }
 
-    val menuTasks: List<MenuTask> = List(NUM_TASKS) { i ->
-        MenuTask(
+    val menuTaskModels: List<MenuTaskModel> = List(NUM_TASKS) { i ->
+        MenuTaskModel(
             i,
             "Tarea Menú $i",
             remoteImages[i % remoteImages.size],
+            reward = remoteImages[0],
             List(minOf(4, i + 1)) { j ->
-                ClassroomMenuTask(
+                Classroom(
                     j,
-                    List(j){ k ->
-                        MenuOption(
-                            "Menú $j-$k",
-                            remoteImages[k % remoteImages.size]
-                        )
-                    }
+                    TextContent("Clase $j"),
+                    remoteImages[0]
                 )
             }
         )
     }
 
-    val genericTasks: List<GenericTask> = List(NUM_TASKS) { i ->
-        GenericTask(
+    val menuTaskClassroomMenus: List<List<ClassroomMenu>> = List(NUM_TASKS) { i ->
+        List(minOf(4, i + 1)) { j ->
+            ClassroomMenu(
+                Classroom(j, TextContent("Clase $j"), remoteImages[0]),
+                List(minOf(4, j + 2)) {  k ->
+                    MenuOption(k, TextContent(""), remoteImages[0], 0)
+                }
+            )
+        }
+    }
+
+    val genericTaskModels: List<GenericTaskModel> = List(NUM_TASKS) { i ->
+        GenericTaskModel(
             i,
             "Tarea Genérica $i",
             remoteImages[i % remoteImages.size],
-            List(minOf(4, i + 1)) { j ->
-                GenericTaskStep(
-                    "Paso $j",
-                    false,
-                    ContentPack(
-                        TextContent("Texto $j"),
-                        remoteImages[j % remoteImages.size],
-                        VideoContent("", -1),
-                        AudioContent("", -1)
-                    )
-                )
-            },
-            remoteImages[i % remoteImages.size],
-            false
+            reward = remoteImages[0],
+            steps = minOf(4, i+1)
         )
     }
 
-    val materialTasks: List<MaterialTask> = List(NUM_TASKS) { i ->
-        MaterialTask(
+    val genericTaskSteps: List<List<GenericTaskStep>> = List(NUM_TASKS) { i ->
+        List(minOf(4, i + 1)) { j ->
+            GenericTaskStep(
+                "Paso $j",
+                false,
+                ContentPack(
+                    TextContent("Texto $j"),
+                    remoteImages[j % remoteImages.size],
+                    VideoContent("", -1),
+                    AudioContent("", -1)
+                )
+            )
+        }
+    }
+
+    val materialTaskModels: List<MaterialTaskModel> = List(NUM_TASKS) { i ->
+        MaterialTaskModel(
             i,
             "Tarea Material $i",
             remoteImages[i % remoteImages.size],
-            List(minOf(4, i + 1)) { j ->
-                MaterialRequest(
-                    Material(
-                        remoteImages[j % remoteImages.size],
-                        properties = emptyList()
-                    ),
-                    j,
-                    remoteImages[j % remoteImages.size],
-                    false
-                )
-            }
+            reward = remoteImages[0],
+            requests = minOf(4, i+1)
+
         )
     }
 
+    val materialTaskRequests: List<List<MaterialRequest>> = List(NUM_TASKS) { i ->
+        List(minOf(4, i + 1)) { j ->
+            MaterialRequest(
+                Material(
+                    TextContent("Material $j"),
+                    remoteImages[j % remoteImages.size],
+                    property = if (j % 2 == 0) null else MaterialProperty(TextContent("Propiedad $j"), remoteImages[j % remoteImages.size])
+                ),
+                remoteImages[j % remoteImages.size],
+                false
+            )
+        }
+    }
+
     val studentProfiles: List<StudentProfile>
-    val tasks: List<Task>
+    val tasks: List<TaskModel>
 
     init {
         studentProfiles = List(NUM_STUDENTS) { i ->
@@ -134,43 +165,38 @@ object FakeResources {
                 surnames = "S. G.",
                 nickname = "Nick_$i",
                 avatar = remoteImages[i % remoteImages.size],
-                contentProfiles[i].toContentProfile()
+                contentProfile = contentProfiles[i].toContentProfile()
             )
         }
 
         tasks = listOf(
-            genericTasks[4],
-            menuTasks[0],
-            materialTasks[0],
-            materialTasks[1]
+            genericTaskModels[0],
+            genericTaskModels[1],
+            genericTaskModels[2],
+            genericTaskModels[3],
+            menuTaskModels[0],
+            menuTaskModels[1],
+            menuTaskModels[2],
+            menuTaskModels[3],
+            materialTaskModels[0],
+            materialTaskModels[1],
+            materialTaskModels[2],
+            materialTaskModels[3]
         )
 
-        taskCards = List(NUM_TASKS) { i ->
-            if (i % 3 == 0) {
-                TaskCard(
-                    i,
-                    TaskState.Failed,
-                    "Hacer la cama",
-                    remoteImages[0],
-                    TaskType.GenericTask
-                )
-            } else if (i % 3 == 1) {
-                TaskCard(
-                    i,
-                    TaskState.Pending,
-                    "Menú comedor pero tiene un nombre extremadamente largo",
-                    remoteImages[1],
-                    TaskType.MenuTask
-                )
-            } else {
-                TaskCard(
-                    i,
-                    TaskState.Completed,
-                    "Petición almacén",
-                    remoteImages[2],
-                    TaskType.MaterialTask
-                )
-            }
+        taskCards = List(tasks.size) { i ->
+            TaskCard(
+                i,
+                if (i % 3 == 0) TaskState.Pending else if (i % 3 == 1) TaskState.Completed else TaskState.Failed,
+                tasks[i].displayName,
+                tasks[i].displayImage,
+                taskType = when(tasks[i]) {
+                    is MaterialTaskModel -> TaskType.MaterialTask
+                    is GenericTaskModel -> TaskType.GenericTask
+                    is MenuTaskModel -> TaskType.MenuTask
+                    else -> TaskType.GenericTask
+                }
+            )
         }
     }
 
@@ -192,4 +218,8 @@ object FakeResources {
         else
             ImageAuthMethod(steps = 3, List(4) { j -> remoteImages[j % remoteImages.size] })
     }
+
+
 }
+
+

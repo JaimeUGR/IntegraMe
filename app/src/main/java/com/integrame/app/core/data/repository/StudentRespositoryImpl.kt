@@ -19,7 +19,7 @@ class StudentRespositoryImpl @Inject constructor(
     }
 
     override suspend fun getContentProfile(userId: Int): RequestResult<ContentProfile> {
-        return RequestResult.Success(api.getStudentContentProfile(userId).toContentProfile())
+        return RequestResult.Success(api.getStudentContentProfile(userId))
     }
 
     override suspend fun getAuthMethod(userId: Int): RequestResult<AuthMethod> {
