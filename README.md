@@ -20,7 +20,7 @@ tools that nowadays exist for Android.
 ### Images
 
 ### Demo Video
-
+[Video](https://drive.google.com/file/d/1_YsjN3gcTFMF-7AKU8YTBJ_OMu0nzLfL/view?usp=sharing "IntegraMe Demo")
 
 ## The backend
 The application's backend was made using NodeJS as the server, where we defined a REST json based
