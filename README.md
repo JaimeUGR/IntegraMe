@@ -2,20 +2,19 @@
 IntegraMe is an accessible schedule for students in special education centers, developed for children with
 different capabilities and capacities.
 
-As such, the application is able to adapt its UI/UX to the user's needs, including special input devices
-such as external buttons or special keyboards.
+As such, the application is able to adapt its UI/UX to the user's needs, including special input devices like external buttons or specialized keyboards.
 
 ## Where it comes from
-In the subject project leading & management, we had been taught about accessibility and software project's
+In the subject project leading & management, we had been taught about accessibility and software project
 development, which we put to use developing this application as the main subject's task.
 
 This project has allowed us to learn and gain experience in the following fields:
-- **Team work**.
+- **Teamwork**.
 - Software architecture (MVVM, Client-Server...).
 - Programming (Kotlin, Javascript, NodeJS).
 - Documentation (API Docs, Kotlin Docs).
 - Agile methodologies: Scrum (rotating roles).
-- Tools: Jira, Excel(nº working hours), Project Libre (for Gantt Charts).
+- Tools: Jira, Excel (nº working hours), Project Libre (Gantt Charts).
 
 
 ## Documentation
@@ -26,7 +25,7 @@ This project has allowed us to learn and gain experience in the following fields
 [Video](https://drive.google.com/file/d/1_YsjN3gcTFMF-7AKU8YTBJ_OMu0nzLfL/view?usp=sharing "IntegraMe Demo")
 
 ### Other documentation
-Internal documents such as class diagrams, user stories or Gantt charts wont be shared here for privacy and ownership reasons.
+Internal documents such as class diagrams, user stories or Gantt Charts wont be shared here for privacy and ownership reasons.
 
 
 ## The app
@@ -48,7 +47,7 @@ However, one can change the build configuration to build using the testing API i
 
 
 ## The backend
-The application's backend was made using NodeJS as the server, where we defined a REST json based
+The application's backend was made using NodeJS as the server, where we defined a REST Json based
 API that communicates the database and the frontend, which in this case is our Android app.
 
-Furthermore, it also offers support for the administration tools, deployed in a web page.
+Furthermore, it also offers support for the administration tools, deployed in a webpage.
