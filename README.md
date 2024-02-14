@@ -6,7 +6,7 @@ As such, the application is able to adapt its UI/UX to the user's needs, includi
 such as external buttons or special keyboards.
 
 ## Where it comes from
-In the subject project leading & management, we had been taught about accesibility and software project's
+In the subject project leading & management, we had been taught about accessibility and software project's
 development, which we put to use developing this application as the main subject's task.
 
 This project has allowed us to learn and gain experience in the following fields:
