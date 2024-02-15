@@ -4,7 +4,10 @@ different capabilities and capacities.
 
 As such, the application is able to adapt its UI/UX to the user's needs, including special input devices like external buttons or specialized keyboards.
 
-## Where it comes from
+## Demo Video
+[![Video](./docs/IntegraMeVideoPreview.png "Play Video")](https://drive.google.com/file/d/1_YsjN3gcTFMF-7AKU8YTBJ_OMu0nzLfL/view?usp=sharing "Play Video")
+
+## Where it came from
 In the subject project leading & management, we had been taught about accessibility and software project
 development, which we put to use developing this application as the main subject's task.
 
@@ -14,15 +17,12 @@ This project has allowed us to learn and gain experience in the following fields
 - Programming (Kotlin, Javascript, NodeJS).
 - Documentation (API Docs, Kotlin Docs).
 - Agile methodologies: Scrum (rotating roles).
-- Tools: Jira, Excel (nº working hours), Project Libre (Gantt Charts).
+- Tools: Jira, Excel (work schedule and hours), Project Libre (Gantt Charts).
 
 
 ## Documentation
 ### User Manual
 [Manual (Spanish)](./docs/IntegraMe%20-%20Manual%20de%20usuario.pdf)
-
-### Demo Video
-[Video](https://drive.google.com/file/d/1_YsjN3gcTFMF-7AKU8YTBJ_OMu0nzLfL/view?usp=sharing "IntegraMe Demo")
 
 ### Other documentation
 Internal documents such as class diagrams, user stories or Gantt Charts wont be shared here for privacy and ownership reasons.
